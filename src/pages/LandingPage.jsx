@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Navbar from "../components/Navbar";
+import ChatBar from "../components/ChatBar";
 import HeroSection from "../components/HeroSection";
 import HeroSection2 from "../components/HeroSection2";
 import HeroSection3 from "../components/HeroSection3";
@@ -10,7 +10,7 @@ const LandingPage = () => {
   // const [balance,setbalance] = useState(0);
   return (
     <div>
-      <Navbar />
+      <ChatBar />
       <ResChat showModal={showModal} setShowModal={setShowModal} />
       <HeroSection />
       <HeroSection2 />

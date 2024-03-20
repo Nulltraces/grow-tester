@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BellRinging1 } from "@/assets/svgs";
+// import { BellRinging1 } from "@/assets/svgs";
 
 const initialNotificationState: NotificationState = {
   show: false,
   message: "",
-  icon: BellRinging1,
+  // icon: BellRinging1,
   type: "info",
 };
 
@@ -20,7 +20,7 @@ const notificationSlice = createSlice({
         message,
         show,
         type = "info",
-        icon = BellRinging1,
+        // icon = BellRinging1,
         // children,
       } = action.payload;
 
@@ -31,7 +31,7 @@ const notificationSlice = createSlice({
         show: show !== undefined ? show : !state.show,
         message: message,
         type,
-        icon,
+        // icon,
       };
     },
 

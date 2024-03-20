@@ -1,12 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AlertCircle } from "@/assets/svgs";
 
 const initialModalState: ModalState = {
   showModal: false,
   modalMessage: {
     text: "",
     title: "",
-    icon: AlertCircle,
   },
   disableOnClick: true,
   type: "info",

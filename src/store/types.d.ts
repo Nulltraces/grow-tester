@@ -27,7 +27,6 @@ type TriggerNotification = {
   message?: string | React.ReactNode;
   show?: boolean;
   type?: ModalState["type"];
-  icon?: React.FC<React.SVGProps<SVGElement>>;
 };
 
 // NOTIFICATION

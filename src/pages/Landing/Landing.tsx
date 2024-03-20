@@ -1,23 +1,57 @@
 import { MessageChatCircleIcon } from "@/assets/svgs";
-import { Bets, Chat, Games, Header } from "./components";
+import { Bets, BottomNav, Chat, Games, Header } from "./components";
 import ChatToggle from "./components/Chat/ChatToggle";
 import Hero from "./components/Hero";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Landing() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <main className="flex flex-col h-screen gap-3_ bg-body">
-      <Header />
-      <div className="flex flex-1 overflow-auto ">
-        <div className="fixed left-0 bottom-28 flex items-center_ justify-center items-center hover:-translate-y-1 bg-gray-800 transition-all duration-100 px-2 pt-2 rounded-sm">
-          <ChatToggle icon={MessageChatCircleIcon} />
+      {loading ? (
+        <div className="flex w-full h-full items-center justify-center">
+          <div className="space-y-3">
+            <div className="animate-pulse">
+              <img src="/logo.png" />
+            </div>
+            <div className="mx-auto w-fit">
+              <Link
+                to="/"
+                className="text-3xl font-bold text-primary uppercase text-center"
+              >
+                join our discord server
+              </Link>
+            </div>
+          </div>
         </div>
-        <Chat />
-        <div className="container mx-auto pt-4 ml-3 pr-3 overflow-auto flex flex-col flex-1 transition-all duration-200 space-y-3">
-          <Hero />
-          <Games />
-          <Bets />
-        </div>
-      </div>
+      ) : (
+        <>
+          <div id="modal"></div>
+          <Header />
+          <div className="flex flex-1 overflow-auto ">
+            <div className="fixed hidden sm:inline-block left-0 bottom-28 items-center_ justify-center items-center hover:-translate-y-1 bg-gray-800 transition-all duration-100 px-2 pt-2 rounded-sm">
+              <ChatToggle icon={MessageChatCircleIcon} />
+            </div>
+            <Chat />
+            <div className="container_ md:px-8 mx-auto pt-4 {ml-3 pr-3} overflow-auto flex flex-col flex-1 transition-all duration-200 space-y-3">
+              <Hero />
+              <Games />
+              <Bets />
+            </div>
+          </div>
+          <BottomNav />
+        </>
+      )}
     </main>
   );
 }

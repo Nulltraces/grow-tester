@@ -11,23 +11,21 @@ import { useAppDispatch, useAppSelector } from "@/hooks/store";
 
 // const notification = document.getElementById("notification")!;
 export default function Notification() {
-  const { show, icon, message, type } = useAppSelector(
-    (state) => state.notification
-  );
+  const { show, message, type } = useAppSelector((state) => state.notification);
   const [domReady, setDomReady] = useState(false);
 
-  const Icon = icon!;
-  const iconStyle = `
-    ${
-      type === "error"
-        ? "stroke-red-400"
-        : type === "warning"
-        ? "stroke-yellow-500"
-        : type === "success"
-        ? "stroke-green-400"
-        : "stroke-primary"
-    }
-  `;
+  // const Icon = icon!;
+  // const iconStyle = `
+  //   ${
+  //     type === "error"
+  //       ? "stroke-red-400"
+  //       : type === "warning"
+  //       ? "stroke-yellow-500"
+  //       : type === "success"
+  //       ? "stroke-green-400"
+  //       : "stroke-primary"
+  //   }
+  // `;
   // const textStyle = `
   //   ${
   //     type === "error"
@@ -120,12 +118,12 @@ export default function Notification() {
                     >
                       <div className="flex items-center w-full text-xl gap-2">
                         <span className="relative flex items-center justify-center">
-                          <Icon
+                          {/* <Icon
                             className={clsx("w-6 h-6 animate-ping", iconStyle)}
                           />
                           <Icon
                             className={clsx("absolute w-6 h-6", iconStyle)}
-                          />
+                          /> */}
                         </span>
                         <div
                           className={clsx(

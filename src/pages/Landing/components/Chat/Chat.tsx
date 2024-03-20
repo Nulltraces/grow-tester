@@ -28,7 +28,7 @@ export default function DashboardSideNavigation() {
 
   useEffect(() => {
     if (!smallScreen) {
-      toggleNav(true);
+      // toggleNav(true);
       return;
     }
 
@@ -75,13 +75,13 @@ export default function DashboardSideNavigation() {
           return (
             <div
               className={clsx(
-                "w-[320px] fixed_ md:static_ z-[998] bg-[#15171e] h-full lg:block_ md:translate-x-0_ transition-all duration-150 flex flex-col overflow-y-auto_ border-r-2 border-gray-700/50",
+                "w-full sm:w-[320px] fixed_ md:static_ z-[998] bg-[#15171e] h-full lg:block_ md:translate-x-0_ transition-all duration-150 flex flex-col overflow-y-auto_ border-r-2 border-gray-700/50",
                 hideNav && "-translate-x-full fixed"
               )}
             >
               <div className="w-full h-full relative flex flex-col">
                 {showNav && (
-                  <div className="right-0 bg-body absolute translate-x-full">
+                  <div className="hidden sm:block right-0 bg-body absolute translate-x-full">
                     <ChatToggle icon={XClose} />
                   </div>
                 )}

@@ -8,10 +8,12 @@ import { apiSlice } from "./slices/api";
 import notesSlice from "./slices/notes";
 import tagsSlice from "./slices/tags";
 import foldersSlice from "./slices/folders";
+import menuBarSlice from "./slices/menubar";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
   chatBar: chatBarSlice.reducer,
+  menuBar: menuBarSlice.reducer,
   notesBar: notesBarSlice.reducer,
   modal: modalSlice.reducer,
   notification: notificationSlice.reducer,

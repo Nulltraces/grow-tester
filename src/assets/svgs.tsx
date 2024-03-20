@@ -400,7 +400,7 @@ export function PlusIcon({ className }: SVGProps) {
   );
 }
 
-export const HorizontalDots = ({ className }: SVGProps) => {
+export const MenuIconzontalDots = ({ className }: SVGProps) => {
   return (
     <svg
       className={clsx("stroke-gray-700", className)}
@@ -503,7 +503,7 @@ export const LeftAlignIcon = ({ className }: SVGProps) => {
   );
 };
 
-export const MoreHorisIcon = ({ className }: SVGProps) => {
+export const MenuIconsIcon = ({ className }: SVGProps) => {
   return (
     <svg
       className={clsx("stroke-gray-700", className)}
@@ -1195,7 +1195,7 @@ export const Lock4Icon_ = ({ className }: SVGProps) => {
   );
 };
 
-export const Die = ({ className }: SVGProps) => {
+export const DieIcon = ({ className }: SVGProps) => {
   return (
     <svg
       stroke="currentColor"
@@ -1225,6 +1225,149 @@ export const ScrollIcon = ({ className }: SVGProps) => {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M19 22H5C3.34315 22 2 20.6569 2 19V3C2 2.44772 2.44772 2 3 2H17C17.5523 2 18 2.44772 18 3V15H22V19C22 20.6569 20.6569 22 19 22ZM18 17V19C18 19.5523 18.4477 20 19 20C19.5523 20 20 19.5523 20 19V17H18ZM6 7V9H14V7H6ZM6 11V13H14V11H6ZM6 15V17H11V15H6Z"></path>
+    </svg>
+  );
+};
+
+export const WalletIcon = ({ className }: SVGProps) => {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 512 512"
+      height="22"
+      width="22"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path d="M461.2 128H80c-8.84 0-16-7.16-16-16s7.16-16 16-16h384c8.84 0 16-7.16 16-16 0-26.51-21.49-48-48-48H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h397.2c28.02 0 50.8-21.53 50.8-48V176c0-26.47-22.78-48-50.8-48zM416 336c-17.67 0-32-14.33-32-32s14.33-32 32-32 32 14.33 32 32-14.33 32-32 32z"></path>
+    </svg>
+  );
+};
+
+export const MenuIcon = ({ className }: SVGProps) => {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 512 512"
+      height="22"
+      width="22"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path d="M32 96v64h448V96H32zm0 128v64h448v-64H32zm0 128v64h448v-64H32z"></path>
+    </svg>
+  );
+};
+
+export const ChatBubbleIcon = ({ className }: SVGProps) => {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 16 16"
+      height="22"
+      width="22"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"></path>
+    </svg>
+  );
+};
+
+export const GiftBoxIcon = ({ className }: SVGProps) => {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 512 512"
+      height="21"
+      width="21"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path
+        fill="none"
+        d="M346 110a34 34 0 00-68 0v34h34a34 34 0 0034-34zm-112 0a34 34 0 10-34 34h34z"
+      ></path>
+      <path d="M234 144h44v112h164a22 22 0 0022-22v-68a22 22 0 00-22-22h-59.82A77.95 77.95 0 00256 55.79 78 78 0 00129.81 144H70a22 22 0 00-22 22v68a22 22 0 0022 22h164zm44-34a34 34 0 1134 34h-34zm-112 0a34 34 0 1168 0v34h-34a34 34 0 01-34-34zm112 370h132a22 22 0 0022-22V288H278zM80 458a22 22 0 0022 22h132V288H80z"></path>
+    </svg>
+  );
+};
+
+export const CashStackIcon = ({ className }: SVGProps) => {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 512 512"
+      height="21"
+      width="21"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path d="M448 400H64a16 16 0 010-32h384a16 16 0 010 32zm-32 48H96a16 16 0 010-32h320a16 16 0 010 32zM32 272H16v48a32 32 0 0032 32h48v-16a64.07 64.07 0 00-64-64z"></path>
+      <path d="M480 240h16v-64h-16a96.11 96.11 0 01-96-96V64H128v16a96.11 96.11 0 01-96 96H16v64h16a96.11 96.11 0 0196 96v16h256v-16a96.11 96.11 0 0196-96zm-224 64a96 96 0 1196-96 96.11 96.11 0 01-96 96z"></path>
+      <circle cx="256" cy="208" r="64"></circle>
+      <path d="M416 336v16h48a32 32 0 0032-32v-48h-16a64.07 64.07 0 00-64 64zm64-192h16V96a32 32 0 00-32-32h-48v16a64.07 64.07 0 0064 64zM96 80V64H48a32 32 0 00-32 32v48h16a64.07 64.07 0 0064-64z"></path>
+    </svg>
+  );
+};
+
+export const TrophyIcon = ({ className }: SVGProps) => {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 512 512"
+      height="21"
+      width="21"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path d="M399.9 80V32H112v48H32v38c0 32 9.5 62.79 26.76 86.61 13.33 18.4 34.17 31.1 52.91 37.21 5.44 29.29 20.2 57.13 50.19 79.83 22 16.66 48.45 28.87 72.14 33.86V436h-74v44h192v-44h-74v-80.49c23.69-5 50.13-17.2 72.14-33.86 30-22.7 44.75-50.54 50.19-79.83 18.74-6.11 39.58-18.81 52.91-37.21C470.5 180.79 480 150 480 118V80zM94.4 178.8c-10.68-14.68-17.17-34.4-18.24-54.8H112v67.37c-3.94-1.14-12.92-6.12-17.6-12.57zm323.2 0c-4.6 6.61-11.6 12.58-17.6 12.58 0-22.4 0-46.29-.05-67.38h35.9c-1.08 20.4-7.85 39.9-18.25 54.8z"></path>
+    </svg>
+  );
+};
+
+export const StopwatchIcon = ({ className }: SVGProps) => {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 448 512"
+      height="21"
+      width="21"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path d="M432 304c0 114.9-93.1 208-208 208S16 418.9 16 304c0-104 76.3-190.2 176-205.5V64h-28c-6.6 0-12-5.4-12-12V12c0-6.6 5.4-12 12-12h120c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-28v34.5c37.5 5.8 71.7 21.6 99.7 44.6l27.5-27.5c4.7-4.7 12.3-4.7 17 0l28.3 28.3c4.7 4.7 4.7 12.3 0 17l-29.4 29.4-.6.6C419.7 223.3 432 262.2 432 304zm-176 36V188.5c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12V340c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12z"></path>
+    </svg>
+  );
+};
+
+export const DiscordIcon = ({ className }: SVGProps) => {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 640 512"
+      height="21"
+      width="21"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path d="M524.531,69.836a1.5,1.5,0,0,0-.764-.7A485.065,485.065,0,0,0,404.081,32.03a1.816,1.816,0,0,0-1.923.91,337.461,337.461,0,0,0-14.9,30.6,447.848,447.848,0,0,0-134.426,0,309.541,309.541,0,0,0-15.135-30.6,1.89,1.89,0,0,0-1.924-.91A483.689,483.689,0,0,0,116.085,69.137a1.712,1.712,0,0,0-.788.676C39.068,183.651,18.186,294.69,28.43,404.354a2.016,2.016,0,0,0,.765,1.375A487.666,487.666,0,0,0,176.02,479.918a1.9,1.9,0,0,0,2.063-.676A348.2,348.2,0,0,0,208.12,430.4a1.86,1.86,0,0,0-1.019-2.588,321.173,321.173,0,0,1-45.868-21.853,1.885,1.885,0,0,1-.185-3.126c3.082-2.309,6.166-4.711,9.109-7.137a1.819,1.819,0,0,1,1.9-.256c96.229,43.917,200.41,43.917,295.5,0a1.812,1.812,0,0,1,1.924.233c2.944,2.426,6.027,4.851,9.132,7.16a1.884,1.884,0,0,1-.162,3.126,301.407,301.407,0,0,1-45.89,21.83,1.875,1.875,0,0,0-1,2.611,391.055,391.055,0,0,0,30.014,48.815,1.864,1.864,0,0,0,2.063.7A486.048,486.048,0,0,0,610.7,405.729a1.882,1.882,0,0,0,.765-1.352C623.729,277.594,590.933,167.465,524.531,69.836ZM222.491,337.58c-28.972,0-52.844-26.587-52.844-59.239S193.056,219.1,222.491,219.1c29.665,0,53.306,26.82,52.843,59.239C275.334,310.993,251.924,337.58,222.491,337.58Zm195.38,0c-28.971,0-52.843-26.587-52.843-59.239S388.437,219.1,417.871,219.1c29.667,0,53.307,26.82,52.844,59.239C470.715,310.993,447.538,337.58,417.871,337.58Z"></path>
     </svg>
   );
 };

@@ -13,6 +13,7 @@ module.exports = {
         // body: "var(--background-color)",
         body: "#15171e",
       },
+      gridTemplateColumns: {},
     },
   },
   plugins: [],

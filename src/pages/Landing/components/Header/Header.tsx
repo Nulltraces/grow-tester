@@ -17,6 +17,7 @@ import { games } from "@/data/games";
 import { closeModal, triggerModal } from "@/store/slices/modal";
 import { useAppDispatch } from "@/hooks/store";
 import { useEffect } from "react";
+import { lettersAndNumbersOnly } from "@/utils/strings";
 
 export default function Header() {
   const dispatch = useAppDispatch();
@@ -141,7 +142,7 @@ function HeaderItems() {
                         className="text-sm text-white font-bold uppercase hover:-translate-y-[2px] transition-transform duration-100"
                         key={i}
                       >
-                        {game.title}
+                        {lettersAndNumbersOnly(game.title)}
                       </p>
                     ))}
                   </AnimateInOut>

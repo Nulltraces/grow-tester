@@ -2,6 +2,10 @@
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+.gamesGridSm {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
 .parent {
   display: grid;
   grid-template-columns: repeat(5, 1fr);

@@ -14,7 +14,10 @@ module.exports = {
         // body: "var(--background-color)",
         body: "#15171e",
       },
-      gridTemplateColumns: {},
+      gridTemplateColumns: {
+        gamesGrid: "repeat(auto-fit, minmax(220px, 1fr))",
+        gamesGridSm: "repeat(auto-fit, minmax(150px, 1fr))",
+      },
     },
   },
   plugins: [],

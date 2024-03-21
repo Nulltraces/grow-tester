@@ -8,3 +8,4 @@ export { default as Notification } from "./Notification";
 export { default as Overlay } from "./Overlay";
 export { default as ParamsNav } from "./ParamsNav";
 export { default as Spinner } from "./Spinner";
+export { default as Table } from "./Table";

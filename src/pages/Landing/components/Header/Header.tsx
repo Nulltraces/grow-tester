@@ -7,7 +7,7 @@ import {
   StopwatchIcon,
   TrophyIcon,
 } from "@/assets/svgs";
-import { AuthForm, Button, Overlay } from "@/components";
+import { AnimateInOut, AuthForm, Button, Overlay } from "@/components";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useSearchParams } from "react-router-dom";
@@ -128,26 +128,23 @@ function HeaderItems() {
                       } transform transition-transform duration-200 !stroke-primary`}
                     />
                   </Disclosure.Button>
-                  <Transition
+                  <AnimateInOut
                     show={open}
-                    enter="transition-all duration-75"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="transition-all duration-150"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
+                    initial={{ height: 0 }}
+                    animate={{ height: "auto" }}
+                    exit={{ height: 0 }}
+                    transition={{ type: "keyframes" }}
+                    className="cursor-pointer flex flex-col w-full pt-[5px] overflow-clip space-y-2"
                   >
-                    <Disclosure.Panel className="cursor-pointer flex flex-col w-full pt-[5px]">
-                      {games.map((game, i) => (
-                        <p
-                          className="text-sm text-white font-bold uppercase"
-                          key={i}
-                        >
-                          {game.title}
-                        </p>
-                      ))}
-                    </Disclosure.Panel>
-                  </Transition>
+                    {games.map((game, i) => (
+                      <p
+                        className="text-sm text-white font-bold uppercase hover:-translate-y-[2px] transition-transform duration-100"
+                        key={i}
+                      >
+                        {game.title}
+                      </p>
+                    ))}
+                  </AnimateInOut>
                 </>
               )}
             </Disclosure>
@@ -168,17 +165,25 @@ function HeaderItems() {
                     />
                   </Disclosure.Button>
 
-                  <Transition
+                  <AnimateInOut
                     show={open}
-                    enter="transition-opacity duration-75"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="transition-opacity duration-150"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
+                    initial={{ height: 0 }}
+                    animate={{ height: "auto" }}
+                    exit={{ height: 0 }}
+                    transition={{ type: "keyframes" }}
+                    className="cursor-pointer flex flex-col w-full pt-[5px] overflow-clip space-y-2"
                   >
-                    <Disclosure.Panel className="cursor-pointer flex flex-col w-full pt-[5px]"></Disclosure.Panel>
-                  </Transition>
+                    {[{ title: "rakeback" }, { title: "promo codes" }].map(
+                      (reward, i) => (
+                        <p
+                          className="text-sm text-white font-bold uppercase hover:-translate-y-[2px] transition-transform duration-100"
+                          key={i}
+                        >
+                          {reward.title}
+                        </p>
+                      )
+                    )}
+                  </AnimateInOut>
                 </>
               )}
             </Disclosure>
@@ -229,23 +234,20 @@ function HeaderItemsSM() {
                 } transform transition-transform duration-200 !stroke-white`}
               />
             </Menu.Button>
-            {/* <Transition
+
+            <AnimateInOut
               show={open}
-              enter="transition-opacity duration-s"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity duration-150"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            > */}
-            <Menu.Items className="absolute top-16 w-full left-0 h-full_ bg-dark-800 rounded-xl flex items-center justify-center p-2">
-              {/* <div> */}
+              initial={{ translateY: -400, opacity: 0 }}
+              exit={{ translateY: -400, opacity: 0 }}
+              animate={{ translateY: 0, opacity: 1 }}
+              transition={{ type: "keyframes" }}
+              className="absolute top-16 w-full left-0 h-full_ bg-dark-800 rounded-xl flex items-center justify-center p-2"
+            >
               <div className="h-[96%] w-[99%] overflow-auto pr-2">
                 <Games />
               </div>
               {/* </div> */}
-            </Menu.Items>
-            {/* </Transition> */}
+            </AnimateInOut>
           </>
         )}
       </Menu>

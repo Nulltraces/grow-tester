@@ -6,8 +6,8 @@ type ModalState = {
     text: string | React.ReactNode;
     icon?: React.FC<React.SVGProps<SVGElement>>;
   };
-  actionConfirm?: Function;
-  actionCancel?: Function;
+  actionConfirm?(): void;
+  actionCancel?(): void;
   disableOnClick: boolean;
   children?: React.ReactNode | JSX.Element;
   type?: "info" | "error" | "warning" | "success";
@@ -15,8 +15,8 @@ type ModalState = {
 
 type TriggerModal = {
   message?: ModalState["modalMessage"];
-  confirm?: Function;
-  cancel?: Function;
+  confirm?(): void;
+  cancel?(): void;
   clickToDisable?: boolean;
   show?: boolean;
   type?: ModalState["type"];

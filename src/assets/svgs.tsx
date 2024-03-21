@@ -400,7 +400,7 @@ export function PlusIcon({ className }: SVGProps) {
   );
 }
 
-export const MenuIconzontalDots = ({ className }: SVGProps) => {
+export const MenuHorizontalDotsIcon = ({ className }: SVGProps) => {
   return (
     <svg
       className={clsx("stroke-gray-700", className)}

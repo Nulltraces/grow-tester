@@ -10,7 +10,7 @@ import ChatHeader from "./ChatHeader";
 import { XClose } from "@/assets/svgs";
 import ChatMessages from "./ChatMessages.tsx";
 import ChatFooter from "./ChatFooter.tsx";
-// import { db } from "@/lib/firebase/firebase-client";
+
 
 export default function DashboardSideNavigation() {
   const [smallScreen, setSmallScreen] = useState(false);

@@ -39,7 +39,7 @@ export default function Landing() {
           <div id="modal"></div>
           <Header />
           <div className="flex flex-1_ overflow-auto h-[calc(100%-7.2rem)] sm:h-auto p-2">
-            <div className="fixed hidden sm:inline-block left-0 bottom-28 items-center_ justify-center items-center hover:-translate-y-1 bg-gray-800 transition-all duration-100 px-2 pt-2 rounded-sm">
+            <div className="fixed hidden sm:inline-block left-0 bottom-28 items-center_ justify-center items-center hover:-translate-y-1 bg-gray-800 transition-all duration-100 px-2 pt-2 rounded-sm z-50">
               <ChatToggle icon={MessageChatCircleIcon} />
             </div>
             <Chat />

@@ -7,6 +7,7 @@ module.exports = {
         "lg-heart": "rgba(254, 246, 244, 0.12)",
         primary: "#4483eb",
 
+        "dark-700": "#22242f",
         "dark-800": "#1b1e27",
         "dark-850": "#171921",
         "couch-grey": "#666",

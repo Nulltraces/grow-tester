@@ -7,18 +7,47 @@ import {
   StopwatchIcon,
   TrophyIcon,
 } from "@/assets/svgs";
-import { Button, Overlay } from "@/components";
+import { AuthForm, Button, Overlay } from "@/components";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { useSearchParams } from "react-router-dom";
 import { Games } from "..";
 import MenuButton from "../MenuButton";
 import { games } from "@/data/games";
-import { triggerModal } from "@/store/slices/modal";
+import { closeModal, triggerModal } from "@/store/slices/modal";
 import { useAppDispatch } from "@/hooks/store";
+import { useEffect } from "react";
 
 export default function Header() {
   const dispatch = useAppDispatch();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const authModal = searchParams.get("modal");
+
+  useEffect(() => {
+    if (authModal === "sign-in") {
+      dispatch(
+        triggerModal({
+          children: <AuthForm route="sign-in" />,
+          clickToDisable: true,
+          show: true,
+          cancel: () => setSearchParams({ modal: "false" }),
+        })
+      );
+    } else if (authModal === "register") {
+      dispatch(
+        triggerModal({
+          children: <AuthForm route="register" />,
+          clickToDisable: true,
+          show: true,
+          cancel: () => setSearchParams({ modal: "false" }),
+        })
+      );
+    } else {
+      dispatch(closeModal());
+    }
+  }, [authModal, dispatch, setSearchParams]);
 
   return (
     <header className="shrink-0 relative md:static h-16 flex py-2.5 w-full fixed_ !z-[10000000] top-0 left-0 min-h-[var(--header-height)] max-h-[var(--header-height)] bg-dark-850 shadow-md whitespace-nowrap">
@@ -33,34 +62,12 @@ export default function Header() {
           <HeaderItemsSM />
           <div className="ml-auto flex items-center gap-4">
             <button
-              onClick={() =>
-                dispatch(
-                  triggerModal({
-                    // children: <AuthForm route="sign-in" />,
-                    message: {
-                      text: "udhudheid",
-                      title: "dygyegdye",
-                    },
-                  })
-                )
-              }
+              onClick={() => setSearchParams({ modal: "sign-in" })}
               className="text-white text-sm font-semibold py-2 px-4"
             >
               Sign In
             </button>
-            <Button
-              onClick={() =>
-                dispatch(
-                  triggerModal({
-                    // children: <AuthForm route="sign-up" />,
-                    message: {
-                      text: "udhudheid",
-                      title: "dygyegdye",
-                    },
-                  })
-                )
-              }
-            >
+            <Button onClick={() => setSearchParams({ modal: "register" })}>
               Register
             </Button>
             <div className="hidden sm:block md:hidden">

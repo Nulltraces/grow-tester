@@ -21,13 +21,13 @@ export default function Landing() {
       {loading ? (
         <div className="flex w-full h-full items-center justify-center">
           <div className="space-y-3">
-            <div className="animate-pulse">
+            <div className="animate-pulse w-[70%] sm:w-auto mx-auto">
               <img src="/logo.png" />
             </div>
             <div className="mx-auto w-fit">
               <Link
                 to="/"
-                className="text-3xl font-bold text-primary uppercase text-center"
+                className="text-2xl sm:text-3xl font-bold text-primary uppercase text-center"
               >
                 join our discord server
               </Link>
@@ -38,7 +38,7 @@ export default function Landing() {
         <>
           <div id="modal"></div>
           <Header />
-          <div className="flex flex-1 overflow-auto ">
+          <div className="flex flex-1_ overflow-auto h-[calc(100%-7.2rem)] sm:h-auto p-2">
             <div className="fixed hidden sm:inline-block left-0 bottom-28 items-center_ justify-center items-center hover:-translate-y-1 bg-gray-800 transition-all duration-100 px-2 pt-2 rounded-sm">
               <ChatToggle icon={MessageChatCircleIcon} />
             </div>

@@ -11,7 +11,6 @@ import { XClose } from "@/assets/svgs";
 import ChatMessages from "./ChatMessages.tsx";
 import ChatFooter from "./ChatFooter.tsx";
 
-
 export default function DashboardSideNavigation() {
   const [smallScreen, setSmallScreen] = useState(false);
 
@@ -54,7 +53,7 @@ export default function DashboardSideNavigation() {
         show={showNav}
         handleShowOverlay={() => () => toggleNav(false)}
         disableOnClick
-        className="z-[998]"
+        className="z-[20]"
       />
     );
   };
@@ -75,7 +74,7 @@ export default function DashboardSideNavigation() {
           return (
             <div
               className={clsx(
-                "w-full sm:w-[320px] fixed_ md:static_ z-[998] bg-[#15171e] h-full lg:block_ md:translate-x-0_ transition-all duration-150 flex flex-col overflow-y-auto_ border-r-2 border-gray-700/50",
+                "w-full sm:w-[320px] fixed_ md:static_ z-[30] bg-[#15171e] h-full lg:block_ md:translate-x-0_ transition-all duration-150 flex flex-col overflow-y-auto_ border-r-2 border-gray-700/50",
                 hideNav && "-translate-x-full fixed"
               )}
             >

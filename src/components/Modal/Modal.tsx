@@ -21,6 +21,7 @@ export default function Modal() {
     disableOnClick,
     type,
     children,
+    className,
   } = useAppSelector((state) => state.modal);
 
   const dispatch = useAppDispatch();
@@ -60,9 +61,10 @@ export default function Modal() {
                     // <div className="relative w-full bg-red-400 h-full sm:w-fit sm:h-fit">
                     <motion.div
                       ref={modalRef as Ref<HTMLDivElement>}
-                      className={
-                        "bg-body fixed rounded-xl w-full sm:w-96 z-[999] h-3/5 sm:h-auto bottom-0 sm:bottom-auto sm:-translate-x-1/2 sm:left-1/2 sm:-translate-y-1/2 sm:top-1/2 overflow-clip before:w-16 before:h-1 before:rounded-3xl before:bg-gray-200 before:mx-auto before:z-[1000] before:absolute before:inset-0 before:mt-3 md:before:hidden"
-                      }
+                      className={clsx(
+                        "bg-body fixed rounded w-full sm:w-fit z-[999] h-3/5 sm:h-auto bottom-0 sm:bottom-auto sm:-translate-x-1/2 sm:left-1/2 sm:-translate-y-1/2 sm:top-1/2 overflow-clip before:w-16 before:h-1 before:rounded-3xl before:bg-gray-200 before:mx-auto before:z-[1000] before:absolute before:inset-0 before:mt-3 md:before:hidden",
+                        className
+                      )}
                       transition={{ type: "keyframes", duration: 0.2 }}
                       initial={{
                         y: matches.small ? "100%" : 50,
@@ -99,7 +101,7 @@ export default function Modal() {
                         }
                       }}
                     >
-                      <div className="absolute z-[999] cursor-pointer right-1 top-1">
+                      <div className="absolute z-[999] cursor-pointer right-3 top-3">
                         <button
                           onClick={() => {
                             cancel();
@@ -108,7 +110,7 @@ export default function Modal() {
                           <XClose className="!stroke-gray-500 w-6 h-6" />
                         </button>
                       </div>
-                      <div className="p-2 h-full pt-6 pb-4 flex flex-col">
+                      <div className="p-2 h-full pt-6 sm:pt-0 pb-4 flex flex-col">
                         {children ? (
                           children
                         ) : (

@@ -12,21 +12,13 @@ export default function Root() {
   const authModal = searchParams.get("modal");
 
   useEffect(() => {
-    if (authModal === "sign-in") {
+    if (authModal === "sign-in" || authModal === "register") {
       dispatch(
         triggerModal({
-          children: <AuthForm route="sign-in" />,
+          children: <AuthForm route={authModal} />,
           clickToDisable: true,
           show: true,
-          cancel: () => setSearchParams({ modal: "false" }),
-        })
-      );
-    } else if (authModal === "register") {
-      dispatch(
-        triggerModal({
-          children: <AuthForm route="register" />,
-          clickToDisable: true,
-          show: true,
+          className: "",
           cancel: () => setSearchParams({ modal: "false" }),
         })
       );

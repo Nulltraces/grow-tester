@@ -14,12 +14,12 @@ export default function Input(props: InputProps) {
       return (
         <div
           className={clsx(
-            "flex justify-between bg-dark-700 items-center text-[#B3B3B3] max-w-[382px]_ lg:max-w-[420px]_ min-w-[342px] lg:min-w-[420px] rounded outline-none font-normal md:tracking-[0.32px] text-base gap-3 relative",
+            "flex justify-between bg-dark-700 items-center text-[#B3B3B3] max-w-[382px]_ lg:max-w-[420px]_ rounded outline-none font-normal md:tracking-[0.32px] text-base gap-3 relative",
             className
           )}
         >
           <input
-            className="flex-1 p-3 rounded bg-dark-700 outline-none focus:outline-primary focus:outline-1"
+            className="flex-1 p-2 px-3 rounded bg-dark-700 outline-none focus:outline-primary focus:outline-1"
             type={passwordVisibility ? "text" : type}
             {...prop}
           />
@@ -47,7 +47,7 @@ export default function Input(props: InputProps) {
       return (
         <input
           className={clsx(
-            "block max-w-[382px]_ lg:max-w-[420px]_ min-w-[342px] lg:min-w-[420px] p-3 rounded text-[#B3B3B3] bg-dark-700 outline-none font-normal md:tracking-[0.32px] text-base",
+            "block max-w-[382px]_ lg:max-w-[420px]_ p-2 px-3 rounded text-[#B3B3B3] bg-dark-700 outline-none font-normal md:tracking-[0.32px] text-base",
             className
           )}
           {...prop}
@@ -58,7 +58,7 @@ export default function Input(props: InputProps) {
       return (
         <input
           className={clsx(
-            "block max-w-[382px]_ lg:max-w-[420px]_ min-w-[342px] lg:min-w-[420px] p-3  rounded text-[#B3B3B3] bg-dark-700 outline-none font-normal md:tracking-[0.32px] text-base focus:outline-primary focus:outline-1",
+            "block max-w-[382px]_ lg:max-w-[420px]_ p-2 px-3  rounded text-[#B3B3B3] bg-dark-700 outline-none font-normal md:tracking-[0.32px] text-base focus:outline-primary focus:outline-1",
             className
           )}
           {...prop}

@@ -26,6 +26,7 @@ export default function ChatHeader() {
         </span>
       </div>
 
+      {/* NOTE: Male this a reusable component */}
       <div className="w-full relative after:bg-primary after:rounded-sm overflow-clip after:absolute after:left-0 after:w-1/2 after:h-full  bg-gray-800/60 h-2 rounded-sm" />
 
       <div>

@@ -10,6 +10,7 @@ type ModalState = {
   actionCancel?(): void;
   disableOnClick: boolean;
   children?: React.ReactNode | JSX.Element;
+  className?: string;
   type?: "info" | "error" | "warning" | "success";
 };
 
@@ -21,6 +22,7 @@ type TriggerModal = {
   show?: boolean;
   type?: ModalState["type"];
   children?: ModalState["children"];
+  className?: string;
 };
 
 type TriggerNotification = {

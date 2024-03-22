@@ -138,17 +138,17 @@ export default function AuthForm({ route = "sign-in" }: Props) {
   return (
     <div
       className={clsx(
-        "w-full lg:h-screen flex flex-col lg:grid lg:grid-cols-5 justify-center items-center bg-dark-850"
+        "w-full justify-center overflow-y-auto overscroll-contain items-center sm:w-[60vw] md:w-[30vw]"
       )}
     >
-      <div className="h-full w-full flex flex-col lg:pt-20 lg:pb-8 lg:col-span-2 items-center justify-center overflow-auto">
-        <div className="flex w-[96%] lg:w-auto_ lg:px-0 mx-auto flex-col items-start">
+      <div className="w-full flex flex-col items-center justify-center">
+        <div className="flex w-[96%] mx-auto flex-col items-start">
           <h2 className="font-matter leading-normal font-semibold text-center md:-tracking-[0.96px] -tracking-[0.64px] text-xl text-gray-400 flex gap-1.5 items-center">
             {route === "register" ? "register" : "sign in"}
           </h2>
 
           <form
-            className="flex flex-col lg:py-0 w-full items-start md:items-center"
+            className="flex flex-col w-full items-start md:items-center"
             onSubmit={handleSubmit}
           >
             {/* SIGN UP */}
@@ -156,8 +156,8 @@ export default function AuthForm({ route = "sign-in" }: Props) {
               <>
                 <fieldset className="gap-1 mt-3 flex flex-col w-full">
                   <div className="flex flex-row justify-between w-full">
-                    <label className="text-white font-aeonik -tracking-[0.28px] font-normal text-[14px]">
-                      First Name
+                    <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
+                      Username
                     </label>
                   </div>
                   <Input
@@ -165,40 +165,13 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                     name="firstName"
                     value={formData?.firstName}
                     onChange={formDataHandler}
-                    placeholder="Enter your First Name"
+                    // placeholder="Enter your First Name"
                   />
                 </fieldset>
+
                 <fieldset className="gap-1 mt-3 flex flex-col w-full">
                   <div className="flex flex-row justify-between w-full">
-                    <label className="text-white font-aeonik -tracking-[0.28px] font-normal text-[14px]">
-                      Last Name
-                    </label>
-                  </div>
-                  <Input
-                    type="text"
-                    name="lastName"
-                    value={formData?.lastName}
-                    onChange={formDataHandler}
-                    placeholder="Enter your Last Name"
-                  />
-                </fieldset>
-                <fieldset className="gap-1 mt-3 flex flex-col w-full">
-                  <div className="flex flex-row justify-between w-full">
-                    <label className="text-white font-aeonik -tracking-[0.28px] font-normal text-[14px]">
-                      Email
-                    </label>
-                  </div>
-                  <Input
-                    type="email"
-                    name="email"
-                    value={formData?.email}
-                    onChange={formDataHandler}
-                    placeholder="Enter your Email Address"
-                  />
-                </fieldset>
-                <fieldset className="gap-1 mt-3 flex flex-col w-full">
-                  <div className="flex flex-row justify-between w-full">
-                    <label className="text-white font-aeonik -tracking-[0.28px] font-normal text-[14px]">
+                    <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
                       Password
                     </label>
                   </div>
@@ -208,6 +181,36 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                     value={formData?.password}
                     onChange={formDataHandler}
                     placeholder="Enter your Password"
+                  />
+                </fieldset>
+
+                <fieldset className="gap-1 mt-3 flex flex-col w-full">
+                  <div className="flex flex-row justify-between w-full">
+                    <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
+                      Email
+                    </label>
+                  </div>
+                  <Input
+                    type="email"
+                    name="email"
+                    value={formData?.email}
+                    onChange={formDataHandler}
+                    // placeholder="Enter your Email Address"
+                  />
+                </fieldset>
+
+                <fieldset className="gap-1 mt-3 flex flex-col w-full">
+                  <div className="flex flex-row justify-between w-full">
+                    <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
+                      Affiliate Code
+                    </label>
+                  </div>
+                  <Input
+                    type="text"
+                    name="firstName"
+                    value={formData?.firstName}
+                    onChange={formDataHandler}
+                    // placeholder="Enter your First Name"
                   />
                 </fieldset>
                 <Button
@@ -225,7 +228,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
               <>
                 <fieldset className="gap-1 mt-3 flex flex-col w-full">
                   <div className="flex flex-row justify-between">
-                    <label className="text-white font-aeonik -tracking-[0.28px] font-normal text-[14px]">
+                    <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
                       Email Address
                     </label>
                   </div>
@@ -239,7 +242,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                 </fieldset>
                 <fieldset className="gap-1 mt-3 flex flex-col w-full">
                   <div className="flex flex-row justify-between w-full">
-                    <label className="text-white font-aeonik -tracking-[0.28px] font-normal text-[14px]">
+                    <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
                       Password
                     </label>
                   </div>
@@ -264,7 +267,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
             )}
           </form>
 
-          <p className="text-gray-500 w-fit mx-auto mt-3">
+          <p className="text-gray-500 w-fit mx-auto mt-3 mb-16 sm:mb-0">
             {route === "sign-in"
               ? "Don't have an account?"
               : "Already have an account?"}{" "}

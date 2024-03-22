@@ -13,7 +13,7 @@ export default function Overlay({
 }: OverlayProps) {
   const overlayStyles = `fixed h-screen w-screen bg-black/60 z-20tt ${
     disableOnClick && "cursor-pointer"
-  } top-0 left-0 flex items-center justify-center backdrop-blur-sm` as React.HTMLAttributes<HTMLDivElement>["className"];
+  } top-0 left-0 flex items-center justify-center backdrop-blur-sm_` as React.HTMLAttributes<HTMLDivElement>["className"];
 
   useEffect(() => {
     show &&

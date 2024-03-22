@@ -22,7 +22,7 @@ const modalSlice = createSlice({
         clickToDisable,
         show,
         type = "info",
-
+        className,
         children,
       } = action.payload;
 
@@ -41,6 +41,7 @@ const modalSlice = createSlice({
           typeof confirm === "function" ? confirm : state.actionConfirm,
         children,
         modalMessage: message,
+        className,
         type,
       };
     },

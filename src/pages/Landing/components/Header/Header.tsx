@@ -8,7 +8,7 @@ import {
   TrophyIcon,
 } from "@/assets/svgs";
 import { AnimateInOut, AuthForm, Button, Overlay } from "@/components";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Disclosure, Menu } from "@headlessui/react";
 import clsx from "clsx";
 import { useSearchParams } from "react-router-dom";
 import { Games } from "..";
@@ -51,7 +51,7 @@ export default function Header() {
   }, [authModal, dispatch, setSearchParams]);
 
   return (
-    <header className="shrink-0 relative md:static h-16 flex py-2.5 w-full fixed_ !z-[10000000] top-0 left-0 min-h-[var(--header-height)] max-h-[var(--header-height)] bg-dark-850 shadow-md whitespace-nowrap">
+    <header className="shrink-0 relative md:static h-16 flex py-2.5 w-full fixed_ !z-40 top-0 left-0 min-h-[var(--header-height)] max-h-[var(--header-height)] bg-dark-850 shadow-md whitespace-nowrap">
       <div className="mx-auto w-[97%] flex items-center h-full">
         <div className="flex items-center w-full gap-4">
           <h1 className="">
@@ -219,6 +219,9 @@ function HeaderItemsSM() {
       </div>
     );
   };
+
+  // const HeaderMenu = ({}) =>
+
   return (
     <div className={clsx("w-full h-full hidden md:flex gap-2 ml-4")}>
       <Menu>
@@ -252,10 +255,10 @@ function HeaderItemsSM() {
           </>
         )}
       </Menu>
-      <Disclosure>
+      <Menu>
         {({ open }) => (
           <>
-            <Disclosure.Button className="flex flex-row items-center w-fit gap-1 justify-between">
+            <Menu.Button className="flex flex-row items-center w-fit gap-1 justify-between">
               <GiftBoxIcon className="!fill-white !stroke-white" />
               {/* <h5 className="md:hidden text-primary !font-bold uppercase">
                 rewards
@@ -265,22 +268,33 @@ function HeaderItemsSM() {
                   open ? "rotate-180" : "rotate-0"
                 } transform transition-transform duration-200 !stroke-white`}
               />
-            </Disclosure.Button>
+            </Menu.Button>
 
-            <Transition
+            <AnimateInOut
               show={open}
-              enter="transition-opacity duration-75"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity duration-150"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
+              initial={{ translateY: -400, opacity: 0 }}
+              exit={{ translateY: -400, opacity: 0 }}
+              animate={{ translateY: 0, opacity: 1 }}
+              transition={{ type: "keyframes" }}
+              className="absolute top-16 w-full left-0 h-full_ bg-dark-800 rounded-xl flex items-center justify-center p-2"
             >
-              <Disclosure.Panel className="cursor-pointer flex flex-col w-full pt-[5px]"></Disclosure.Panel>
-            </Transition>
+              <div className="h-[96%] w-[99%] overflow-auto pr-2">
+                <div className="flex items-center justify-center gap-4">
+                  <div className="rounded-md w-60 overflow-clip">
+                    {/* <p>{game.i}</p> */}
+                    <img src={`/images/landing/games/slots.webp`} />
+                  </div>
+                  <div className="rounded-md w-60 overflow-clip">
+                    {/* <p>{game.i}</p> */}
+                    <img src={`/images/landing/games/slots.webp`} />
+                  </div>
+                </div>
+              </div>
+              {/* </div> */}
+            </AnimateInOut>
           </>
         )}
-      </Disclosure>
+      </Menu>
       <div className="flex items-center gap-4">
         <HeaderLinkItem icon={CashStackIcon} text="affiliates" />
         <HeaderLinkItem icon={TrophyIcon} text="leaderboard" />

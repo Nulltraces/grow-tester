@@ -3,8 +3,8 @@ import { Button } from "@/components";
 
 export default function ChatFooter() {
   return (
-    <div className="shrink-0 bg-dark-800  py-2">
-      <div className="w-[94%] mx-auto space-y-2">
+    <footer className="shrink-0 bg-dark-800  py-2">
+      <form className="w-[94%] mx-auto space-y-2">
         <div className="outline-gray-600 outline outline-2 bg-dark-800 rounded-sm h-9">
           <input
             type="text"
@@ -20,13 +20,15 @@ export default function ChatFooter() {
           </div>
           <div className="flex ml-auto items-center gap-2">
             <p className="text-sm font-semibold">150</p>
-            <button className="p-2 bg-gray-700 px-4 rounded-sm">
+            <button type="button" className="p-2 bg-gray-700 px-4 rounded-sm">
               <ScrollIcon />
             </button>
-            <Button className="!py-1">Send</Button>
+            <Button type="submit" className="!py-1">
+              Send
+            </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </form>
+    </footer>
   );
 }

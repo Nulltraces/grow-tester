@@ -129,7 +129,7 @@ function DataRow({
             <td
               key={i}
               className={clsx(
-                "whitespace-nowrap bg-dark-800 text-center overflow-ellipsis py-2",
+                "whitespace-nowrap bg-dark-800 text-center overflow-ellipsis py-2 font-bold",
                 title === "invoice" && i === 1 ? "text-primary" : "",
                 i === 0 && "rounded-l-xl",
                 i === data.length - 1 && "rounded-r-xl"

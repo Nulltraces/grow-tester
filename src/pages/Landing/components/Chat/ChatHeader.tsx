@@ -3,7 +3,7 @@ import YellowLockIcon from "@/assets/icons/yellow-lock.webp";
 
 export default function ChatHeader() {
   return (
-    <header className="shrink-0 space-y-2 w-[94%] mx-auto">
+    <header className="shrink-0 space-y-2 w-[94%] mx-auto pb-3 pt-1">
       <div className="flex">
         <div className="flex items-center w-full gap-2">
           <h2 className="text-lg font-bold uppercase flex items-center gap-1.5 text-gray-400">

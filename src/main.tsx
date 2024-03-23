@@ -1,9 +1,10 @@
 import "./index.css";
 
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { Landing, Root } from "./pages";
 import { Providers } from "./store/provider";
+import { games } from "./data/games";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,26 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Landing />,
+      },
+      {
+        path: "/games",
+        element: (
+          <>
+            <h1 className="text-center text-5xl font-extrabold text-gray-400">
+              Games List
+            </h1>
+            <Outlet />
+          </>
+        ),
+
+        children: games.map((game) => ({
+          path: game.title,
+          element: (
+            <h1 className="text-center text-5xl font-extrabold text-gray-400">
+              Game: {game.title}
+            </h1>
+          ),
+        })),
       },
       {
         path: "about",

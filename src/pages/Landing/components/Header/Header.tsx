@@ -18,6 +18,37 @@ import { closeModal, triggerModal } from "@/store/slices/modal";
 import { useAppDispatch } from "@/hooks/store";
 import { useEffect } from "react";
 import { lettersAndNumbersOnly } from "@/utils/strings";
+import store from "@/store";
+import Leaderboard from "./Leaderboard";
+import Affiliates from "./Affiliates";
+import Race from "./Race";
+
+const toggleHeaderModal = {
+  leaderboard() {
+    store.dispatch(
+      triggerModal({
+        children: <Leaderboard />,
+        show: true,
+      })
+    );
+  },
+  affiliates() {
+    store.dispatch(
+      triggerModal({
+        children: <Affiliates />,
+        show: true,
+      })
+    );
+  },
+  race() {
+    store.dispatch(
+      triggerModal({
+        children: <Race />,
+        show: true,
+      })
+    );
+  },
+};
 
 export default function Header() {
   const dispatch = useAppDispatch();
@@ -87,17 +118,19 @@ function HeaderItems() {
 
   const HeaderLinkItem = ({
     icon,
+    onClick,
     text,
   }: {
     icon: React.FC<React.SVGProps<SVGElement>>;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
     text: string;
   }) => {
     const Icon = icon;
     return (
-      <div className="flex gap-1">
+      <button onClick={(e) => onClick?.(e)} className="flex gap-1">
         <Icon />
         <p className="uppercase text-white text-sm font-bold">{text}</p>
-      </div>
+      </button>
     );
   };
   return (
@@ -190,9 +223,21 @@ function HeaderItems() {
             </Disclosure>
           </div>
           <div className="pt-4 space-y-4 bg-dark-850 h-full z-20">
-            <HeaderLinkItem icon={CashStackIcon} text="affiliates" />
-            <HeaderLinkItem icon={TrophyIcon} text="leaderboard" />
-            <HeaderLinkItem icon={StopwatchIcon} text="race" />
+            <HeaderLinkItem
+              icon={CashStackIcon}
+              text="affiliates"
+              onClick={() => setSearchParams({ modal: "sign-in" })}
+            />
+            <HeaderLinkItem
+              icon={TrophyIcon}
+              text="leaderboard"
+              onClick={() => toggleHeaderModal.leaderboard()}
+            />
+            <HeaderLinkItem
+              icon={StopwatchIcon}
+              text="race"
+              onClick={() => toggleHeaderModal.race()}
+            />
             <HeaderLinkItem icon={DiscordIcon} text="discord" />
           </div>
         </div>
@@ -204,26 +249,30 @@ function HeaderItems() {
 function HeaderItemsSM() {
   const HeaderLinkItem = ({
     icon,
+    onClick,
     text,
   }: {
     icon: React.FC<React.SVGProps<SVGElement>>;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
     text: string;
   }) => {
     const Icon = icon;
     return (
-      <div className="flex gap-1">
+      <button onClick={(e) => onClick?.(e)} className="flex gap-1">
         <Icon />
         <p className="uppercase text-white text-sm font-bold md:hidden">
           {text}
         </p>
-      </div>
+      </button>
     );
   };
+
+  const setSearchParams = useSearchParams()[1];
 
   // const HeaderMenu = ({}) =>
 
   return (
-    <div className={clsx("w-full h-full hidden md:flex gap-2 ml-4")}>
+    <div className={clsx("w-full h-full hidden md:flex gap-4 ml-4")}>
       <Menu>
         {({ open }) => (
           <>
@@ -282,11 +331,11 @@ function HeaderItemsSM() {
                 <div className="flex items-center justify-center gap-4">
                   <div className="rounded-md w-60 overflow-clip">
                     {/* <p>{game.i}</p> */}
-                    <img src={`/images/landing/games/slots.webp`} />
+                    <img src={`/images/landing/rewards/rakeback.webp`} />
                   </div>
                   <div className="rounded-md w-60 overflow-clip">
                     {/* <p>{game.i}</p> */}
-                    <img src={`/images/landing/games/slots.webp`} />
+                    <img src={`/images/landing/rewards/promo.webp`} />
                   </div>
                 </div>
               </div>
@@ -295,10 +344,24 @@ function HeaderItemsSM() {
           </>
         )}
       </Menu>
-      <div className="flex items-center gap-4">
-        <HeaderLinkItem icon={CashStackIcon} text="affiliates" />
-        <HeaderLinkItem icon={TrophyIcon} text="leaderboard" />
-        <HeaderLinkItem icon={StopwatchIcon} text="race" />
+      <div className="flex items-center gap-5">
+        <HeaderLinkItem
+          icon={CashStackIcon}
+          text="affiliates"
+          onClick={() =>
+            setSearchParams((prev) => ({ ...prev, modal: "sign-in" }))
+          }
+        />
+        <HeaderLinkItem
+          icon={TrophyIcon}
+          text="leaderboard"
+          onClick={() => toggleHeaderModal.leaderboard()}
+        />
+        <HeaderLinkItem
+          icon={StopwatchIcon}
+          text="race"
+          onClick={() => toggleHeaderModal.race()}
+        />
         <HeaderLinkItem icon={DiscordIcon} text="discord" />
       </div>
     </div>

@@ -10,13 +10,21 @@ export default function Table<TableValues, TableValue>({
   fullData = [],
   title,
   moreOptions,
+  itemBuilder,
 }: {
   head: TableValue[];
-  body: string[][][]; // NOTE:Nested array in body should have exactly the same length as head array
+  body: unknown[][][]; // NOTE:Nested array in body should have exactly the same length as head array
   fullData?: TableValues[];
   title?: string;
   onDataClick?(data: any): any;
   moreOptions?: React.ComponentProps<typeof More>["options"];
+  itemBuilder?({
+    key,
+    item,
+  }: {
+    key: string | number;
+    item: any;
+  }): React.ReactNode;
 }) {
   // const [checkAll, setCheckAll] = useState(false);
 
@@ -42,7 +50,7 @@ export default function Table<TableValues, TableValue>({
 
   return (
     <div className="w-full overflow-auto">
-      <table className="w-full overflow-auto border-separate border-spacing-y-1 clients-table">
+      <table className="w-full overflow-auto border-separate border-spacing-y-1 clients-table table-fixed_">
         <thead className="@sticky bg-dark-800 text-gray-500 text-sm z-10 h-10 top-[2px] text-body-text">
           <tr className="w-full">
             {/* <th className="rounded-l-lg">
@@ -72,6 +80,7 @@ export default function Table<TableValues, TableValue>({
               onClick={onDataClick}
               key={i}
               data={data}
+              itemBuilder={itemBuilder}
               // checked={checkAll}
             />
           ))}
@@ -87,12 +96,15 @@ function DataRow({
   title,
   moreOptions,
   // checked = false,
+  itemBuilder,
+
   blacklistedIndexes,
 }: {
   data: any[];
   onClick?(data: any): any;
   title?: string;
   moreOptions?: React.ComponentProps<typeof More>["options"];
+  itemBuilder?: React.ComponentProps<typeof Table>["itemBuilder"];
   // checked: boolean;
   blacklistedIndexes: number[];
 }) {
@@ -113,43 +125,37 @@ function DataRow({
       onClick={() => onClick && onClick(data)}
       className="relative cursor-pointer hover:bg-base-black/5 outline-1"
     >
-      {/* <td className="rounded-l-lg bg-dark-800">
-        <input
-          type="checkbox"
-          checked={checked || isChecked}
-          onClick={(e) => e.stopPropagation()}
-          onChange={(e) => setIsChecked(e.target.checked)}
-        />
-      </td> */}
       {data
         .filter((_, i) => !blacklistedIndexes.includes(i))
         .map((item, i) => {
           const itemKey = item[0] as string;
           return (
-            <td
-              key={i}
-              className={clsx(
-                "whitespace-nowrap bg-dark-800 text-center overflow-ellipsis py-2 font-bold",
-                title === "invoice" && i === 1 ? "text-primary" : "",
-                i === 0 && "rounded-l-xl",
-                i === data.length - 1 && "rounded-r-xl"
-              )}
-            >
-              {itemKey.toLocaleLowerCase() === "bet" ||
-              itemKey.toLocaleLowerCase() === "profit" ? (
-                <div className="flex items-center gap-1 w-fit mx-auto">
-                  {item[1]}
-                  <img src={SilverLockIcon} className="w-4 " />
-                </div>
-              ) : (
-                item[1]
-              )}
-              {/* {typeof item === "number" && i
+            itemBuilder?.({ key: i, item }) || (
+              <td
+                key={i}
+                className={clsx(
+                  "whitespace-nowrap bg-dark-800 text-center overflow-ellipsis py-2 font-bold",
+                  title === "invoice" && i === 1 ? "text-primary" : "",
+                  i === 0 && "rounded-l-xl",
+                  i === data.length - 1 && "rounded-r-xl"
+                )}
+              >
+                {itemKey.toLocaleLowerCase() === "bet" ||
+                itemKey.toLocaleLowerCase() === "profit" ? (
+                  <div className="flex items-center gap-1 w-fit mx-auto">
+                    {item[1]}
+                    <img src={SilverLockIcon} className="w-4 " />
+                  </div>
+                ) : (
+                  item[1]
+                )}
+                {/* {typeof item === "number" && i
               ? `USD ${item.toLocaleString()}`
               : Array.isArray(item)
               ? ""
               : item && item.toString()} */}
-            </td>
+              </td>
+            )
           );
         })}
       {/* <td className="p-0 rounded-r-lg bg-dark-800">

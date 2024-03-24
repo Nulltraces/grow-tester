@@ -1,5 +1,6 @@
 import { StopwatchIcon } from "@/assets/svgs";
 import { Table } from "@/components";
+import SilverLockIcon from "@/assets/icons/silver-lock.webp";
 
 // NOTE: Remove / Move type annotations
 type TableValues = {
@@ -27,12 +28,18 @@ export default function Race() {
     }));
 
   // NOTE: Come up with better name
-  const DetailItem = ({ label, info }: { label: string; info: string }) => (
+  const DetailItem = ({
+    label,
+    info,
+  }: {
+    label: string;
+    info: string | React.ReactNode;
+  }) => (
     <div className="space-y-[2px]">
       <small className="text-sm font-semibold text-gray-400 capitalize">
         {label}
       </small>
-      <div className="border-gray-600 border-2 rounded px-3 py-2">
+      <div className="border-gray-600 border-2 text-gray-400 font-semibold rounded px-3 py-2">
         <p>{info}</p>
       </div>
     </div>
@@ -79,13 +86,29 @@ export default function Race() {
             balance at the end of the race.
           </p>
           <div className="space-y-1 w-full">
-            <DetailItem label="your position" info="0.00" />
+            <DetailItem
+              label="your position"
+              info="Start Wagering to join..."
+            />
 
             <DetailItem
               label="your current price"
-              info="Start Wagering to join"
+              info={
+                <div className="flex gap-1 items-center">
+                  <p>0.00</p>
+                  <img src={SilverLockIcon} className="w-4 aspect-square" />
+                </div>
+              }
             />
-            <DetailItem label="wagered amount" info="0.00" />
+            <DetailItem
+              label="wagered amount"
+              info={
+                <div className="flex gap-1 items-center">
+                  <p>0.00</p>
+                  <img src={SilverLockIcon} className="w-4 aspect-square" />
+                </div>
+              }
+            />
           </div>
         </div>
       </div>

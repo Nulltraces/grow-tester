@@ -5,10 +5,10 @@ import { toggleChatBar } from "@/store/slices/chatbar";
 import { useCallback, useEffect, useState } from "react";
 import { Overlay } from "@/components";
 import Media from "react-media";
-import ChatToggle from "./ChatToggle";
-import ChatHeader from "./ChatHeader";
+import ChatToggle from "./ChatToggle.tsx";
+import ChatHeader from "./ChatHeader.tsx";
 import { XClose } from "@/assets/svgs";
-import ChatMessages from "./ChatMessages.tsx";
+import ChatMessages from "./ChatMessages.tsx.tsx";
 import ChatFooter from "./ChatFooter.tsx";
 
 export default function DashboardSideNavigation() {

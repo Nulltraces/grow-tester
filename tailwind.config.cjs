@@ -5,10 +5,11 @@ module.exports = {
     extend: {
       colors: {
         "lg-heart": "rgba(254, 246, 244, 0.12)",
-        primary: "#4483eb",
+        primary: "#4483EB",
 
-        "dark-700": "#22242f",
-        "dark-800": "#1b1e27",
+        "dark-700": "#22242F",
+        "dark-750": "#1F232D",
+        "dark-800": "#1B1E27",
         "dark-850": "#171921",
         "couch-grey": "#666",
         // body: "var(--background-color)",

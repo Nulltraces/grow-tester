@@ -4,8 +4,8 @@ import { closeModal, triggerModal } from "@/store/slices/modal";
 import { useAppDispatch } from "@/hooks/store";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BottomNav, Chat, Header } from "./Landing/components";
-import ChatToggle from "./Landing/components/Chat/ChatToggle";
+import { BottomNav, Chat, Header } from "./landing/components";
+import ChatToggle from "./landing/components/Chat/ChatToggle";
 import { MessageChatCircleIcon } from "@/assets/svgs";
 
 export default function Root() {

@@ -1,2 +1,2 @@
-export { default as Landing } from "./Landing";
+export { default as Landing } from "./landing";
 export { default as Root } from "./Root";

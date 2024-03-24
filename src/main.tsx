@@ -17,22 +17,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/games",
-        element: (
-          <>
-            <h1 className="text-center text-5xl font-extrabold text-gray-400">
-              Games List
-            </h1>
-            <Outlet />
-          </>
-        ),
+        element: <Outlet />,
 
         children: games.map((game) => ({
           path: game.title,
-          element: (
-            <h1 className="text-center text-5xl font-extrabold text-gray-400">
-              Game: {game.title}
-            </h1>
-          ),
+          element: game.element,
         })),
       },
       {

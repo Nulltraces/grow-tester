@@ -6,22 +6,24 @@ import {
   GiftBoxIcon,
   StopwatchIcon,
   TrophyIcon,
+  UserIcon,
 } from "@/assets/svgs";
-import { AnimateInOut, AuthForm, Button, Overlay } from "@/components";
+import { AnimateInOut, Button, Overlay, Wallet } from "@/components";
 import { Disclosure, Menu } from "@headlessui/react";
 import clsx from "clsx";
 import { useSearchParams } from "react-router-dom";
 import { Games } from "..";
 import MenuButton from "../MenuButton";
 import { games } from "@/data/games";
-import { closeModal, triggerModal } from "@/store/slices/modal";
-import { useAppDispatch } from "@/hooks/store";
-import { useEffect } from "react";
+import { triggerModal } from "@/store/slices/modal";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { lettersAndNumbersOnly } from "@/utils/strings";
 import store from "@/store";
 import Leaderboard from "./Leaderboard";
 import Affiliates from "./Affiliates";
 import Race from "./Race";
+import "./header.css";
+import { SilverLockIcon } from "@/assets/icons";
 
 const toggleHeaderModal = {
   leaderboard() {
@@ -52,34 +54,33 @@ const toggleHeaderModal = {
 
 export default function Header() {
   const dispatch = useAppDispatch();
+  const auth = useAppSelector((state) => state.auth);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [_, setSearchParams] = useSearchParams();
+  // const [user, setUser] = useState<User | null>(null);
 
-  const authModal = searchParams.get("modal");
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const controler = new AbortController();
 
-  useEffect(() => {
-    if (authModal === "sign-in") {
-      dispatch(
-        triggerModal({
-          children: <AuthForm route="sign-in" />,
-          clickToDisable: true,
-          show: true,
-          cancel: () => setSearchParams({ modal: "false" }),
-        })
-      );
-    } else if (authModal === "register") {
-      dispatch(
-        triggerModal({
-          children: <AuthForm route="register" />,
-          clickToDisable: true,
-          show: true,
-          cancel: () => setSearchParams({ modal: "false" }),
-        })
-      );
-    } else {
-      dispatch(closeModal());
-    }
-  }, [authModal, dispatch, setSearchParams]);
+  //   (async () => {
+  //     try {
+  //       const response = await api.get("/api/user", {
+  //         signal: controler.signal,
+  //       });
+
+  //       console.log(response.data);
+  //       isMounted && setUser(response.data);
+  //     } catch (error) {
+  //       console.error("GetAuth: ", { error });
+  //     }
+  //   })();
+
+  //   return () => {
+  //     isMounted = false;
+  //     controler.abort();
+  //   };
+  // }, []);
 
   return (
     <header className="shrink-0 relative md:static h-16 flex py-2.5 w-full fixed_ !z-40 top-0 left-0 min-h-[var(--header-height)] max-h-[var(--header-height)] bg-dark-850 shadow-md whitespace-nowrap">
@@ -92,20 +93,69 @@ export default function Header() {
           {/* <div className="flex items-center gap-4"></div> */}
           <HeaderItems />
           <HeaderItemsSM />
-          <div className="ml-auto flex items-center gap-4">
-            <button
-              onClick={() => setSearchParams({ modal: "sign-in" })}
-              className="text-white text-sm font-semibold py-2 px-4"
-            >
-              Sign In
-            </button>
-            <Button onClick={() => setSearchParams({ modal: "register" })}>
-              Register
-            </Button>
-            <div className="hidden sm:block md:hidden">
-              <MenuButton />
+          {auth.isAuthenticated ? (
+            <div className="flex ml-auto items-center gap-2 text-sm">
+              <div className="bg-dark-750 rounded-l font-semibold pl-2 flex items-center gap-4 h-full max-md:absolute max-md:left-1/2 max-md:-translate-x-1/2  max-h-10">
+                <div className="relative flex items-center gap-1.5 px-0.5 cursor-pointer hover:opacity-75 transition-all text-sm">
+                  <img
+                    src={SilverLockIcon}
+                    width="20"
+                    height="20"
+                    className="sc-x7t9ms-0 dnNpLQ"
+                  />
+                  <span className="">0.00</span>
+                </div>
+                <Button
+                  className="text-sm rounded-sm m-0 h-full !rounded-l-none !p-0 lg:!py-2 !rounded-r w-[40px]"
+                  onClick={() =>
+                    dispatch(triggerModal({ children: <Wallet />, show: true }))
+                  }
+                >
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 512 512"
+                    height="14"
+                    width="14"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M461.2 128H80c-8.84 0-16-7.16-16-16s7.16-16 16-16h384c8.84 0 16-7.16 16-16 0-26.51-21.49-48-48-48H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h397.2c28.02 0 50.8-21.53 50.8-48V176c0-26.47-22.78-48-50.8-48zM416 336c-17.67 0-32-14.33-32-32s14.33-32 32-32 32 14.33 32 32-14.33 32-32 32z"></path>
+                  </svg>
+                </Button>
+              </div>
+              <div className="!cursor-pointer bg-dark-750 h-full flex items-center gap-1.5 px-2 rounded font-semibold text-sm hover:opacity-75 transition-all">
+                <figure className="sc-1nayyv1-1 avatar cursor-pointer w-8 rounded-full overflow-clip">
+                  {auth?.user?.photo ? (
+                    <img
+                      draggable="false"
+                      src={auth.user.photo}
+                      alt="Picture"
+                      className="sc-1nayyv1-0 kedPqA"
+                    />
+                  ) : (
+                    <UserIcon className="w-full aspect-square p-2_s !stroke-white" />
+                  )}
+                </figure>
+                <span className="max-sm:hidden">{auth.user?.username}</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="ml-auto flex items-center gap-4">
+              <button
+                onClick={() => setSearchParams({ modal: "sign-in" })}
+                className="text-white text-sm font-semibold py-2 px-4"
+              >
+                Sign In
+              </button>
+              <Button onClick={() => setSearchParams({ modal: "register" })}>
+                Register
+              </Button>
+              <div className="hidden sm:block md:hidden">
+                <MenuButton />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

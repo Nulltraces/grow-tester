@@ -10,6 +10,7 @@ import ChatHeader from "./ChatHeader.tsx";
 import { XClose } from "@/assets/svgs";
 import ChatMessages from "./ChatMessages.tsx.tsx";
 import ChatFooter from "./ChatFooter.tsx";
+import socket from "@/utils/constants.ts";
 
 export default function DashboardSideNavigation() {
   const [smallScreen, setSmallScreen] = useState(false);
@@ -45,6 +46,19 @@ export default function DashboardSideNavigation() {
     // if(currentUser == null){
     //   location.href ='/signin'
     // }
+  }, []);
+
+  useEffect(() => {
+    console.log("JOIN_CHAT");
+    socket.emit("join_chat", "global", socket.id);
+
+    socket.on("room_joined", (data) => {
+      console.log("ROOM_JOINED", data);
+    });
+
+    // return () => {
+    //   socket.off("join_chat");
+    // };
   }, []);
 
   const NavOverlay = () => {

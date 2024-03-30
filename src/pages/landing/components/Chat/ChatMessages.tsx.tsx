@@ -1,10 +1,14 @@
+import axiosInstance from "@/api/axios";
 import { CurrencyNote, MenuHorizontalDotsIcon, UserIcon } from "@/assets/svgs";
 import User1 from "@/assets/users/user-1.png";
 import { AnimateInOut, UserProfile } from "@/components";
 import store from "@/store";
 import { triggerModal } from "@/store/slices/modal";
+import socket from "@/utils/constants";
 import { Menu } from "@headlessui/react";
+import { AxiosResponse } from "axios";
 import clsx from "clsx";
+import { useEffect, useState } from "react";
 
 type MessageType = {
   owner: {
@@ -26,7 +30,7 @@ const viewUserProfile = (uid: string) => {
   );
 };
 
-const messages: MessageType[] = Array(15)
+const messages_: MessageType[] = Array(15)
   .fill(0)
   .map(() => ({
     owner: {
@@ -39,7 +43,34 @@ const messages: MessageType[] = Array(15)
     date: new Date(),
   }));
 
+console.log(messages_);
+
 export default function ChatMessages() {
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const getMessages = async () => {
+    try {
+      const response: AxiosResponse<{ messages: Message[] }> =
+        await axiosInstance.get("/api/chat/messages?room=global");
+      const prevMessages = response.data.messages;
+      setMessages(prevMessages);
+    } catch (error) {
+      console.error("getMessages", { error });
+    }
+  };
+
+  useEffect(() => {
+    if (!messages.length) getMessages();
+
+    socket.on("incoming_message", (msg) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    });
+
+    return () => {
+      socket.off("incoming_message");
+    };
+  }, []);
+
   return (
     <div className="flex-1 overflow-y-auto overflow-x-clip py-3 space-y-4">
       {messages.map((message, i) => (
@@ -50,11 +81,26 @@ export default function ChatMessages() {
 }
 
 function Message(props: MessageType) {
+  useEffect(() => {
+    console.log("MESSAGE_PROPS", { props });
+  }, []);
+
+  const date = new Date(props.date);
+
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  const formattedTime = `${hours}:${minutes}`;
+
   return (
     <div className="flex gap-2 mx-auto w-[95%]">
       <div className="flex items-center">
-        <figure className="w-8 aspect-square bg-green-400 mt-3 rounded-full overflow-clip">
-          <img src={props.owner.photo} />
+        <figure className="w-8 aspect-square mt-3 rounded-full flex items-center justify-center bg-gray-600 overflow-clip">
+          {props.owner.photo ? (
+            <img src={props.owner.photo} />
+          ) : (
+            <UserIcon className="w-full aspect-square p-2_s !stroke-white" />
+          )}
         </figure>
       </div>
       <div className="-space-y-[1px]">
@@ -70,7 +116,7 @@ function Message(props: MessageType) {
             lvl{props.owner.level}
           </span>
           <span className="text-xs font-semibold text-gray-500">
-            {props.date.toLocaleTimeString()}
+            {formattedTime}
           </span>
           <MessageMenu uid={props.owner.uid} />
         </div>

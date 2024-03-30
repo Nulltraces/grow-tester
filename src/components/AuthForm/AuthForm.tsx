@@ -2,14 +2,20 @@
 
 import { Button, Input } from "@/components";
 import { clsx } from "clsx";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { type ChangeEvent, useState, type FormEvent } from "react";
+import { useSearchParams } from "react-router-dom";
+import { type ChangeEvent, useState, type FormEvent, useEffect } from "react";
+import api from "@/api/axios";
+import { AxiosResponse } from "axios";
+import { toast } from "react-toastify";
+import { useAppDispatch } from "@/hooks/store";
+import { setUser } from "@/store/slices/auth";
+import { closeModal } from "@/store/slices/modal";
 
 interface formData {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  username: string;
+  affiliateCode: string;
 }
 
 type Props = {
@@ -17,16 +23,17 @@ type Props = {
 };
 
 export default function AuthForm({ route = "sign-in" }: Props) {
+  const dispatch = useAppDispatch();
   const setSearchParams = useSearchParams()[1];
 
-  const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const [formData, setFormData] = useState<formData>({
     email: "",
     password: "",
-    firstName: "",
-    lastName: "",
+    username: "",
+    affiliateCode: "",
   });
 
   const formDataHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,15 +44,31 @@ export default function AuthForm({ route = "sign-in" }: Props) {
     }));
   };
 
-  const isDisabled =
-    (route === "sign-in" && !(formData.email && formData.password)) ||
-    (route === "register" &&
-      !(
-        formData?.email &&
-        formData?.password &&
-        formData?.firstName &&
-        formData?.lastName
-      ));
+  useEffect(() => {
+    console.log(
+      { isDisabled },
+      formData?.email,
+      formData?.password,
+      formData?.username,
+      formData?.affiliateCode
+    );
+    setIsDisabled(
+      (route === "sign-in" && !(formData.email && formData.password)) ||
+        (route === "register" &&
+          !(
+            formData?.email &&
+            formData?.password &&
+            formData?.username &&
+            formData?.affiliateCode
+          ))
+    );
+  }, [
+    formData?.email,
+    formData?.password,
+    formData?.username,
+    formData?.affiliateCode,
+    isDisabled,
+  ]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -71,55 +94,84 @@ export default function AuthForm({ route = "sign-in" }: Props) {
         //   },
         //   body: JSON.stringify({ idToken }),
         // });
-        const response = await fetch("/api/auth/sign-in", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
+        // const response = await fetch("/api/auth/sign-in", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     email: formData.email,
+        //     password: formData.password,
+        //   }),
+        // });
+
+        const response: AxiosResponse<{
+          message: string;
+          user: User;
+          token: string;
+        }> = await api.post("/api/auth/sign-in", {
+          email: formData.email,
+          password: formData.password,
         });
 
-        const resBody = await response.json();
-        console.log({ resBody });
+        const data = response.data;
 
-        const user = resBody.data;
+        console.log({ response, data });
 
-        if (!user) throw new Error(resBody.message);
+        const user = data.user;
+        // if (!user) throw new Error(data.message);
 
         // Store user details in local storage
-        localStorage.setItem("currentUser", JSON.stringify(user));
+        // localStorage.setItem("currentUser", JSON.stringify(user));
 
         // Add success message
         // alert("Login Successful");
-        console.log("User signed in:", user);
-        console.log("Success: User signed in successfully.");
-        navigate("/dashboard");
-      } else {
-        // Handle register logic
-        const response = await fetch("/api/auth/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formData?.email,
-            firstname: formData?.firstName,
-            lastname: formData?.lastName,
-          }),
+        // console.log("User signed in:", user);
+        console.log("Success: User signed in successfully.", {
+          // token_: response.data.token,
+          user,
+          token: data.user,
         });
 
-        const resBody = await response.json();
-        console.log({ resBody });
+        // navigate("/dashboard");
+        dispatch(setUser({ isAuthenticated: true, user, token: data.token }));
+        setSearchParams({
+          modal: "",
+        });
+        toast.success("signed in successfully");
+        dispatch(closeModal());
+      } else {
+        // Handle register logic
+        // const response = await fetch("/api/auth/register", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     email: formData?.email,
+        //     username: formData?.username,
+        //     affiliateCode: formData?.affiliateCode,
+        //   }),
+        // });
+        console.log("REACHED!");
+        // const resBody = await response.json();
+        const response = await api.post("/api/auth/sign-up", formData);
 
-        const user = resBody.data;
+        const data = await response.data;
+        console.log({ data });
 
-        if (!user) throw new Error(resBody.message);
+        const user = data.user;
+        console.log({ user });
+
+        if (!user) throw new Error(data.message);
+        dispatch(setUser({ isAuthenticated: true, user, token: data.token }));
 
         // alert("signup successful");
-        navigate("/signin");
+        setSearchParams({
+          modal: "",
+        });
+        toast.success("signed up successfully");
+        dispatch(closeModal());
       }
     } catch (error: any) {
       const errorM = error as Error;
@@ -129,7 +181,6 @@ export default function AuthForm({ route = "sign-in" }: Props) {
       // Display error message
       // alert(errorMessage);
       console.error("Error signing in:", error);
-      console.error("Error: Sign-in failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -138,7 +189,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
   return (
     <div
       className={clsx(
-        "w-full justify-center overflow-y-auto overscroll-contain items-center sm:w-[60vw] md:w-[30vw]"
+        "w-full justify-center overflow-y-auto overscroll-contain items-center sm:w-[60vw] lg:w-[30rem]"
       )}
     >
       <div className="w-full flex flex-col items-center justify-center">
@@ -162,8 +213,8 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                   </div>
                   <Input
                     type="text"
-                    name="firstName"
-                    value={formData?.firstName}
+                    name="username"
+                    value={formData?.username}
                     onChange={formDataHandler}
                     // placeholder="Enter your First Name"
                   />
@@ -207,19 +258,22 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                   </div>
                   <Input
                     type="text"
-                    name="firstName"
-                    value={formData?.firstName}
+                    name="affiliateCode"
+                    value={formData?.affiliateCode}
                     onChange={formDataHandler}
                     // placeholder="Enter your First Name"
                   />
                 </fieldset>
-                <Button
-                  disabled={isDisabled}
-                  loading={loading}
-                  className="capitalize mt-3 w-full"
-                >
-                  {"register"}
-                </Button>
+                <fieldset className="gap-1 mt-3 w-full">
+                  <Button
+                    type="submit"
+                    disabled={isDisabled}
+                    loading={loading}
+                    className="capitalize mt-3 w-full"
+                  >
+                    {"Register"}
+                  </Button>
+                </fieldset>
               </>
             )}
 
@@ -256,6 +310,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                 </fieldset>
                 <fieldset className="gap-1 mt-3 w-full">
                   <Button
+                    type="submit"
                     disabled={isDisabled}
                     loading={loading}
                     className="capitalize mt-3 w-full"

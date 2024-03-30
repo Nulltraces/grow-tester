@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { BottomNav, Chat, Header } from "./landing/components";
 import ChatToggle from "./landing/components/Chat/ChatToggle";
 import { MessageChatCircleIcon } from "@/assets/svgs";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Root() {
   const dispatch = useAppDispatch();
@@ -16,6 +18,7 @@ export default function Root() {
   const authModal = searchParams.get("modal");
 
   useEffect(() => {
+    // if (authModal !== "sign-in" && authModal !== "register") return;
     if (authModal === "sign-in" || authModal === "register") {
       dispatch(
         triggerModal({
@@ -26,7 +29,7 @@ export default function Root() {
           cancel: () => setSearchParams({ modal: "false" }),
         })
       );
-    } else {
+    } else if (authModal === "false") {
       dispatch(closeModal());
     }
   }, [authModal, dispatch, setSearchParams]);
@@ -43,6 +46,7 @@ export default function Root() {
 
   return (
     <>
+      <ToastContainer />
       {loading ? (
         <div className="flex flex-col h-screen gap-3_ bg-body">
           <div className="flex w-full h-full items-center justify-center">

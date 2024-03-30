@@ -1,44 +1,46 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-const TOKEN_STORAGE_KEY = "auth_token";
-
-const initialState = {
-  user: null,
-  isAuthenticated: false,
-  isLoading: false,
-  error: null,
+type AuthState = {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading?: boolean;
+  error?: string | null;
 };
 
-export const signupUser = createAsyncThunk(
-  "auth/signupUser",
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await axios.post("/auth/signup", userData);
-      return response.data;
-    } catch (error) {
-      const err = error as any;
-      console.error({ err });
-      return rejectWithValue(err.response.data);
-    }
-  }
-);
+let user: AuthState["user"] = null;
+const storedUser = localStorage.getItem("user");
+if (storedUser) user = JSON.parse(storedUser);
+const token = localStorage.getItem("token");
 
-// Define other async thunks (login, verifyEmail, requestPasswordReset, resetPassword, refreshToken)...
+console.log("STORED: ", { token, user });
+
+const initialState: AuthState = {
+  user,
+  isAuthenticated: user ? true : false,
+  isLoading: false,
+  error: null,
+  token,
+};
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload;
+    setUser: (state, action: PayloadAction<AuthState>) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
       state.isAuthenticated = true;
       state.isLoading = false;
+      localStorage.setItem("user", JSON.stringify(state.user));
+      localStorage.setItem("token", state.token || "");
     },
     clearUser: (state) => {
       state.user = null;
       state.isAuthenticated = false;
       state.isLoading = false;
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {
@@ -48,16 +50,4 @@ const authSlice = createSlice({
 });
 
 export const { setUser, clearUser } = authSlice.actions;
-export default authSlice.reducer;
-
-export const loadUserFromStorage = () => (dispatch) => {
-  const token = localStorage.getItem(TOKEN_STORAGE_KEY);
-  if (token) {
-    // Validate the token if needed (optional)
-    // Dispatch action to set user in Redux store
-    // dispatch(setUser(decodedToken)); // Replace decodedToken with actual decoded token
-  } else {
-    // Dispatch action to clear user in Redux store
-    dispatch(clearUser());
-  }
-};
+export default authSlice;

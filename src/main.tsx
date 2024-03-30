@@ -5,6 +5,7 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { Landing, Root } from "./pages";
 import { Providers } from "./store/provider";
 import { games } from "./data/games";
+import PersistLogin from "./utils/PersistLogin";
 
 const router = createBrowserRouter([
   {
@@ -13,20 +14,26 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Landing />,
-      },
-      {
-        path: "/games",
-        element: <Outlet />,
+        element: <PersistLogin />,
+        children: [
+          {
+            path: "/",
+            element: <Landing />,
+          },
+          {
+            path: "/games",
+            element: <Outlet />,
 
-        children: games.map((game) => ({
-          path: game.title,
-          element: game.element,
-        })),
-      },
-      {
-        path: "about",
-        element: <div>About</div>,
+            children: games.map((game) => ({
+              path: game.title,
+              element: game.element,
+            })),
+          },
+          {
+            path: "about",
+            element: <div>About</div>,
+          },
+        ],
       },
     ],
   },

@@ -90,7 +90,7 @@ type APIResponse<T = any> = {
 
 type User = {
   uid: string;
-  displayName: string;
+  username: string;
   email: string;
   photo: string;
 };

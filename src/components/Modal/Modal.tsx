@@ -84,7 +84,7 @@ export default function Modal() {
                         left: "50%",
                         x: "-50%",
                       }}
-                      drag="y"
+                      drag={matches.small ? "y" : false}
                       dragElastic={
                         {
                           // bottom: 0.5,

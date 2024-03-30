@@ -1,7 +1,10 @@
+import { DiscordIcon, InstagramIcon } from "@/assets/svgs";
 import { Button } from "@/components";
+import { useAppSelector } from "@/hooks/store";
 import { useSearchParams } from "react-router-dom";
 
 export default function Hero() {
+  const auth = useAppSelector((state) => state.auth);
   const setSearchParams = useSearchParams()[1];
 
   return (
@@ -15,10 +18,31 @@ export default function Hero() {
         <span className="font-semibold text-light">
           The first Growtopia web-based gaming platform.
         </span>
-        <div className="">
-          <Button onClick={() => setSearchParams({ modal: "register" })}>
-            Register Now
-          </Button>
+        <div className="flex items-center gap-3">
+          {auth.isAuthenticated ? (
+            <div className="font-bold text-[1.15rem] flex gap-4">
+              <a
+                href="/discord"
+                target="_blank"
+                className="uppercase text-white flex gap-1 items-center hover:text-[#5865F2] transition-colors"
+              >
+                <DiscordIcon />
+                Discord
+              </a>
+              <a
+                href="https://www.instagram.com/playgrowdice/"
+                target="_blank"
+                className="uppercase text-white flex gap-1 items-center hover:text-[#cc367e] transition-colors"
+              >
+                <InstagramIcon />
+                Instagram
+              </a>
+            </div>
+          ) : (
+            <Button onClick={() => setSearchParams({ modal: "register" })}>
+              Register Now
+            </Button>
+          )}
         </div>
       </div>
     </div>

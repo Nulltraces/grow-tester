@@ -16,9 +16,9 @@ export default function ChatFooter() {
       content: inputMessage,
       owner: {
         level: 11,
-        photo: "",
-        uid: "thisIsTestUser",
-        username: "KvngChaos",
+        photo: auth.user?.photo || "",
+        uid: auth.user?.uid || "",
+        username: auth.user?.username || "",
       },
       date: new Date(),
       room: "global",

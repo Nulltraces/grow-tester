@@ -166,6 +166,8 @@ function HeaderItems() {
   const [searchParams, setSearchParams] = useSearchParams();
   const showMenuBar = searchParams.get("show-menu") === "true";
 
+  const auth = useAppSelector((state) => state.auth);
+
   const HeaderLinkItem = ({
     icon,
     onClick,
@@ -276,7 +278,11 @@ function HeaderItems() {
             <HeaderLinkItem
               icon={CashStackIcon}
               text="affiliates"
-              onClick={() => setSearchParams({ modal: "sign-in" })}
+              onClick={() =>
+                auth.isAuthenticated
+                  ? toggleHeaderModal.affiliates()
+                  : setSearchParams({ modal: "sign-in" })
+              }
             />
             <HeaderLinkItem
               icon={TrophyIcon}
@@ -297,6 +303,8 @@ function HeaderItems() {
 }
 
 function HeaderItemsSM() {
+  const auth = useAppSelector((state) => state.auth);
+
   const HeaderLinkItem = ({
     icon,
     onClick,
@@ -307,6 +315,7 @@ function HeaderItemsSM() {
     text: string;
   }) => {
     const Icon = icon;
+
     return (
       <button onClick={(e) => onClick?.(e)} className="flex gap-1">
         <Icon />
@@ -399,7 +408,9 @@ function HeaderItemsSM() {
           icon={CashStackIcon}
           text="affiliates"
           onClick={() =>
-            setSearchParams((prev) => ({ ...prev, modal: "sign-in" }))
+            auth.isAuthenticated
+              ? toggleHeaderModal.affiliates()
+              : setSearchParams({ modal: "sign-in" })
           }
         />
         <HeaderLinkItem

@@ -42,6 +42,7 @@ export default function ChatFooter() {
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             type="text"
+            disabled={!auth.isAuthenticated || auth.isLoading}
             className="w-full h-full disabled:cursor-not-allowed disabled:text-gray-300 placeholder:font-semibold text-gray-600 px-2"
             placeholder={
               auth.isAuthenticated

@@ -42,7 +42,7 @@ const Button = ({
       )}
       {...buttonProps}
     >
-      {loading ? <Spinner size="small" color="body" /> : children}
+      {loading ? <Spinner size="small" color="body" className="" /> : children}
     </button>
   );
 };

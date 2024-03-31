@@ -37,7 +37,7 @@ const Button = ({
     <button
       // className={btnStyles + " " + className}
       className={clsx(
-        "button whitespace-nowrap rounded-md active:scale-[.99] mx-auto transition-all duration-200 !py-1 disabled:opacity-50",
+        "button whitespace-nowrap rounded-md active:scale-[.99] mx-auto transition-all duration-200 !py-1",
         className
       )}
       {...buttonProps}

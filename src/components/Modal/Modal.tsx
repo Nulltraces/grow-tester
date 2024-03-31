@@ -110,7 +110,7 @@ export default function Modal() {
                           <XClose className="!stroke-gray-500 w-6 h-6" />
                         </button>
                       </div>
-                      <div className="h-full pt-6 sm:pt-0 pb-4 flex flex-col">
+                      <div className="h-full pt-6 sm:pt-0 pb-4_ flex flex-col">
                         {children ? (
                           children
                         ) : (

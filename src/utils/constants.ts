@@ -7,10 +7,6 @@ export const API_URL =
       "https://grow-game-server.onrender.com"
     : "http://localhost:3001";
 
-const socket = io(
-  process.env.NODE_ENV === "production"
-    ? `https://grow-game-server.onrender.com`
-    : API_URL
-);
+const socket = io(API_URL);
 
 export default socket;

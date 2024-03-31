@@ -1,13 +1,28 @@
 import { ScrollIcon } from "@/assets/svgs";
 import { Button } from "@/components";
-import { useAppSelector } from "@/hooks/store";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
+import { triggerModal } from "@/store/slices/modal";
 import socket from "@/utils/constants";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Rules from "./Rules";
+import "./chat.css";
 
 export default function ChatFooter() {
   const [inputMessage, setInputMessage] = useState("");
+  const [onlineUsersCount, setOnlineUsersCount] = useState(0);
 
+  const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    socket.on("usersCount", (count: number) => {
+      setOnlineUsersCount(count);
+    });
+
+    return () => {
+      socket.off("usersCount");
+    };
+  }, []);
 
   const sendMessage = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -55,11 +70,18 @@ export default function ChatFooter() {
         <div className="flex w-full">
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 aspect-square rounded-full bg-green-500" />
-            <p className="text-sm font-semibold">{"452"} online</p>
+            <p className="text-sm font-semibold">{onlineUsersCount} online</p>
           </div>
           <div className="flex ml-auto items-center gap-2">
             <p className="text-sm font-semibold">150</p>
-            <button type="button" className="p-2 bg-gray-700 px-4 rounded-sm">
+            <button
+              title="rules"
+              type="button"
+              onClick={() =>
+                dispatch(triggerModal({ children: <Rules />, show: true }))
+              }
+              className="p-2 bg-gray-700 px-4 rounded-sm"
+            >
               <ScrollIcon />
             </button>
             <Button

@@ -13,7 +13,6 @@ import './userprofile.css';
 import { SilverLockIcon } from '@/assets/icons';
 import api from '@/api/axios';
 import { AxiosResponse } from 'axios';
-import Loader from './Loader';
 import { useAppSelector } from '@/hooks/store';
 
 const UserStats = {
@@ -35,6 +34,8 @@ const userStats = new Map<UserStat, number>([
   ['allTimeLow', 14.91],
   ['allTimeHigh', -6.48],
 ]);
+
+console.log({ userStats });
 
 export default function UserProfile({
   username,

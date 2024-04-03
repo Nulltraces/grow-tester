@@ -87,14 +87,14 @@ export default function AuthForm({ route = "sign-in" }: Props) {
         // const user = userCredential.user;
         // const idToken = await userCredential.user.getIdToken();
 
-        // const response = await fetch("/api/auth/sign-in", {
+        // const response = await fetch("/auth/sign-in", {
         //   method: "POST",
         //   headers: {
         //     "Content-Type": "application/json",
         //   },
         //   body: JSON.stringify({ idToken }),
         // });
-        // const response = await fetch("/api/auth/sign-in", {
+        // const response = await fetch("/auth/sign-in", {
         //   method: "POST",
         //   headers: {
         //     "Content-Type": "application/json",
@@ -109,7 +109,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
           message: string;
           user: User;
           token: string;
-        }> = await api.post("/api/auth/sign-in", {
+        }> = await api.post("/auth/sign-in", {
           email: formData.email,
           password: formData.password,
         });
@@ -142,7 +142,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
         dispatch(closeModal());
       } else {
         // Handle register logic
-        // const response = await fetch("/api/auth/register", {
+        // const response = await fetch("/auth/register", {
         //   method: "POST",
         //   headers: {
         //     "Content-Type": "application/json",
@@ -155,7 +155,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
         // });
         console.log("REACHED!");
         // const resBody = await response.json();
-        const response = await api.post("/api/auth/sign-up", formData);
+        const response = await api.post("/auth/sign-up", formData);
 
         const data = await response.data;
         console.log({ data });

@@ -4,7 +4,7 @@ import { API_URL } from "@/utils/constants";
 // api.js
 import axios from "axios";
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: `${API_URL}/api`,
   headers: {
     "Content-Type": "application/json",
   },

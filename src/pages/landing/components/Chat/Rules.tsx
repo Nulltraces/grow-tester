@@ -1,5 +1,5 @@
-import { useAppDispatch } from "@/hooks/store";
-import { closeModal } from "@/store/slices/modal";
+import { useAppDispatch } from '@/hooks/store';
+import { closeModal } from '@/store/slices/modal';
 
 export default function Rules() {
   const dispatch = useAppDispatch();
@@ -10,7 +10,7 @@ export default function Rules() {
           <svg
             stroke="currentColor"
             fill="currentColor"
-            stroke-width="0"
+            strokeWidth="0"
             viewBox="0 0 24 24"
             height="18"
             width="18"
@@ -24,7 +24,7 @@ export default function Rules() {
           <svg
             stroke="currentColor"
             fill="currentColor"
-            stroke-width="0"
+            strokeWidth="0"
             viewBox="0 0 24 24"
             height="21"
             width="21"

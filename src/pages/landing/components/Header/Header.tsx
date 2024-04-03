@@ -7,23 +7,29 @@ import {
   StopwatchIcon,
   TrophyIcon,
   UserIcon,
-} from "@/assets/svgs";
-import { AnimateInOut, Button, Overlay, Wallet } from "@/components";
-import { Disclosure, Menu } from "@headlessui/react";
-import clsx from "clsx";
-import { useSearchParams } from "react-router-dom";
-import { Games } from "..";
-import MenuButton from "../MenuButton";
-import { games } from "@/data/games";
-import { triggerModal } from "@/store/slices/modal";
-import { useAppDispatch, useAppSelector } from "@/hooks/store";
-import { lettersAndNumbersOnly } from "@/utils/strings";
-import store from "@/store";
-import Leaderboard from "./Leaderboard";
-import Affiliates from "./Affiliates";
-import Race from "./Race";
-import "./header.css";
-import { SilverLockIcon } from "@/assets/icons";
+} from '@/assets/svgs';
+import {
+  AnimateInOut,
+  Button,
+  Overlay,
+  UserProfile,
+  Wallet,
+} from '@/components';
+import { Disclosure, Menu } from '@headlessui/react';
+import clsx from 'clsx';
+import { useSearchParams } from 'react-router-dom';
+import { Games } from '..';
+import MenuButton from '../MenuButton';
+import { games } from '@/data/games';
+import { triggerModal } from '@/store/slices/modal';
+import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { lettersAndNumbersOnly } from '@/utils/strings';
+import store from '@/store';
+import Leaderboard from './Leaderboard';
+import Affiliates from './Affiliates';
+import Race from './Race';
+import './header.css';
+import { SilverLockIcon } from '@/assets/icons';
 
 const toggleHeaderModal = {
   leaderboard() {
@@ -31,7 +37,7 @@ const toggleHeaderModal = {
       triggerModal({
         children: <Leaderboard />,
         show: true,
-      })
+      }),
     );
   },
   affiliates() {
@@ -39,7 +45,7 @@ const toggleHeaderModal = {
       triggerModal({
         children: <Affiliates />,
         show: true,
-      })
+      }),
     );
   },
   race() {
@@ -47,7 +53,7 @@ const toggleHeaderModal = {
       triggerModal({
         children: <Race />,
         show: true,
-      })
+      }),
     );
   },
 };
@@ -65,7 +71,7 @@ export default function Header() {
 
   //   (async () => {
   //     try {
-  //       const response = await api.get("/api/user", {
+  //       const response = await api.get("/user", {
   //         signal: controler.signal,
   //       });
 
@@ -114,7 +120,7 @@ export default function Header() {
                   <svg
                     stroke="currentColor"
                     fill="currentColor"
-                    stroke-width="0"
+                    strokeWidth="0"
                     viewBox="0 0 512 512"
                     height="14"
                     width="14"
@@ -124,7 +130,21 @@ export default function Header() {
                   </svg>
                 </Button>
               </div>
-              <div className="!cursor-pointer bg-dark-750 h-full flex items-center gap-1.5 px-2 rounded font-semibold text-sm hover:opacity-75 transition-all">
+              <button
+                onClick={() =>
+                  dispatch(
+                    triggerModal({
+                      children: (
+                        <UserProfile
+                          username={auth.user?.username || ''}
+                          self
+                        />
+                      ),
+                    }),
+                  )
+                }
+                className="!cursor-pointer bg-dark-750 h-full flex items-center gap-1.5 px-2 py-1 rounded font-semibold text-sm hover:opacity-75 transition-all"
+              >
                 <figure className="sc-1nayyv1-1 avatar cursor-pointer w-8 rounded-full overflow-clip">
                   {auth?.user?.photo ? (
                     <img
@@ -138,17 +158,17 @@ export default function Header() {
                   )}
                 </figure>
                 <span className="max-sm:hidden">{auth.user?.username}</span>
-              </div>
+              </button>
             </div>
           ) : (
             <div className="ml-auto flex items-center gap-4">
               <button
-                onClick={() => setSearchParams({ modal: "sign-in" })}
+                onClick={() => setSearchParams({ modal: 'sign-in' })}
                 className="text-white text-sm font-semibold py-2 px-4"
               >
                 Sign In
               </button>
-              <Button onClick={() => setSearchParams({ modal: "register" })}>
+              <Button onClick={() => setSearchParams({ modal: 'register' })}>
                 Register
               </Button>
               <div className="hidden sm:block md:hidden">
@@ -164,7 +184,7 @@ export default function Header() {
 
 function HeaderItems() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const showMenuBar = searchParams.get("show-menu") === "true";
+  const showMenuBar = searchParams.get('show-menu') === 'true';
 
   const auth = useAppSelector((state) => state.auth);
 
@@ -190,14 +210,15 @@ function HeaderItems() {
       <Overlay
         show={showMenuBar}
         handleShowOverlay={() => () =>
-          setSearchParams({ "show-menu": String(!showMenuBar) })}
+          setSearchParams({ 'show-menu': String(!showMenuBar) })
+        }
         disableOnClick
         className="mt-16"
       />
       <div
         className={clsx(
-          "fixed top-16 z-[1000] right-0 w-full sm:w-[280px] h-full bg-dark-850 md:hidden transition-transform duration-150",
-          showMenuBar ? "translate-x-0" : "translate-x-full md:translate-x-0"
+          'fixed top-16 z-[1000] right-0 w-full sm:w-[280px] h-full bg-dark-850 md:hidden transition-transform duration-150',
+          showMenuBar ? 'translate-x-0' : 'translate-x-full md:translate-x-0',
         )}
       >
         <div className="w-[92%] h-full mt-4 mx-auto">
@@ -210,16 +231,16 @@ function HeaderItems() {
                     <h5 className="text-primary !font-bold uppercase">games</h5>
                     <ExpandMoreIcon
                       className={`${
-                        open ? "rotate-180" : "rotate-0"
+                        open ? 'rotate-180' : 'rotate-0'
                       } transform transition-transform duration-200 !stroke-primary`}
                     />
                   </Disclosure.Button>
                   <AnimateInOut
                     show={open}
                     initial={{ height: 0 }}
-                    animate={{ height: "auto" }}
+                    animate={{ height: 'auto' }}
                     exit={{ height: 0 }}
-                    transition={{ type: "keyframes" }}
+                    transition={{ type: 'keyframes' }}
                     className="cursor-pointer flex flex-col w-full pt-[5px] overflow-clip space-y-2"
                   >
                     {games.map((game, i) => (
@@ -246,7 +267,7 @@ function HeaderItems() {
                     </h5>
                     <ExpandMoreIcon
                       className={`${
-                        open ? "rotate-180" : "rotate-0"
+                        open ? 'rotate-180' : 'rotate-0'
                       } transform transition-transform duration-200 !stroke-primary`}
                     />
                   </Disclosure.Button>
@@ -254,12 +275,12 @@ function HeaderItems() {
                   <AnimateInOut
                     show={open}
                     initial={{ height: 0 }}
-                    animate={{ height: "auto" }}
+                    animate={{ height: 'auto' }}
                     exit={{ height: 0 }}
-                    transition={{ type: "keyframes" }}
+                    transition={{ type: 'keyframes' }}
                     className="cursor-pointer flex flex-col w-full pt-[5px] overflow-clip space-y-2"
                   >
-                    {[{ title: "rakeback" }, { title: "promo codes" }].map(
+                    {[{ title: 'rakeback' }, { title: 'promo codes' }].map(
                       (reward, i) => (
                         <p
                           className="text-sm text-white font-bold uppercase hover:-translate-y-[2px] transition-transform duration-100"
@@ -267,7 +288,7 @@ function HeaderItems() {
                         >
                           {reward.title}
                         </p>
-                      )
+                      ),
                     )}
                   </AnimateInOut>
                 </>
@@ -281,7 +302,7 @@ function HeaderItems() {
               onClick={() =>
                 auth.isAuthenticated
                   ? toggleHeaderModal.affiliates()
-                  : setSearchParams({ modal: "sign-in" })
+                  : setSearchParams({ modal: 'sign-in' })
               }
             />
             <HeaderLinkItem
@@ -331,7 +352,7 @@ function HeaderItemsSM() {
   // const HeaderMenu = ({}) =>
 
   return (
-    <div className={clsx("w-full h-full hidden md:flex gap-4 ml-4")}>
+    <div className={clsx('w-full h-full hidden md:flex gap-4 ml-4')}>
       <Menu>
         {({ open }) => (
           <>
@@ -342,7 +363,7 @@ function HeaderItemsSM() {
               </h5> */}
               <ExpandMoreIcon
                 className={`${
-                  open ? "rotate-180" : "rotate-0"
+                  open ? 'rotate-180' : 'rotate-0'
                 } transform transition-transform duration-200 !stroke-white`}
               />
             </Menu.Button>
@@ -352,7 +373,7 @@ function HeaderItemsSM() {
               initial={{ translateY: -400, opacity: 0 }}
               exit={{ translateY: -400, opacity: 0 }}
               animate={{ translateY: 0, opacity: 1 }}
-              transition={{ type: "keyframes" }}
+              transition={{ type: 'keyframes' }}
               className="absolute top-16 w-full left-0 h-full_ bg-dark-800 rounded-xl flex items-center justify-center p-2"
             >
               <div className="h-[96%] w-[99%] overflow-auto pr-2">
@@ -373,7 +394,7 @@ function HeaderItemsSM() {
               </h5> */}
               <ExpandMoreIcon
                 className={`${
-                  open ? "rotate-180" : "rotate-0"
+                  open ? 'rotate-180' : 'rotate-0'
                 } transform transition-transform duration-200 !stroke-white`}
               />
             </Menu.Button>
@@ -383,7 +404,7 @@ function HeaderItemsSM() {
               initial={{ translateY: -400, opacity: 0 }}
               exit={{ translateY: -400, opacity: 0 }}
               animate={{ translateY: 0, opacity: 1 }}
-              transition={{ type: "keyframes" }}
+              transition={{ type: 'keyframes' }}
               className="absolute top-16 w-full left-0 h-full_ bg-dark-800 rounded-xl flex items-center justify-center p-2"
             >
               <div className="h-[96%] w-[99%] overflow-auto pr-2">
@@ -410,7 +431,7 @@ function HeaderItemsSM() {
           onClick={() =>
             auth.isAuthenticated
               ? toggleHeaderModal.affiliates()
-              : setSearchParams({ modal: "sign-in" })
+              : setSearchParams({ modal: 'sign-in' })
           }
         />
         <HeaderLinkItem

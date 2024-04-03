@@ -1,4 +1,4 @@
-declare module "*.json";
+declare module '*.json';
 
 interface svgProps {
   className?: string;
@@ -41,7 +41,7 @@ type Folder = {
 type CheckValue = { checked: boolean; label: string };
 
 interface Content {
-  type: "heading" | "image" | "paragraph" | "video" | "file" | "check" | "link";
+  type: 'heading' | 'image' | 'paragraph' | 'video' | 'file' | 'check' | 'link';
   value: File | string | CheckValue; //other image types
 }
 
@@ -53,7 +53,7 @@ interface Note {
   label?: any;
   favourite?: boolean;
   tag?: Tag;
-  type?: "favourite" | "archived" | "deleted";
+  type?: 'favourite' | 'archived' | 'deleted';
   folder?: Folder;
   content?: Content[];
 }
@@ -75,7 +75,7 @@ type MenuItem = {
   icon: React.ReactNode;
   label: string;
   href?: string;
-  type?: "button" | "link";
+  type?: 'button' | 'link';
   action?(
     options?: { handleLoading: (loadingState: boolean) => void },
     ...args: any
@@ -93,4 +93,19 @@ type User = {
   username: string;
   email: string;
   photo: string;
+};
+
+type UserProfile = {
+  uid: string;
+  username: string;
+  email: string;
+  photo: string;
+  level: number;
+  bets?: number;
+  wins?: number;
+  wagered?: number;
+  netProfit?: number;
+  allTimeHigh?: number;
+  allTimeLow?: number;
+  joinDate: string;
 };

@@ -9,7 +9,7 @@ export default function useRefreshToken() {
 
   const refresh = async () => {
     const response: AxiosResponse<{ token: string }> = await api.get(
-      "/api/auth/refresh-token",
+      "/auth/refresh-token",
       {
         withCredentials: true,
       }

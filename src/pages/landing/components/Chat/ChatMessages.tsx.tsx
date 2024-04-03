@@ -1,14 +1,14 @@
-import axiosInstance from "@/api/axios";
-import { CurrencyNote, MenuHorizontalDotsIcon, UserIcon } from "@/assets/svgs";
-import User1 from "@/assets/users/user-1.png";
-import { AnimateInOut, UserProfile } from "@/components";
-import store from "@/store";
-import { triggerModal } from "@/store/slices/modal";
-import socket from "@/utils/constants";
-import { Menu } from "@headlessui/react";
-import { AxiosResponse } from "axios";
-import clsx from "clsx";
-import { Ref, useEffect, useRef, useState } from "react";
+import axiosInstance from '@/api/axios';
+import { CurrencyNote, MenuHorizontalDotsIcon, UserIcon } from '@/assets/svgs';
+import User1 from '@/assets/users/user-1.png';
+import { AnimateInOut, UserProfile } from '@/components';
+import store from '@/store';
+import { triggerModal } from '@/store/slices/modal';
+import socket from '@/utils/constants';
+import { Menu } from '@headlessui/react';
+import { AxiosResponse } from 'axios';
+import clsx from 'clsx';
+import { Ref, useEffect, useRef, useState } from 'react';
 
 type MessageType = {
   owner: {
@@ -21,12 +21,12 @@ type MessageType = {
   date: Date;
 };
 
-const viewUserProfile = (uid: string) => {
+const viewUserProfile = (username: string) => {
   store.dispatch(
     triggerModal({
-      children: <UserProfile uid={uid} />,
-      className: "h-[80%]",
-    })
+      children: <UserProfile username={username} />,
+      className: 'h-[80%]',
+    }),
   );
 };
 
@@ -34,12 +34,12 @@ const messages_: MessageType[] = Array(15)
   .fill(0)
   .map(() => ({
     owner: {
-      username: "noobish",
+      username: 'noobish',
       photo: User1,
       level: 11,
       uid: Math.random().toString(),
     },
-    content: "The best game is whatever one you prefer lol",
+    content: 'The best game is whatever one you prefer lol',
     date: new Date(),
   }));
 
@@ -53,28 +53,28 @@ export default function ChatMessages() {
   const getMessages = async () => {
     try {
       const response: AxiosResponse<{ messages: Message[] }> =
-        await axiosInstance.get("/api/chat/messages?room=global");
+        await axiosInstance.get('/chat/messages?room=global');
       const prevMessages = response.data.messages;
       setMessages(prevMessages);
     } catch (error) {
-      console.error("getMessages", { error });
+      console.error('getMessages', { error });
     }
   };
 
   useEffect(() => {
     if (!messages.length) getMessages();
 
-    socket.on("incoming_message", (msg) => {
+    socket.on('incoming_message', (msg) => {
       setMessages((prevMessages) => [...prevMessages, msg]);
     });
 
     return () => {
-      socket.off("incoming_message");
+      socket.off('incoming_message');
     };
   }, []);
 
   useEffect(() => {
-    messageRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    messageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages]);
 
   return (
@@ -82,8 +82,8 @@ export default function ChatMessages() {
       {messages.map((message, i) => {
         const date = new Date(message.date);
 
-        const hours = String(date.getHours()).padStart(2, "0");
-        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
 
         const formattedTime = `${hours}:${minutes}`;
         return (
@@ -104,7 +104,7 @@ export default function ChatMessages() {
             <div className="-space-y-[1px]">
               <div className="flex items-center gap-1">
                 <h5
-                  onClick={() => viewUserProfile(message.owner.uid)}
+                  onClick={() => viewUserProfile(message.owner.username)}
                   className="font-semibold cursor-pointer"
                 >
                   {message.owner.username}
@@ -147,24 +147,24 @@ function MessageMenu({ uid }: { uid: string }) {
             <button
               onClick={() => viewUserProfile(uid)}
               className={clsx(
-                "flex gap-2 transition-all duration-100 text-gray-500 font-semibold items-center w-full group"
+                'flex gap-2 transition-all duration-100 text-gray-500 font-semibold items-center w-full group',
               )}
             >
               <UserIcon
                 className={clsx(
-                  "!stroke-gray-500 !fill-gray-500 group-hover:!stroke-white group-hover:!fill-white"
+                  '!stroke-gray-500 !fill-gray-500 group-hover:!stroke-white group-hover:!fill-white',
                 )}
               />
               <p className="group-hover:text-white">user profile</p>
             </button>
             <button
               className={clsx(
-                "flex gap-2 transition-all duration-100 text-gray-500 font-semibold items-center group w-full"
+                'flex gap-2 transition-all duration-100 text-gray-500 font-semibold items-center group w-full',
               )}
             >
               <CurrencyNote
                 className={clsx(
-                  "!stroke-gray-500 !fill-gray-500 group-hover:!stroke-white group-hover:!fill-white"
+                  '!stroke-gray-500 !fill-gray-500 group-hover:!stroke-white group-hover:!fill-white',
                 )}
               />
               <p className="group-hover:text-white">tip</p>

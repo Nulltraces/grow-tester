@@ -28,6 +28,20 @@
   overflow: hidden;
 }
 
+.__user-photo__ {
+  margin-left: 0px;
+  /* height: 220px; */
+  mask-image: linear-gradient(rgb(0, 0, 0) 80%, rgba(0, 0, 0, 0) 96%);
+}
+
+@media (min-width: 640px) {
+  .__user-photo__ {
+    margin-left: 0px;
+    /* height: 220px; */
+    mask-image: none;
+  }
+}
+
 .lfSLTO {
   display: flex;
   -webkit-box-pack: center;
@@ -69,4 +83,10 @@
   font-family: inherit;
   cursor: pointer;
   user-select: none;
+}
+
+.bg-11 {
+  width: 100px;
+  height: 100px;
+  background-color: red;
 }

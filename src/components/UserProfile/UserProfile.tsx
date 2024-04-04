@@ -7,7 +7,7 @@ import {
   UserEditIcon,
 } from '@/assets/svgs';
 import { Button } from '..';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import User1 from '@/assets/users/user-1.png';
 import './userprofile.css';
 import { SilverLockIcon } from '@/assets/icons';
@@ -88,31 +88,38 @@ export default function UserProfile({
       </div>
     </div>
   );
+  const testRef = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    if (!testRef.current) return;
+    console.log('TEST_REF REACHED');
+    testRef.current.textContent = `Testing`;
+  }, []);
 
   return loading ? (
     // <Loader />
     'Loading...'
   ) : user ? (
     <ProfileWrapper>
-      <div className="rounded-md flex items-end overflow-clip __user-bg__ h-40 mt-2">
-        <div className="w-24 ml-4">
+      <div className="rounded-md flex flex-col sm:flex-row sm:items-end overflow-clip __user-bg__ sm:h-40 mt-2">
+        <div className="mx-auto sm:mx-0 sm:w-24 sm:ml-4">
           <img
             src={user?.photo || User1}
-            className="object-cover w-full"
+            className="object-cover w-full __user-photo__ h-[220px] sm:!h-auto"
             style={{
               imageRendering: 'pixelated',
             }}
           />
         </div>
-        <div className="h-full p-6 pl-4 space-y-2">
-          <div className="flex gap-1 items-center">
+        <div className="h-full w-[96%] mx-auto sm:mx-0 sm:p-6 sm:pl-4 space-y-2">
+          <div className="flex gap-1 items-center justify-center sm:justify-start">
             <h2 className="text-3xl font-bold">{user?.username}</h2>
-            <div className="p-1 h-fit py-[2px] rounded uppercase bg-[rgb(161,152,121)] text font-bold bg-amber text-gray-950">
+            <div className="p-1 h-fit py-[2px] rounded uppercase bg-[rgb(161,152,121)] text font-bold bg-amber text-gray-950 whitespace-nowrap">
               {/* User Level */}
               lvl {user.level}
             </div>
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1 w-full flex flex-col items-center sm:items-start">
             <div className="flex gap-2 items-center text-xs font-semibold">
               <span className="uppercase  text-[#A3A6C2]">xp:</span>{' '}
               <span>{'8,110/10,563'}</span>

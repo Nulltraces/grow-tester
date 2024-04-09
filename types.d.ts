@@ -11,3 +11,5 @@ type Message = {
   date: Date;
   room?: "global" | "support";
 };
+
+type Currency = "world-lock" | "diamond-lock";

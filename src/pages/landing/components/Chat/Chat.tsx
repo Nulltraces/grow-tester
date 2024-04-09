@@ -16,6 +16,7 @@ export default function DashboardSideNavigation() {
   const [smallScreen, setSmallScreen] = useState(false);
 
   const showNav = useAppSelector((state) => state.chatBar);
+  const auth = useAppSelector((state) => state.auth);
   const hideNav = !showNav;
   const dispatch = useAppDispatch();
 
@@ -23,7 +24,7 @@ export default function DashboardSideNavigation() {
     (state: boolean) => {
       dispatch(toggleChatBar(state));
     },
-    [dispatch]
+    [dispatch],
   );
 
   useEffect(() => {
@@ -54,6 +55,11 @@ export default function DashboardSideNavigation() {
 
     socket.on("room_joined", (data) => {
       console.log("ROOM_JOINED", data);
+    });
+
+    socket.on(`user:${auth.user?.username}`, (data) => {
+      console.log("SENT_TO_MEEEEEEE", data);
+      alert("Okayyyy");
     });
 
     // return () => {
@@ -89,7 +95,7 @@ export default function DashboardSideNavigation() {
             <div
               className={clsx(
                 "w-full sm:w-[320px] fixed_ md:static_ z-[30] bg-[#15171e] h-full lg:block_ md:translate-x-0_ transition-all duration-150 flex flex-col overflow-y-auto_ border-r-2 border-gray-700/50",
-                hideNav && "-translate-x-full fixed"
+                hideNav && "-translate-x-full fixed",
               )}
             >
               <div className="w-full h-full relative flex flex-col">

@@ -1,25 +1,39 @@
-"use client";
+'use client';
 
-import { API_URL } from "@/utils/constants";
+import { API_URL } from '@/utils/constants';
 // api.js
-import axios from "axios";
+import axios from 'axios';
 const api = axios.create({
   baseURL: `${API_URL}/api`,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
 // Add a request interceptor
+// api.interceptors.request.use(
+//   (config) => {
+//     // You can modify the request config here, e.g., add authentication headers
+//     config.headers.Authorization = `Bearer ${getToken()}`;
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   },
+// );
+
 api.interceptors.request.use(
   (config) => {
-    // You can modify the request config here, e.g., add authentication headers
-    // config.headers.Authorization = `Bearer ${getToken()}`;
+    const token = localStorage.getItem('token');
+    console.log('STORED_TOKEN: ', token);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Add a response interceptor
@@ -35,7 +49,7 @@ api.interceptors.request.use(
 
 export const axiosPrivate = axios.create({
   baseURL: API_URL,
-  headers: { "Content-Type": "application/json" },
+  headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
 });
 

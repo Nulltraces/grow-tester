@@ -5,34 +5,34 @@ import {
   HanCoinsIcon,
   StatsIcon,
   UserEditIcon,
-} from '@/assets/svgs';
-import { Button } from '..';
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
-import User1 from '@/assets/users/user-1.png';
-import './userprofile.css';
-import { SilverLockIcon } from '@/assets/icons';
-import api from '@/api/axios';
-import { AxiosResponse } from 'axios';
-import { useAppSelector } from '@/hooks/store';
+} from "@/assets/svgs";
+import { Button } from "..";
+import { PropsWithChildren, useEffect, useRef, useState } from "react";
+import User1 from "@/assets/users/user-1.png";
+import "./userprofile.css";
+import { SilverLockIcon } from "@/assets/icons";
+import api from "@/api/axios";
+import { AxiosResponse } from "axios";
+import { useAppSelector } from "@/hooks/store";
 
 const UserStats = {
-  totalBets: 'totalBets',
-  gamesWon: 'gamesWon',
-  netProfit: 'netProfit',
-  totalWagered: 'totalWagered',
-  allTimeLow: 'allTimeLow',
-  allTimeHigh: 'allTimeHigh',
+  totalBets: "totalBets",
+  gamesWon: "gamesWon",
+  netProfit: "netProfit",
+  totalWagered: "totalWagered",
+  allTimeLow: "allTimeLow",
+  allTimeHigh: "allTimeHigh",
 } as const;
 
 type UserStat = (typeof UserStats)[keyof typeof UserStats];
 
 const userStats = new Map<UserStat, number>([
-  ['totalBets', 2272],
-  ['gamesWon', 825],
-  ['netProfit', 448.06],
-  ['totalWagered', -4.6],
-  ['allTimeLow', 14.91],
-  ['allTimeHigh', -6.48],
+  ["totalBets", 2272],
+  ["gamesWon", 825],
+  ["netProfit", 448.06],
+  ["totalWagered", -4.6],
+  ["allTimeLow", 14.91],
+  ["allTimeHigh", -6.48],
 ]);
 
 console.log({ userStats });
@@ -54,19 +54,19 @@ export default function UserProfile({
   const ownAccount = self && username === auth.user?.username;
 
   const getUser = async (username: string) => {
-    console.log('USERNAME: ', username);
+    console.log("USERNAME: ", username);
     setLoading(true);
     try {
       const response: AxiosResponse<{ user: UserProfile }> = await api.get(
-        `/users/${username}?${`account=${ownAccount && 'self'}`}`,
+        `/users/${username}?${`account=${ownAccount && "self"}`}`,
       );
       const data = response.data;
-      console.log('USER_PROFILE_DATA: ', data);
+      console.log("USER_PROFILE_DATA: ", data);
       setUser(data.user);
     } catch (error) {
-      console.error('USER_PROFILE', { error });
+      console.error("USER_PROFILE", { error });
     } finally {
-      console.log('GET_USER_RUN');
+      console.log("GET_USER_RUN");
       setLoading(false);
     }
   };
@@ -92,13 +92,13 @@ export default function UserProfile({
 
   useEffect(() => {
     if (!testRef.current) return;
-    console.log('TEST_REF REACHED');
+    console.log("TEST_REF REACHED");
     testRef.current.textContent = `Testing`;
   }, []);
 
   return loading ? (
     // <Loader />
-    'Loading...'
+    "Loading..."
   ) : user ? (
     <ProfileWrapper>
       <div className="rounded-md flex flex-col sm:flex-row sm:items-end overflow-clip __user-bg__ sm:h-40 mt-2">
@@ -107,7 +107,7 @@ export default function UserProfile({
             src={user?.photo || User1}
             className="object-cover w-full __user-photo__ h-[220px] sm:!h-auto"
             style={{
-              imageRendering: 'pixelated',
+              imageRendering: "pixelated",
             }}
           />
         </div>
@@ -121,20 +121,20 @@ export default function UserProfile({
           </div>
           <div className="space-y-1 w-full flex flex-col items-center sm:items-start">
             <div className="flex gap-2 items-center text-xs font-semibold">
-              <span className="uppercase  text-[#A3A6C2]">xp:</span>{' '}
-              <span>{'8,110/10,563'}</span>
+              <span className="uppercase  text-[#A3A6C2]">xp:</span>{" "}
+              <span>{"8,110/10,563"}</span>
             </div>
             <div className="w-full h-3 relative after:bg-primary after:rounded overflow-clip after:absolute after:left-0 after:w-1/2 after:h-full  bg-gray-800/60 rounded-md" />
             <div className="flex gap-2 items-center text-sm font-semibold">
-              <span className="uppercase text-[#A3A6C2]">join date:</span>{' '}
+              <span className="uppercase text-[#A3A6C2]">join date:</span>{" "}
               <span>
                 {/* NOTE: Format date */}
-                {new Date(user.joinDate).toLocaleString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
+                {new Date(user.joinDate).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
                   hour12: false,
                 })}
               </span>
@@ -156,9 +156,9 @@ export default function UserProfile({
                 <span className="flex items-center gap-1">
                   <span className="text-gray-500">Email:</span>
                   {user.email &&
-                    user.email.slice(0, Math.min(user.email.indexOf('@'), 3)) +
-                      '*'.repeat(Math.max(0, user.email.indexOf('@') - 3)) +
-                      user.email.slice(user.email.indexOf('@'))}
+                    user.email.slice(0, Math.min(user.email.indexOf("@"), 3)) +
+                      "*".repeat(Math.max(0, user.email.indexOf("@") - 3)) +
+                      user.email.slice(user.email.indexOf("@"))}
                   <span className="text-xs font-semibold text-red-400">
                     (Not Verified)
                   </span>
@@ -183,7 +183,7 @@ export default function UserProfile({
               >
                 <path d="M16 13v-2H7V8l-5 4 5 4v-3z"></path>
                 <path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path>
-              </svg>{' '}
+              </svg>{" "}
               Log Out
             </button>
           </div>
@@ -292,7 +292,11 @@ export default function UserProfile({
     </ProfileWrapper>
   ) : (
     <ProfileWrapper>
-      <p className="text-4xl text-center font-bold">User Unavailable</p>
+      <div className="w-full h-40 flex items-center justify-center">
+        <p className="text-4xl text-center font-bold text-gray-400">
+          User Unavailable
+        </p>
+      </div>
     </ProfileWrapper>
   );
 }

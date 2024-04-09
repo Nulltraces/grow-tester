@@ -1,5 +1,5 @@
 import { Outlet, useSearchParams } from "react-router-dom";
-import { AuthForm, Modal, Notification } from "@/components";
+import { AuthForm, Modal } from "@/components";
 import { closeModal, triggerModal } from "@/store/slices/modal";
 import { useAppDispatch } from "@/hooks/store";
 import { useEffect, useState } from "react";
@@ -27,7 +27,7 @@ export default function Root() {
           show: true,
           className: "",
           cancel: () => setSearchParams({ modal: "false" }),
-        })
+        }),
       );
     } else if (authModal === "false") {
       dispatch(closeModal());
@@ -46,7 +46,7 @@ export default function Root() {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" className="z-[100000000000000]" />
       {loading ? (
         <div className="flex flex-col h-screen gap-3_ bg-body">
           <div className="flex w-full h-full items-center justify-center">
@@ -68,7 +68,6 @@ export default function Root() {
       ) : (
         <>
           <Modal />
-          <Notification />
           {/* <MouseTracker /> */}
           <main className="flex flex-col h-screen gap-3_ bg-body">
             <Header />

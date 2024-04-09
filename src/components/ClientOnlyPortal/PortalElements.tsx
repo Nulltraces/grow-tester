@@ -1,10 +1,9 @@
-import { Modal, Notification } from "..";
+import { Modal } from "..";
 
 export default function PortalElements() {
   return (
     <>
       <Modal />
-      <Notification />
     </>
   );
 }

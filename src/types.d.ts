@@ -16,9 +16,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   disabled?: boolean;
 }
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  type: string;
-}
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 interface SideNavigationLink {
   href: string;

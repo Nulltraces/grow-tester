@@ -7,29 +7,32 @@ import {
   StopwatchIcon,
   TrophyIcon,
   UserIcon,
-} from '@/assets/svgs';
+} from "@/assets/svgs";
 import {
   AnimateInOut,
   Button,
   Overlay,
   UserProfile,
   Wallet,
-} from '@/components';
-import { Disclosure, Menu } from '@headlessui/react';
-import clsx from 'clsx';
-import { useSearchParams } from 'react-router-dom';
-import { Games } from '..';
-import MenuButton from '../MenuButton';
-import { games } from '@/data/games';
-import { triggerModal } from '@/store/slices/modal';
-import { useAppDispatch, useAppSelector } from '@/hooks/store';
-import { lettersAndNumbersOnly } from '@/utils/strings';
-import store from '@/store';
-import Leaderboard from './Leaderboard';
-import Affiliates from './Affiliates';
-import Race from './Race';
-import './header.css';
-import { SilverLockIcon } from '@/assets/icons';
+} from "@/components";
+import { Disclosure, Menu } from "@headlessui/react";
+import clsx from "clsx";
+import { useSearchParams } from "react-router-dom";
+import { Games } from "..";
+import MenuButton from "../MenuButton";
+import { games } from "@/data/games";
+import { triggerModal } from "@/store/slices/modal";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
+import { lettersAndNumbersOnly } from "@/utils/strings";
+import store from "@/store";
+import Leaderboard from "./Leaderboard";
+import Affiliates from "./Affiliates";
+import Race from "./Race";
+import "./header.css";
+import { SilverLockIcon, YellowLockIcon } from "@/assets/icons";
+import { useEffect, useState } from "react";
+import { getBalance } from "@/services/wallet";
+import { changeCurrency, updateBalance } from "@/store/slices/wallet";
 
 const toggleHeaderModal = {
   leaderboard() {
@@ -61,6 +64,8 @@ const toggleHeaderModal = {
 export default function Header() {
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
+
+  console.log({ auth });
 
   const [_, setSearchParams] = useSearchParams();
   // const [user, setUser] = useState<User | null>(null);
@@ -101,42 +106,14 @@ export default function Header() {
           <HeaderItemsSM />
           {auth.isAuthenticated ? (
             <div className="flex ml-auto items-center gap-2 text-sm">
-              <div className="bg-dark-750 rounded-l font-semibold pl-2 flex items-center gap-4 h-full max-md:absolute max-md:left-1/2 max-md:-translate-x-1/2  max-h-10">
-                <div className="relative flex items-center gap-1.5 px-0.5 cursor-pointer hover:opacity-75 transition-all text-sm">
-                  <img
-                    src={SilverLockIcon}
-                    width="20"
-                    height="20"
-                    className="sc-x7t9ms-0 dnNpLQ"
-                  />
-                  <span className="">0.00</span>
-                </div>
-                <Button
-                  className="text-sm rounded-sm m-0 h-full !rounded-l-none !p-0 lg:!py-2 !rounded-r w-[40px]"
-                  onClick={() =>
-                    dispatch(triggerModal({ children: <Wallet />, show: true }))
-                  }
-                >
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    strokeWidth="0"
-                    viewBox="0 0 512 512"
-                    height="14"
-                    width="14"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M461.2 128H80c-8.84 0-16-7.16-16-16s7.16-16 16-16h384c8.84 0 16-7.16 16-16 0-26.51-21.49-48-48-48H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h397.2c28.02 0 50.8-21.53 50.8-48V176c0-26.47-22.78-48-50.8-48zM416 336c-17.67 0-32-14.33-32-32s14.33-32 32-32 32 14.33 32 32-14.33 32-32 32z"></path>
-                  </svg>
-                </Button>
-              </div>
+              <Balance />
               <button
                 onClick={() =>
                   dispatch(
                     triggerModal({
                       children: (
                         <UserProfile
-                          username={auth.user?.username || ''}
+                          username={auth.user?.username || ""}
                           self
                         />
                       ),
@@ -163,12 +140,12 @@ export default function Header() {
           ) : (
             <div className="ml-auto flex items-center gap-4">
               <button
-                onClick={() => setSearchParams({ modal: 'sign-in' })}
+                onClick={() => setSearchParams({ modal: "sign-in" })}
                 className="text-white text-sm font-semibold py-2 px-4"
               >
                 Sign In
               </button>
-              <Button onClick={() => setSearchParams({ modal: 'register' })}>
+              <Button onClick={() => setSearchParams({ modal: "register" })}>
                 Register
               </Button>
               <div className="hidden sm:block md:hidden">
@@ -184,7 +161,7 @@ export default function Header() {
 
 function HeaderItems() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const showMenuBar = searchParams.get('show-menu') === 'true';
+  const showMenuBar = searchParams.get("show-menu") === "true";
 
   const auth = useAppSelector((state) => state.auth);
 
@@ -210,15 +187,15 @@ function HeaderItems() {
       <Overlay
         show={showMenuBar}
         handleShowOverlay={() => () =>
-          setSearchParams({ 'show-menu': String(!showMenuBar) })
+          setSearchParams({ "show-menu": String(!showMenuBar) })
         }
         disableOnClick
         className="mt-16"
       />
       <div
         className={clsx(
-          'fixed top-16 z-[1000] right-0 w-full sm:w-[280px] h-full bg-dark-850 md:hidden transition-transform duration-150',
-          showMenuBar ? 'translate-x-0' : 'translate-x-full md:translate-x-0',
+          "fixed top-16 z-[1000] right-0 w-full sm:w-[280px] h-full bg-dark-850 md:hidden transition-transform duration-150",
+          showMenuBar ? "translate-x-0" : "translate-x-full md:translate-x-0",
         )}
       >
         <div className="w-[92%] h-full mt-4 mx-auto">
@@ -231,16 +208,16 @@ function HeaderItems() {
                     <h5 className="text-primary !font-bold uppercase">games</h5>
                     <ExpandMoreIcon
                       className={`${
-                        open ? 'rotate-180' : 'rotate-0'
+                        open ? "rotate-180" : "rotate-0"
                       } transform transition-transform duration-200 !stroke-primary`}
                     />
                   </Disclosure.Button>
                   <AnimateInOut
                     show={open}
                     initial={{ height: 0 }}
-                    animate={{ height: 'auto' }}
+                    animate={{ height: "auto" }}
                     exit={{ height: 0 }}
-                    transition={{ type: 'keyframes' }}
+                    transition={{ type: "keyframes" }}
                     className="cursor-pointer flex flex-col w-full pt-[5px] overflow-clip space-y-2"
                   >
                     {games.map((game, i) => (
@@ -267,7 +244,7 @@ function HeaderItems() {
                     </h5>
                     <ExpandMoreIcon
                       className={`${
-                        open ? 'rotate-180' : 'rotate-0'
+                        open ? "rotate-180" : "rotate-0"
                       } transform transition-transform duration-200 !stroke-primary`}
                     />
                   </Disclosure.Button>
@@ -275,12 +252,12 @@ function HeaderItems() {
                   <AnimateInOut
                     show={open}
                     initial={{ height: 0 }}
-                    animate={{ height: 'auto' }}
+                    animate={{ height: "auto" }}
                     exit={{ height: 0 }}
-                    transition={{ type: 'keyframes' }}
+                    transition={{ type: "keyframes" }}
                     className="cursor-pointer flex flex-col w-full pt-[5px] overflow-clip space-y-2"
                   >
-                    {[{ title: 'rakeback' }, { title: 'promo codes' }].map(
+                    {[{ title: "rakeback" }, { title: "promo codes" }].map(
                       (reward, i) => (
                         <p
                           className="text-sm text-white font-bold uppercase hover:-translate-y-[2px] transition-transform duration-100"
@@ -302,7 +279,7 @@ function HeaderItems() {
               onClick={() =>
                 auth.isAuthenticated
                   ? toggleHeaderModal.affiliates()
-                  : setSearchParams({ modal: 'sign-in' })
+                  : setSearchParams({ modal: "sign-in" })
               }
             />
             <HeaderLinkItem
@@ -352,7 +329,7 @@ function HeaderItemsSM() {
   // const HeaderMenu = ({}) =>
 
   return (
-    <div className={clsx('w-full h-full hidden md:flex gap-4 ml-4')}>
+    <div className={clsx("w-full h-full hidden md:flex gap-4 ml-4")}>
       <Menu>
         {({ open }) => (
           <>
@@ -363,7 +340,7 @@ function HeaderItemsSM() {
               </h5> */}
               <ExpandMoreIcon
                 className={`${
-                  open ? 'rotate-180' : 'rotate-0'
+                  open ? "rotate-180" : "rotate-0"
                 } transform transition-transform duration-200 !stroke-white`}
               />
             </Menu.Button>
@@ -373,7 +350,7 @@ function HeaderItemsSM() {
               initial={{ translateY: -400, opacity: 0 }}
               exit={{ translateY: -400, opacity: 0 }}
               animate={{ translateY: 0, opacity: 1 }}
-              transition={{ type: 'keyframes' }}
+              transition={{ type: "keyframes" }}
               className="absolute top-16 w-full left-0 h-full_ bg-dark-800 rounded-xl flex items-center justify-center p-2"
             >
               <div className="h-[96%] w-[99%] overflow-auto pr-2">
@@ -394,7 +371,7 @@ function HeaderItemsSM() {
               </h5> */}
               <ExpandMoreIcon
                 className={`${
-                  open ? 'rotate-180' : 'rotate-0'
+                  open ? "rotate-180" : "rotate-0"
                 } transform transition-transform duration-200 !stroke-white`}
               />
             </Menu.Button>
@@ -404,7 +381,7 @@ function HeaderItemsSM() {
               initial={{ translateY: -400, opacity: 0 }}
               exit={{ translateY: -400, opacity: 0 }}
               animate={{ translateY: 0, opacity: 1 }}
-              transition={{ type: 'keyframes' }}
+              transition={{ type: "keyframes" }}
               className="absolute top-16 w-full left-0 h-full_ bg-dark-800 rounded-xl flex items-center justify-center p-2"
             >
               <div className="h-[96%] w-[99%] overflow-auto pr-2">
@@ -431,7 +408,7 @@ function HeaderItemsSM() {
           onClick={() =>
             auth.isAuthenticated
               ? toggleHeaderModal.affiliates()
-              : setSearchParams({ modal: 'sign-in' })
+              : setSearchParams({ modal: "sign-in" })
           }
         />
         <HeaderLinkItem
@@ -446,6 +423,74 @@ function HeaderItemsSM() {
         />
         <HeaderLinkItem icon={DiscordIcon} text="discord" />
       </div>
+    </div>
+  );
+}
+
+function Balance() {
+  const setSearchParams = useSearchParams()[1];
+
+  const dispatch = useAppDispatch();
+  const { balance, currency } = useAppSelector((state) => state.wallet);
+
+  console.log("BALANCE---->", balance);
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+
+        const result = await getBalance();
+        console.log("BALANCE_RESULT", result);
+        if (!result) return;
+        dispatch(updateBalance(result));
+      } catch (error) {
+        console.error("Header-Balance: ", error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  return (
+    <div className="bg-dark-750 rounded-l font-semibold pl-2 flex items-center gap-4 h-full max-md:absolute max-md:left-1/2 max-md:-translate-x-1/2  max-h-10">
+      <button
+        onClick={() => dispatch(changeCurrency())}
+        className="relative flex items-center gap-1.5 px-0.5 cursor-pointer hover:opacity-75 transition-all text-sm"
+      >
+        <img
+          src={currency === "world-lock" ? YellowLockIcon : SilverLockIcon}
+          width="20"
+          height="20"
+          className="sc-x7t9ms-0 dnNpLQ"
+        />
+        <span className="">
+          {loading
+            ? "..."
+            : (currency === "world-lock" ? balance / 100 : balance).toFixed(2)}
+        </span>
+      </button>
+      <Button
+        className="text-sm rounded-sm m-0 h-full !rounded-l-none !p-0 sm:!py-2 !rounded-r w-[40px]"
+        onClick={() => {
+          setSearchParams({ modal: "deposit" });
+          dispatch(triggerModal({ children: <Wallet />, show: true }));
+        }}
+      >
+        <svg
+          stroke="currentColor"
+          fill="currentColor"
+          strokeWidth="0"
+          viewBox="0 0 512 512"
+          height="14"
+          width="14"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M461.2 128H80c-8.84 0-16-7.16-16-16s7.16-16 16-16h384c8.84 0 16-7.16 16-16 0-26.51-21.49-48-48-48H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h397.2c28.02 0 50.8-21.53 50.8-48V176c0-26.47-22.78-48-50.8-48zM416 336c-17.67 0-32-14.33-32-32s14.33-32 32-32 32 14.33 32 32-14.33 32-32 32z"></path>
+        </svg>
+      </Button>
     </div>
   );
 }

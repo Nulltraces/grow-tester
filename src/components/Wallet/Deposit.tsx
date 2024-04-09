@@ -3,11 +3,38 @@ import {
   SilverLockIcon,
   YellowLockIcon,
 } from "@/assets/icons";
-import { Input } from "..";
+import { AnimateInOut, Button, Input } from "..";
+import { useState } from "react";
+import { depositFunds } from "@/services/wallet";
+import { triggerModal } from "@/store/slices/modal";
+import { useAppDispatch } from "@/hooks/store";
+import { useSearchParams } from "react-router-dom";
 
 export default function Deposit() {
+  const [growId, setGrowId] = useState("");
+  const dispatch = useAppDispatch();
+
+  const startDeposit = () => {
+    dispatch(
+      triggerModal({
+        children: <DepositForm />,
+        show: true,
+      }),
+    );
+  };
+
+  const searchParams = useSearchParams()[0];
+  const isDeposit = searchParams.get("modal") === "deposit";
+
   return (
-    <div className="opacity-100">
+    <AnimateInOut
+      show={isDeposit}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+      // className="opacity-100"
+    >
       <div className="flex flex-col gap-2.5">
         <div>
           <p className="text-lg font-bold">How to deposit?</p>
@@ -74,11 +101,16 @@ export default function Deposit() {
                         type="text"
                         value=""
                       /> */}
-              <Input className="" type="text" value="" />
+              <Input
+                className=""
+                type="text"
+                value={growId}
+                onChange={(e) => setGrowId(e.target.value)}
+              />
               {/* </div> */}
             </div>
           </div>
-          <div>
+          {/* <div>
             <iframe
               src="https://newassets.hcaptcha.com/captcha/v1/04f9464/static/hcaptcha.html#frame=checkbox&amp;id=2vtsby0ca5vo&amp;host=growdice.net&amp;sentry=true&amp;reportapi=https%3A%2F%2Faccounts.hcaptcha.com&amp;recaptchacompat=true&amp;custom=false&amp;hl=en&amp;tplinks=on&amp;pstissuer=https%3A%2F%2Fpst-issuer.hcaptcha.com&amp;sitekey=219fabe6-4390-4bfd-9a12-a72dd236b56f&amp;theme=dark&amp;origin=https%3A%2F%2Fgrowdice.net"
               tabIndex={0}
@@ -99,9 +131,10 @@ export default function Deposit() {
               name="h-captcha-response"
               className="hidden"
             ></textarea>
-          </div>
+          </div> */}
           <button
-            disabled
+            disabled={!growId || growId.length < 6}
+            onClick={startDeposit}
             aria-disabled="true"
             className="sc-1xm9mse-0 wallet-button text-sm rounded-sm"
             content="w-full h-[40px]"
@@ -128,6 +161,44 @@ export default function Deposit() {
           </span>
         </div>
       </div>
-    </div>
+    </AnimateInOut>
+  );
+}
+
+function DepositForm() {
+  const [amount, setAmount] = useState(0);
+
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    try {
+      e.preventDefault();
+
+      const success = await depositFunds(amount);
+
+      console.log("DepositForm", { success });
+      if (success) return setAmount(0);
+    } catch (error) {
+      console.error("DepositForm", error);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="p-2 pt-6 space-y-3">
+      <label htmlFor="">
+        <small>enter amount</small>
+      </label>
+      <Input
+        type="number"
+        value={amount.toFixed(2)}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (value && value !== "NAN")
+            setAmount(parseFloat((value && value) || "0"));
+        }}
+      />
+
+      <Button className="w-full" type="submit">
+        Confirm
+      </Button>
+    </form>
   );
 }

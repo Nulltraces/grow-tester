@@ -32,7 +32,7 @@ export default function ChatFooter() {
       owner: {
         level: 11,
         photo: auth.user?.photo || "",
-        uid: auth.user?.uid || "",
+        uid: auth.user?.id || "",
         username: auth.user?.username || "",
       },
       date: new Date(),

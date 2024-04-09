@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 type AuthState = {
   user: User | null;
@@ -8,12 +8,12 @@ type AuthState = {
   error?: string | null;
 };
 
-let user: AuthState['user'] = null;
-const storedUser = localStorage.getItem('user');
+let user: AuthState["user"] = null;
+const storedUser = localStorage.getItem("user");
 if (storedUser) user = JSON.parse(storedUser);
-const token = localStorage.getItem('token');
+const token = localStorage.getItem("token");
 
-console.log('STORED: ', { token, user });
+console.log("STORED: ", { token, user });
 
 const initialState: AuthState = {
   user,
@@ -24,7 +24,7 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<AuthState>) => {
@@ -32,15 +32,15 @@ const authSlice = createSlice({
       state.token = action.payload.token;
       state.isAuthenticated = true;
       state.isLoading = false;
-      localStorage.setItem('user', JSON.stringify(state.user));
-      localStorage.setItem('token', state.token || '');
+      localStorage.setItem("user", JSON.stringify(state.user));
+      localStorage.setItem("token", state.token || "");
     },
     clearUser: (state) => {
       state.user = null;
       state.isAuthenticated = false;
       state.isLoading = false;
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {

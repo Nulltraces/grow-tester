@@ -1,7 +1,7 @@
 import { Outlet, useSearchParams } from "react-router-dom";
 import { AuthForm, Modal } from "@/components";
 import { closeModal, triggerModal } from "@/store/slices/modal";
-import { useAppDispatch } from "@/hooks/store";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BottomNav, Chat, Header } from "./landing/components";
@@ -9,6 +9,7 @@ import ChatToggle from "./landing/components/Chat/ChatToggle";
 import { MessageChatCircleIcon } from "@/assets/svgs";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import socket from "@/utils/constants";
 
 export default function Root() {
   const dispatch = useAppDispatch();
@@ -16,6 +17,19 @@ export default function Root() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const authModal = searchParams.get("modal");
+  const auth = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    console.log("CONNECT_USER_TO_SOCKET: ", {
+      username: auth.user?.username,
+      socketId: socket.id,
+    });
+
+    socket.emit("connect_user", {
+      username: auth.user?.username,
+      socketId: socket.id,
+    });
+  }, [socket.id]);
 
   useEffect(() => {
     // if (authModal !== "sign-in" && authModal !== "register") return;

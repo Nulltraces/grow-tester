@@ -50,7 +50,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
       formData?.email,
       formData?.password,
       formData?.username,
-      formData?.affiliateCode
+      formData?.affiliateCode,
     );
     setIsDisabled(
       (route === "sign-in" && !(formData.email && formData.password)) ||
@@ -60,7 +60,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
             formData?.password &&
             formData?.username &&
             formData?.affiliateCode
-          ))
+          )),
     );
   }, [
     formData?.email,
@@ -189,7 +189,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
   return (
     <div
       className={clsx(
-        "w-full justify-center overflow-y-auto overscroll-contain items-center sm:w-[60vw] lg:w-[30rem]"
+        "w-full justify-center overflow-y-auto overscroll-contain items-center sm:w-[60vw] lg:w-[30rem]",
       )}
     >
       <div className="w-full flex flex-col items-center justify-center">

@@ -30,7 +30,7 @@ export default function Hero() {
                 Discord
               </a>
               <a
-                href="https://www.instagram.com/playgrowdice/"
+                href="https://www.instagram.com"
                 target="_blank"
                 className="uppercase text-white flex gap-1 items-center hover:text-[#cc367e] transition-colors"
               >

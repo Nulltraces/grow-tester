@@ -38,11 +38,17 @@ const Button = ({
       // className={btnStyles + " " + className}
       className={clsx(
         "button whitespace-nowrap rounded-md active:scale-[.99] mx-auto transition-all duration-200 !py-1",
-        className
+        className,
       )}
       {...buttonProps}
     >
-      {loading ? <Spinner size="small" color="body" className="" /> : children}
+      {loading ? (
+        <span className="inline-block h-6">
+          <Spinner size="small" color="body" className="" />
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 };

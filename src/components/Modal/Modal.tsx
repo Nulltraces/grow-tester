@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { Ref, useRef, useState } from 'react';
-import { useEffect } from 'react';
-import Overlay from '../Overlay';
-import { AnimatePresence, motion } from 'framer-motion';
-import ClientOnlyPortal from '../ClientOnlyPortal';
-import { XClose } from '@/assets/svgs';
-import Button from '../Button';
-import clsx from 'clsx';
-import Media from 'react-media';
-import { useAppDispatch, useAppSelector } from '@/hooks/store';
-import { closeModal, triggerModal } from '@/store/slices/modal';
+import { Ref, useRef, useState } from "react";
+import { useEffect } from "react";
+import Overlay from "../Overlay";
+import { AnimatePresence, motion } from "framer-motion";
+import ClientOnlyPortal from "../ClientOnlyPortal";
+import { XClose } from "@/assets/svgs";
+import Button from "../Button";
+import clsx from "clsx";
+import Media from "react-media";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
+import { closeModal } from "@/store/slices/modal";
 
 export default function Modal() {
   const {
@@ -19,7 +19,6 @@ export default function Modal() {
     actionConfirm,
     actionCancel,
     disableOnClick,
-    type,
     children,
     className,
   } = useAppSelector((state) => state.modal);
@@ -43,11 +42,11 @@ export default function Modal() {
   }, []);
 
   if (domReady) {
-    if (typeof window === 'object') {
+    if (typeof window === "object") {
       return (
         <>
           {/* {showModal && ( */}
-          <ClientOnlyPortal selector={'#modal'}>
+          <ClientOnlyPortal selector={"#modal"}>
             <Overlay
               show={showModal}
               handleShowOverlay={() => cancel}
@@ -62,29 +61,29 @@ export default function Modal() {
                     <motion.div
                       ref={modalRef as Ref<HTMLDivElement>}
                       className={clsx(
-                        'bg-body fixed rounded w-full sm:w-fit z-[999] h-3/5 sm:h-auto bottom-0 sm:bottom-auto sm:-translate-x-1/2 sm:left-1/2 sm:-translate-y-1/2 sm:top-1/2 overflow-clip before:w-16 before:h-1 before:rounded-3xl before:bg-gray-200 before:mx-auto before:z-[1000] before:absolute before:inset-0 before:mt-3 md:before:hidden',
+                        "bg-body fixed rounded w-full sm:w-fit z-[999] h-3/5 sm:h-auto bottom-0 sm:bottom-auto sm:-translate-x-1/2 sm:left-1/2 sm:-translate-y-1/2 sm:top-1/2 overflow-clip before:w-16 before:h-1 before:rounded-3xl before:bg-gray-200 before:mx-auto before:z-[1000] before:absolute before:inset-0 before:mt-3 md:before:hidden",
                         className,
                       )}
-                      transition={{ type: 'keyframes', duration: 0.2 }}
+                      transition={{ type: "keyframes", duration: 0.2 }}
                       initial={{
-                        y: matches.small ? '100%' : 50,
+                        y: matches.small ? "100%" : 50,
                         opacity: matches.small ? 1 : 0,
-                        left: '50%',
-                        x: '-50%',
+                        left: "50%",
+                        x: "-50%",
                       }}
                       animate={{
-                        y: matches.small ? 0 : '-50%',
+                        y: matches.small ? 0 : "-50%",
                         opacity: 1,
-                        left: '50%',
-                        x: '-50%',
+                        left: "50%",
+                        x: "-50%",
                       }}
                       exit={{
-                        y: matches.small ? '100%' : 50,
+                        y: matches.small ? "100%" : 50,
                         opacity: matches.small ? 1 : 0,
-                        left: '50%',
-                        x: '-50%',
+                        left: "50%",
+                        x: "-50%",
                       }}
-                      drag={matches.small ? 'y' : false}
+                      drag={matches.small ? "y" : false}
                       dragElastic={
                         {
                           // bottom: 0.5,
@@ -110,26 +109,26 @@ export default function Modal() {
                           <XClose className="!stroke-gray-500 w-6 h-6" />
                         </button>
                       </div>
-                      <div className="h-full pb-12 pt-6 sm:pt-0 sm:pb-0 flex flex-col">
+                      <div className="h-full pb-5 pt-6 sm:pt-0 sm:pb-0 flex flex-col">
                         {children ? (
                           children
                         ) : (
-                          <div className="w-[95%] flex flex-col space-y-4 h-full mx-auto">
+                          <div className="w-full justify-center overflow-y-auto !py-8 sm:pb-0 overscroll-contain items-center sm:w-[60vw] lg:w-[30rem] mx-auto px-5">
                             <div>
-                              <figure
+                              {/* <figure
                                 className={clsx(
-                                  'w-12 h-12 rounded-full flex items-center justify-center bg-primary/10',
-                                  type === 'error' && 'bg-red-400/10',
-                                  type === 'warning' && 'bg-yellow-400/10',
+                                  "w-12 h-12 rounded-full flex items-center justify-center bg-primary/10",
+                                  type === "error" && "bg-red-400/10",
+                                  type === "warning" && "bg-yellow-400/10",
                                 )}
-                              ></figure>
+                              ></figure> */}
                             </div>
                             <div className="overflow-auto space-y-4 flex-1 pb-4">
                               <div>
                                 <div className="font-bold text-2xl">
                                   {modalMessage?.title}
                                 </div>
-                                <div className={'break-word'}>
+                                <div className={"break-word"}>
                                   {modalMessage?.text}
                                 </div>
                               </div>
@@ -138,24 +137,25 @@ export default function Modal() {
                         )}
                         <div
                           className={
-                            'flex flex-col-reverse md:flex-row gap-3 md:gap-4 mx-auto w-full justify-around mt-auto'
+                            "flex flex-col-reverse md:flex-row gap-2 md:gap-4 justify-around mt-auto w-[90%] mx-auto pb-12 sm:pb-4"
                           }
                         >
-                          {/* {actionCancel && (
-                            <Button
-                              className="border bg-primary/10 !text-primary"
+                          {actionCancel && (
+                            <button
+                              className="border border-primary w-full rounded-md bg-primary/10 !text-primary"
                               onClick={() => {
                                 cancel();
                               }}
                             >
                               Cancel
-                            </Button>
-                          )} */}
+                            </button>
+                          )}
                           {actionConfirm && (
                             <Button
+                              className="w-full"
                               onClick={() => {
                                 actionConfirm();
-                                triggerModal({ show: false });
+                                dispatch(closeModal());
                               }}
                             >
                               Confirm

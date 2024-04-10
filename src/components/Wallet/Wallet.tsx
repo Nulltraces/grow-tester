@@ -1,11 +1,11 @@
-import { useSearchParams } from 'react-router-dom';
-import Deposit from './Deposit';
-import Tip from './Tip';
-import Withdraw from './Withdraw';
-import clsx from 'clsx';
-import './wallet.css';
+import { useSearchParams } from "react-router-dom";
+import Deposit from "./Deposit";
+import Tip from "./Tip";
+import Withdraw from "./Withdraw";
+import clsx from "clsx";
+import "./wallet.css";
 
-type WalletView = 'deposit' | 'withdraw' | 'tip';
+type WalletView = "deposit" | "withdraw" | "tip";
 
 export default function Wallet() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,19 +20,19 @@ export default function Wallet() {
     });
   };
 
-  const walletView = searchParams.get('modal') as WalletView | null;
+  const walletView = searchParams.get("modal") as WalletView | null;
 
   let WalletComponent = Deposit;
 
   switch (walletView) {
-    case 'deposit':
+    case "deposit":
       WalletComponent = Deposit;
       break;
-    case 'tip':
+    case "tip":
       WalletComponent = Tip;
       break;
 
-    case 'withdraw':
+    case "withdraw":
       WalletComponent = Withdraw;
       break;
 
@@ -41,7 +41,7 @@ export default function Wallet() {
       break;
   }
 
-  if (walletView === 'deposit') {
+  if (walletView === "deposit") {
   }
   return (
     <div className="sm:min-w-[40rem] max-w-[700px] p-3 w-auto_ flex flex-col overflow-y-auto max-h-[var(--app-height)] font-medium bg-dark-850 gap-2 rounded-md w-full max-sm:max-w-full max-sm:w-full text-sm text-gray-400 transform-none">
@@ -60,46 +60,32 @@ export default function Wallet() {
           </svg>
           Wallet
         </div>
-        <button className="absolute right-0">
-          <svg
-            stroke="currentColor"
-            fill="currentColor"
-            strokeWidth="0"
-            viewBox="0 0 24 24"
-            height="21"
-            width="21"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path fill="none" d="M0 0h24v24H0z"></path>
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
-          </svg>
-        </button>
       </div>
       <div className="flex flex-col">
         <div className="flex justify-center gap-2 py-1">
           <button
-            onClick={() => changeWalletView('deposit')}
+            onClick={() => changeWalletView("deposit")}
             className={clsx(
-              'text-sm font-semibold rounded-md px-3 py-1.5 transition-colors hover:bg-dark-800',
-              walletView === 'deposit' && 'text-white bg-dark-800',
+              "text-sm font-semibold rounded-md px-3 py-1.5 transition-colors hover:bg-dark-800",
+              walletView === "deposit" && "text-white bg-dark-800",
             )}
           >
             Deposit
           </button>
           <button
-            onClick={() => changeWalletView('withdraw')}
+            onClick={() => changeWalletView("withdraw")}
             className={clsx(
-              'text-sm font-semibold rounded-md px-3 py-1.5 transition-colors hover:bg-dark-800',
-              walletView === 'withdraw' && 'text-white bg-dark-800',
+              "text-sm font-semibold rounded-md px-3 py-1.5 transition-colors hover:bg-dark-800",
+              walletView === "withdraw" && "text-white bg-dark-800",
             )}
           >
             Withdraw
           </button>
           <button
-            onClick={() => changeWalletView('tip')}
+            onClick={() => changeWalletView("tip")}
             className={clsx(
-              'text-sm font-semibold rounded-md px-3 py-1.5 transition-colors hover:bg-dark-800',
-              walletView === 'tip' && 'text-white bg-dark-800',
+              "text-sm font-semibold rounded-md px-3 py-1.5 transition-colors hover:bg-dark-800",
+              walletView === "tip" && "text-white bg-dark-800",
             )}
           >
             Tip

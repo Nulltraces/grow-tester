@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
-import { API_URL } from '@/utils/constants';
+import store from "@/store";
+import { clearUser } from "@/store/slices/auth";
+import { API_URL } from "@/utils/constants";
 // api.js
-import axios from 'axios';
+import axios, { AxiosError } from "axios";
 const api = axios.create({
   baseURL: `${API_URL}/api`,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -24,8 +26,8 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    console.log('STORED_TOKEN: ', token);
+    const token = localStorage.getItem("token");
+    console.log("STORED_TOKEN: ", token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -37,19 +39,27 @@ api.interceptors.request.use(
 );
 
 // Add a response interceptor
-// api.interceptors.response.use(
-//   (response) => {
-//     // You can modify the response data here, e.g., handling pagination
-//     return response.data;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
+api.interceptors.response.use(
+  (response) => {
+    // You can modify the response data here, e.g., handling pagination
+    console.log("RES_STATUS: ", response.status);
+
+    console.log("INTERCEPTOR_DATA: ", response.data);
+    return response;
+  },
+  (error: AxiosError) => {
+    console.log("INTERCEPTOR_ERROR: ", error.code);
+    if (error.response?.status === 401) {
+      console.log("REMOVING_USER");
+      store.dispatch(clearUser());
+    }
+    return Promise.reject(error);
+  },
+);
 
 export const axiosPrivate = axios.create({
   baseURL: API_URL,
-  headers: { 'Content-Type': 'application/json' },
+  headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
 

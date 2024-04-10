@@ -17,7 +17,7 @@ import {
 } from "@/components";
 import { Disclosure, Menu } from "@headlessui/react";
 import clsx from "clsx";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Games } from "..";
 import MenuButton from "../MenuButton";
 import { games } from "@/data/games";
@@ -33,6 +33,8 @@ import { SilverLockIcon, YellowLockIcon } from "@/assets/icons";
 import { useEffect, useState } from "react";
 import { getBalance } from "@/services/wallet";
 import { changeCurrency, updateBalance } from "@/store/slices/wallet";
+import socket from "@/utils/constants";
+import { toast } from "react-toastify";
 
 const toggleHeaderModal = {
   leaderboard() {
@@ -97,9 +99,16 @@ export default function Header() {
     <header className="shrink-0 relative md:static h-16 flex py-2.5 w-full fixed_ !z-40 top-0 left-0 min-h-[var(--header-height)] max-h-[var(--header-height)] bg-dark-850 shadow-md whitespace-nowrap">
       <div className="mx-auto w-[97%] flex items-center h-full">
         <div className="flex items-center w-full gap-4">
-          <h1 className="">
-            <img src="/logo.png" className="w-48" />
-          </h1>
+          <Link to="/">
+            <h1 className="logo-text !text-4xl">
+              <div className="sm:hidden flex items-center -space-x-1 text-white">
+                <span className="">G</span>{" "}
+                <img src="/logo-sm.png" className="w-8" />
+                <span className="">G</span>
+              </div>
+              <img src="/logo.png" className="w-48 hidden sm:inline-block" />
+            </h1>
+          </Link>
 
           {/* <div className="flex items-center gap-4"></div> */}
           <HeaderItems />
@@ -427,11 +436,26 @@ function HeaderItemsSM() {
   );
 }
 
+let walletBalance = 0;
 function Balance() {
   const setSearchParams = useSearchParams()[1];
 
   const dispatch = useAppDispatch();
   const { balance, currency } = useAppSelector((state) => state.wallet);
+
+  useEffect(() => {
+    if (!balance) return;
+
+    walletBalance = balance;
+  }, [balance]);
+
+  useEffect(() => {
+    socket.on("tip", (data) => {
+      toast(data.message);
+      dispatch(updateBalance(walletBalance + data.amount));
+      console.log("SOCKET_BALANCE", { socket: data, balance });
+    });
+  }, []);
 
   console.log("BALANCE---->", balance);
 

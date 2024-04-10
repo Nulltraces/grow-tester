@@ -13,7 +13,9 @@ import "./userprofile.css";
 import { SilverLockIcon } from "@/assets/icons";
 import api from "@/api/axios";
 import { AxiosResponse } from "axios";
-import { useAppSelector } from "@/hooks/store";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
+import { logout } from "@/services/auth";
+import { closeModal, triggerModal } from "@/store/slices/modal";
 
 const UserStats = {
   totalBets: "totalBets",
@@ -46,9 +48,10 @@ export default function UserProfile({
 }) {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<UserProfile | null>();
-  const auth = useAppSelector((state) => state.auth);
 
-  console.log({ username });
+  const dispatch = useAppDispatch();
+
+  const auth = useAppSelector((state) => state.auth);
 
   // Check if the user profile being requested for belongs to the current user, to view as the owner of the account
   const ownAccount = self && username === auth.user?.username;
@@ -171,7 +174,26 @@ export default function UserProfile({
             <button className="sc-1xm9mse-0 lfSLTO text-sm rounded-sm text-nowrap">
               Reset Password
             </button>
-            <button className="sc-1xm9mse-0 fkyWKB text-sm rounded-sm text-nowrap gap-1">
+            <button
+              onClick={() => {
+                dispatch(
+                  triggerModal({
+                    message: {
+                      title: "Logout",
+                      text: "Are you sure you want to logout?",
+                    },
+                    confirm() {
+                      logout();
+                    },
+                    cancel() {
+                      dispatch(closeModal());
+                    },
+                    show: true,
+                  }),
+                );
+              }}
+              className="sc-1xm9mse-0 fkyWKB text-sm rounded-sm text-nowrap gap-1"
+            >
               <svg
                 stroke="currentColor"
                 fill="currentColor"

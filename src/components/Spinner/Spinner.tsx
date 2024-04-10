@@ -1,5 +1,5 @@
-import clsx from "clsx";
 import { useEffect } from "react";
+import "./spinner.css";
 
 // const SMALL_CONTAINER = "w-8 h-8";
 // // const SMALL_CHILD = "w-[50%] h-4";
@@ -19,7 +19,6 @@ import { useEffect } from "react";
 export default function Spinner({
   color,
   size,
-  className,
 }: {
   color?: string;
   size?: "small" | "medium" | "large";
@@ -72,17 +71,18 @@ export default function Spinner({
   // }
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
-      <div
-        className={clsx(
-          "z-10 mx-auto animate-spin flex justify-center before:absolute before:rounded-full before:-bottom-0 before:-left-[0.1rem] after:absolute after:rounded-full after:-bottom-0 after:-right-[0.1rem] before:w-[50%] before:h-[50%] after:w-[50%] after:h-[50%] before:bg-white after:bg-white w-4 h-4",
-          className
-        )}
-      >
-        <div
-          className={`absolute -top-[0.1rem] rounded-full w-[50%] h-[50%] bg-white`}
-        />
-      </div>
-    </div>
+    // <div className="w-full h-full flex items-center justify-center">
+    //   <div
+    //     className={clsx(
+    //       "z-10 mx-auto animate-spin flex justify-center before:absolute before:rounded-full before:-bottom-0 before:-left-[0.1rem] after:absolute after:rounded-full after:-bottom-0 after:-right-[0.1rem] before:w-[50%] before:h-[50%] after:w-[50%] after:h-[50%] before:bg-white after:bg-white w-4 h-4",
+    //       className
+    //     )}
+    //   >
+    //     <div
+    //       className={`absolute -top-[0.1rem] rounded-full w-[50%] h-[50%] bg-white`}
+    //     />
+    //   </div>
+    // </div>
+    <span className="spinner"></span>
   );
 }

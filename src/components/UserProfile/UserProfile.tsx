@@ -16,7 +16,6 @@ import { AxiosResponse } from "axios";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { logout } from "@/services/auth";
 import { closeModal, triggerModal } from "@/store/slices/modal";
-import Loader from "./Loader";
 
 const UserStats = {
   totalBets: "totalBets",
@@ -103,7 +102,7 @@ export default function UserProfile({
   return (
     <ProfileWrapper>
       {loading ? (
-        <div className="h-10">
+        <div className="h-24 w-full flex items-center justify-center">
           <Spinner />
         </div>
       ) : user ? (

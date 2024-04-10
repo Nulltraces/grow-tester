@@ -6,7 +6,7 @@ import {
   StatsIcon,
   UserEditIcon,
 } from "@/assets/svgs";
-import { Button } from "..";
+import { Button, Spinner } from "..";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import User1 from "@/assets/users/user-1.png";
 import "./userprofile.css";
@@ -16,6 +16,7 @@ import { AxiosResponse } from "axios";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { logout } from "@/services/auth";
 import { closeModal, triggerModal } from "@/store/slices/modal";
+import Loader from "./Loader";
 
 const UserStats = {
   totalBets: "totalBets",
@@ -99,226 +100,232 @@ export default function UserProfile({
     testRef.current.textContent = `Testing`;
   }, []);
 
-  return loading ? (
-    // <Loader />
-    "Loading..."
-  ) : user ? (
+  return (
     <ProfileWrapper>
-      <div className="rounded-md flex flex-col sm:flex-row sm:items-end overflow-clip __user-bg__ sm:h-40 mt-2">
-        <div className="mx-auto sm:mx-0 sm:w-24 sm:ml-4">
-          <img
-            src={user?.photo || User1}
-            className="object-cover w-full __user-photo__ h-[220px] sm:!h-auto"
-            style={{
-              imageRendering: "pixelated",
-            }}
-          />
+      {loading ? (
+        <div className="h-10">
+          <Spinner />
         </div>
-        <div className="h-full w-[96%] mx-auto sm:mx-0 sm:p-6 sm:pl-4 space-y-2">
-          <div className="flex gap-1 items-center justify-center sm:justify-start">
-            <h2 className="text-3xl font-bold">{user?.username}</h2>
-            <div className="p-1 h-fit py-[2px] rounded uppercase bg-[rgb(161,152,121)] text font-bold bg-amber text-gray-950 whitespace-nowrap">
-              {/* User Level */}
-              lvl {user.level}
+      ) : user ? (
+        <>
+          <div className="rounded-md flex flex-col sm:flex-row sm:items-end overflow-clip __user-bg__ sm:h-40 mt-2">
+            <div className="mx-auto sm:mx-0 sm:w-24 sm:ml-4">
+              <img
+                src={user?.photo || User1}
+                className="object-cover w-full __user-photo__ h-[220px] sm:!h-auto"
+                style={{
+                  imageRendering: "pixelated",
+                }}
+              />
             </div>
-          </div>
-          <div className="space-y-1 w-full flex flex-col items-center sm:items-start">
-            <div className="flex gap-2 items-center text-xs font-semibold">
-              <span className="uppercase  text-[#A3A6C2]">xp:</span>{" "}
-              <span>{"8,110/10,563"}</span>
-            </div>
-            <div className="w-full h-3 relative after:bg-primary after:rounded overflow-clip after:absolute after:left-0 after:w-1/2 after:h-full  bg-gray-800/60 rounded-md" />
-            <div className="flex gap-2 items-center text-sm font-semibold">
-              <span className="uppercase text-[#A3A6C2]">join date:</span>{" "}
-              <span>
-                {/* NOTE: Format date */}
-                {new Date(user.joinDate).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false,
-                })}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="space-y-1 p-2 bg-dark-800 rounded mt-3">
-        {ownAccount ? (
-          <div className="bg-dark-800 gap-2 flex flex-col p-2.5 rounded-sm">
-            <button className="sc-1xm9mse-0 lfSLTO text-sm rounded-sm text-nowrap">
-              <span className="flex gap-1">
-                <UserEditIcon />
-                Edit Profile
-              </span>
-            </button>
-            <div className="text-sm font-semibold">
-              <div className="sc-19jkrre-0 jDHDhD">
-                <span className="flex items-center gap-1">
-                  <span className="text-gray-500">Email:</span>
-                  {user.email &&
-                    user.email.slice(0, Math.min(user.email.indexOf("@"), 3)) +
-                      "*".repeat(Math.max(0, user.email.indexOf("@") - 3)) +
-                      user.email.slice(user.email.indexOf("@"))}
-                  <span className="text-xs font-semibold text-red-400">
-                    (Not Verified)
+            <div className="h-full w-[96%] mx-auto sm:mx-0 sm:p-6 sm:pl-4 space-y-2">
+              <div className="flex gap-1 items-center justify-center sm:justify-start">
+                <h2 className="text-3xl font-bold">{user?.username}</h2>
+                <div className="p-1 h-fit py-[2px] rounded uppercase bg-[rgb(161,152,121)] text font-bold bg-amber text-gray-950 whitespace-nowrap">
+                  {/* User Level */}
+                  lvl {user.level}
+                </div>
+              </div>
+              <div className="space-y-1 w-full flex flex-col items-center sm:items-start">
+                <div className="flex gap-2 items-center text-xs font-semibold">
+                  <span className="uppercase  text-[#A3A6C2]">xp:</span>{" "}
+                  <span>{"8,110/10,563"}</span>
+                </div>
+                <div className="w-full h-3 relative after:bg-primary after:rounded overflow-clip after:absolute after:left-0 after:w-1/2 after:h-full  bg-gray-800/60 rounded-md" />
+                <div className="flex gap-2 items-center text-sm font-semibold">
+                  <span className="uppercase text-[#A3A6C2]">join date:</span>{" "}
+                  <span>
+                    {/* NOTE: Format date */}
+                    {new Date(user.joinDate).toLocaleString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
                   </span>
-                </span>
-                <button className="sc-1xm9mse-0 lfSLTO text-sm rounded-sm text-nowrap">
-                  Send Verification Email
-                </button>
+                </div>
               </div>
             </div>
-            <button className="sc-1xm9mse-0 lfSLTO text-sm rounded-sm text-nowrap">
-              Reset Password
-            </button>
-            <button
-              onClick={() => {
-                dispatch(
-                  triggerModal({
-                    message: {
-                      title: "Logout",
-                      text: "Are you sure you want to logout?",
-                    },
-                    confirm() {
-                      logout();
-                    },
-                    cancel() {
-                      dispatch(closeModal());
-                    },
-                    show: true,
-                  }),
-                );
-              }}
-              className="sc-1xm9mse-0 fkyWKB text-sm rounded-sm text-nowrap gap-1"
-            >
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                strokeWidth="0"
-                viewBox="0 0 24 24"
-                height="18"
-                width="18"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M16 13v-2H7V8l-5 4 5 4v-3z"></path>
-                <path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path>
-              </svg>{" "}
-              Log Out
-            </button>
           </div>
-        ) : (
-          <>
-            <header>
-              <h3 className="capitalize text-sm sm:text-base font-semibold text-gray-400">
-                actions
-              </h3>
-            </header>
-            <Button className="flex items-center capitalize gap-1 w-full !py-1">
-              <CurrencyNote2Icon />
-              <p>tip</p>
-            </Button>
-          </>
-        )}
-      </div>
-      <div className="bg-dark-800 p-2.5 mt-3 rounded-sm gap-2 flex flex-col">
-        <span className="text-[1rem] gap-1 font-semibold flex items-center text-gray-400">
-          <StatsIcon />
-          User Statistics
-        </span>
-        <div className="grid auto-rows-auto grid-cols-2 gap-2">
-          <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-            <span className="flex gap-1 items-center">
-              <DieIcon />
-              <span>Total Bets</span>
-            </span>
-            <span className="text-white gap-1 flex items-center">
-              {user.bets}
-            </span>
+          <div className="space-y-1 p-2 bg-dark-800 rounded mt-3">
+            {ownAccount ? (
+              <div className="bg-dark-800 gap-2 flex flex-col p-2.5 rounded-sm">
+                <button className="sc-1xm9mse-0 lfSLTO text-sm rounded-sm text-nowrap">
+                  <span className="flex gap-1">
+                    <UserEditIcon />
+                    Edit Profile
+                  </span>
+                </button>
+                <div className="text-sm font-semibold">
+                  <div className="sc-19jkrre-0 jDHDhD">
+                    <span className="flex items-center gap-1">
+                      <span className="text-gray-500">Email:</span>
+                      {user.email &&
+                        user.email.slice(
+                          0,
+                          Math.min(user.email.indexOf("@"), 3),
+                        ) +
+                          "*".repeat(Math.max(0, user.email.indexOf("@") - 3)) +
+                          user.email.slice(user.email.indexOf("@"))}
+                      <span className="text-xs font-semibold text-red-400">
+                        (Not Verified)
+                      </span>
+                    </span>
+                    <button className="sc-1xm9mse-0 lfSLTO text-sm rounded-sm text-nowrap">
+                      Send Verification Email
+                    </button>
+                  </div>
+                </div>
+                <button className="sc-1xm9mse-0 lfSLTO text-sm rounded-sm text-nowrap">
+                  Reset Password
+                </button>
+                <button
+                  onClick={() => {
+                    dispatch(
+                      triggerModal({
+                        message: {
+                          title: "Logout",
+                          text: "Are you sure you want to logout?",
+                        },
+                        confirm() {
+                          logout();
+                        },
+                        cancel() {
+                          dispatch(closeModal());
+                        },
+                        show: true,
+                      }),
+                    );
+                  }}
+                  className="sc-1xm9mse-0 fkyWKB text-sm rounded-sm text-nowrap gap-1"
+                >
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    height="18"
+                    width="18"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M16 13v-2H7V8l-5 4 5 4v-3z"></path>
+                    <path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path>
+                  </svg>{" "}
+                  Log Out
+                </button>
+              </div>
+            ) : (
+              <>
+                <header>
+                  <h3 className="capitalize text-sm sm:text-base font-semibold text-gray-400">
+                    actions
+                  </h3>
+                </header>
+                <Button className="flex items-center capitalize gap-1 w-full !py-1">
+                  <CurrencyNote2Icon />
+                  <p>tip</p>
+                </Button>
+              </>
+            )}
           </div>
-          <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-            <span className="flex gap-1 items-center">
-              <DieIcon />
-              <span>Games Won</span>
-            </span>
-            <span className="text-white gap-1 flex items-center">
-              {user.wins}
-            </span>
-          </div>
-          <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-            <span className="flex gap-1 items-center">
-              <CoinsIcon />
-              <span>Total Wagered</span>
-            </span>
-            <span className="text-white gap-1 flex items-center">
-              {user.wagered}
-              <img
-                src={SilverLockIcon}
-                width="18"
-                height="18"
-                className="sc-x7t9ms-0 dnLnNz"
-              />
-            </span>
-          </div>
-          <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-            <span className="flex gap-1 items-center">
-              <HanCoinsIcon />
-              <span>Net Profit</span>
-            </span>
-            <span className="text-white gap-1 flex items-center">
-              <span className="flex items-center gap-1">
-                {user.netProfit}
-                <img
-                  src={SilverLockIcon}
-                  width="18"
-                  height="18"
-                  className="sc-x7t9ms-0 dnLnNz"
-                />
-              </span>
-            </span>
-          </div>
-          <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-            <span className="flex gap-1 items-center">
+          <div className="bg-dark-800 p-2.5 mt-3 rounded-sm gap-2 flex flex-col">
+            <span className="text-[1rem] gap-1 font-semibold flex items-center text-gray-400">
               <StatsIcon />
-              <span>All Time High</span>
+              User Statistics
             </span>
-            <span className="text-white gap-1 flex items-center">
-              {user.allTimeHigh}
-              <img
-                src={SilverLockIcon}
-                width="18"
-                height="18"
-                className="sc-x7t9ms-0 dnLnNz"
-              />
-            </span>
+            <div className="grid auto-rows-auto grid-cols-2 gap-2">
+              <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
+                <span className="flex gap-1 items-center">
+                  <DieIcon />
+                  <span>Total Bets</span>
+                </span>
+                <span className="text-white gap-1 flex items-center">
+                  {user.bets}
+                </span>
+              </div>
+              <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
+                <span className="flex gap-1 items-center">
+                  <DieIcon />
+                  <span>Games Won</span>
+                </span>
+                <span className="text-white gap-1 flex items-center">
+                  {user.wins}
+                </span>
+              </div>
+              <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
+                <span className="flex gap-1 items-center">
+                  <CoinsIcon />
+                  <span>Total Wagered</span>
+                </span>
+                <span className="text-white gap-1 flex items-center">
+                  {user.wagered}
+                  <img
+                    src={SilverLockIcon}
+                    width="18"
+                    height="18"
+                    className="sc-x7t9ms-0 dnLnNz"
+                  />
+                </span>
+              </div>
+              <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
+                <span className="flex gap-1 items-center">
+                  <HanCoinsIcon />
+                  <span>Net Profit</span>
+                </span>
+                <span className="text-white gap-1 flex items-center">
+                  <span className="flex items-center gap-1">
+                    {user.netProfit}
+                    <img
+                      src={SilverLockIcon}
+                      width="18"
+                      height="18"
+                      className="sc-x7t9ms-0 dnLnNz"
+                    />
+                  </span>
+                </span>
+              </div>
+              <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
+                <span className="flex gap-1 items-center">
+                  <StatsIcon />
+                  <span>All Time High</span>
+                </span>
+                <span className="text-white gap-1 flex items-center">
+                  {user.allTimeHigh}
+                  <img
+                    src={SilverLockIcon}
+                    width="18"
+                    height="18"
+                    className="sc-x7t9ms-0 dnLnNz"
+                  />
+                </span>
+              </div>
+              <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
+                <span className="flex gap-1 items-center">
+                  <StatsIcon />
+                  <span>All Time Low</span>
+                </span>
+                <span className="text-white gap-1 flex items-center">
+                  {user.allTimeLow}
+                  <img
+                    src={SilverLockIcon}
+                    width="18"
+                    height="18"
+                    className="sc-x7t9ms-0 dnLnNz"
+                  />
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-            <span className="flex gap-1 items-center">
-              <StatsIcon />
-              <span>All Time Low</span>
-            </span>
-            <span className="text-white gap-1 flex items-center">
-              {user.allTimeLow}
-              <img
-                src={SilverLockIcon}
-                width="18"
-                height="18"
-                className="sc-x7t9ms-0 dnLnNz"
-              />
-            </span>
-          </div>
+        </>
+      ) : (
+        <div className="w-full h-40 flex items-center justify-center">
+          <p className="text-4xl text-center font-bold text-gray-400">
+            User Unavailable
+          </p>
         </div>
-      </div>
-    </ProfileWrapper>
-  ) : (
-    <ProfileWrapper>
-      <div className="w-full h-40 flex items-center justify-center">
-        <p className="text-4xl text-center font-bold text-gray-400">
-          User Unavailable
-        </p>
-      </div>
+      )}
     </ProfileWrapper>
   );
 }

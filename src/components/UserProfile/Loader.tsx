@@ -30,10 +30,10 @@ export default function Loader() {
           </div>
           <div className="h-full p-6 pl-4 space-y-2">
             <div className="flex gap-1 items-center">
-              <h2 className="text-3xl font-bold">UserName</h2>
+              <h2 className="text-3xl font-bold">UserName...</h2>
               <div className="p-1 h-fit py-[2px] rounded uppercase bg-[rgb(161,152,121)] text font-bold bg-amber text-gray-950">
                 {/* User Level */}
-                lvl {"11"}
+                lvl {"..."}
               </div>
             </div>
             <div className="space-y-1">
@@ -44,7 +44,7 @@ export default function Loader() {
               <div className="w-full h-3 relative after:bg-primary after:rounded overflow-clip after:absolute after:left-0 after:w-1/2 after:h-full  bg-gray-800/60 rounded-md" />
               <div className="flex gap-2 items-center text-sm font-semibold">
                 <span className="uppercase text-[#A3A6C2]">join date:</span>{" "}
-                <span>{"September 27th 2023, 09:47"}</span>
+                <span>{"..."}</span>
               </div>
             </div>
           </div>

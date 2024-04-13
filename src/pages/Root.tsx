@@ -40,7 +40,7 @@ export default function Root() {
           clickToDisable: true,
           show: true,
           className: "",
-          cancel: () => setSearchParams({ modal: "false" }),
+          // cancel: () => setSearchParams({ modal: "false" }),
         }),
       );
     } else if (authModal === "false") {

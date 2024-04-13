@@ -101,12 +101,12 @@ export default function Header() {
         <div className="flex items-center w-full gap-4">
           <Link to="/">
             <h1 className="logo-text !text-4xl">
-              <div className="sm:hidden flex items-center -space-x-1 text-white">
+              <div className="flex items-center -space-x-1 text-white sm:hidden">
                 <span className="">G</span>{" "}
                 <img src="/logo-sm.png" className="w-8" />
                 <span className="">G</span>
               </div>
-              <img src="/logo.png" className="w-48 hidden sm:inline-block" />
+              <img src="/logo.png" className="hidden w-48 sm:inline-block" />
             </h1>
           </Link>
 
@@ -114,7 +114,7 @@ export default function Header() {
           <HeaderItems />
           <HeaderItemsSM />
           {auth.isAuthenticated ? (
-            <div className="flex ml-auto items-center gap-2 text-sm">
+            <div className="flex items-center gap-2 ml-auto text-sm">
               <Balance />
               <button
                 onClick={() =>
@@ -131,7 +131,7 @@ export default function Header() {
                 }
                 className="!cursor-pointer bg-dark-750 h-full flex items-center gap-1.5 px-2 py-1 rounded font-semibold text-sm hover:opacity-75 transition-all"
               >
-                <figure className="sc-1nayyv1-1 avatar cursor-pointer w-8 rounded-full overflow-clip">
+                <figure className="w-8 rounded-full cursor-pointer sc-1nayyv1-1 avatar overflow-clip">
                   {auth?.user?.photo ? (
                     <img
                       draggable="false"
@@ -147,10 +147,10 @@ export default function Header() {
               </button>
             </div>
           ) : (
-            <div className="ml-auto flex items-center gap-4">
+            <div className="flex items-center gap-4 ml-auto">
               <button
                 onClick={() => setSearchParams({ modal: "sign-in" })}
-                className="text-white text-sm font-semibold py-2 px-4"
+                className="px-4 py-2 text-sm font-semibold text-white"
               >
                 Sign In
               </button>
@@ -187,7 +187,7 @@ function HeaderItems() {
     return (
       <button onClick={(e) => onClick?.(e)} className="flex gap-1">
         <Icon />
-        <p className="uppercase text-white text-sm font-bold">{text}</p>
+        <p className="text-sm font-bold text-white uppercase">{text}</p>
       </button>
     );
   };
@@ -212,7 +212,7 @@ function HeaderItems() {
             <Disclosure>
               {({ open }) => (
                 <>
-                  <Disclosure.Button className="flex flex-row items-center w-fit gap-1 justify-between">
+                  <Disclosure.Button className="flex flex-row items-center justify-between gap-1 w-fit">
                     <DieIcon className="!fill-primary !stroke-primary" />
                     <h5 className="text-primary !font-bold uppercase">games</h5>
                     <ExpandMoreIcon
@@ -242,11 +242,11 @@ function HeaderItems() {
               )}
             </Disclosure>
           </div>
-          <div className="pt-4 bg-dark-850 z-10">
+          <div className="z-10 pt-4 bg-dark-850">
             <Disclosure>
               {({ open }) => (
                 <>
-                  <Disclosure.Button className="flex flex-row items-center w-fit gap-1 justify-between">
+                  <Disclosure.Button className="flex flex-row items-center justify-between gap-1 w-fit">
                     <GiftBoxIcon className="!fill-primary !stroke-primary" />
                     <h5 className="text-primary !font-bold uppercase">
                       rewards
@@ -281,7 +281,7 @@ function HeaderItems() {
               )}
             </Disclosure>
           </div>
-          <div className="pt-4 space-y-4 bg-dark-850 h-full z-20">
+          <div className="z-20 h-full pt-4 space-y-4 bg-dark-850">
             <HeaderLinkItem
               icon={CashStackIcon}
               text="affiliates"
@@ -326,7 +326,7 @@ function HeaderItemsSM() {
     return (
       <button onClick={(e) => onClick?.(e)} className="flex gap-1">
         <Icon />
-        <p className="uppercase text-white text-sm font-bold md:hidden">
+        <p className="text-sm font-bold text-white uppercase md:hidden">
           {text}
         </p>
       </button>
@@ -342,7 +342,7 @@ function HeaderItemsSM() {
       <Menu>
         {({ open }) => (
           <>
-            <Menu.Button className="flex flex-row items-center w-fit gap-1 justify-between">
+            <Menu.Button className="flex flex-row items-center justify-between gap-1 w-fit">
               <DieIcon className="!fill-white !stroke-white" />
               {/* <h5 className="md:hidden text-white !font-bold uppercase">
                 games
@@ -360,7 +360,7 @@ function HeaderItemsSM() {
               exit={{ translateY: -400, opacity: 0 }}
               animate={{ translateY: 0, opacity: 1 }}
               transition={{ type: "keyframes" }}
-              className="absolute top-16 w-full left-0 h-full_ bg-dark-800 rounded-xl flex items-center justify-center p-2"
+              className="absolute left-0 flex items-center justify-center w-full p-2 top-16 h-full_ bg-dark-800 rounded-xl"
             >
               <div className="h-[96%] w-[99%] overflow-auto pr-2">
                 <Games />
@@ -373,7 +373,7 @@ function HeaderItemsSM() {
       <Menu>
         {({ open }) => (
           <>
-            <Menu.Button className="flex flex-row items-center w-fit gap-1 justify-between">
+            <Menu.Button className="flex flex-row items-center justify-between gap-1 w-fit">
               <GiftBoxIcon className="!fill-white !stroke-white" />
               {/* <h5 className="md:hidden text-primary !font-bold uppercase">
                 rewards
@@ -391,7 +391,7 @@ function HeaderItemsSM() {
               exit={{ translateY: -400, opacity: 0 }}
               animate={{ translateY: 0, opacity: 1 }}
               transition={{ type: "keyframes" }}
-              className="absolute top-16 w-full left-0 h-full_ bg-dark-800 rounded-xl flex items-center justify-center p-2"
+              className="absolute left-0 flex items-center justify-center w-full p-2 top-16 h-full_ bg-dark-800 rounded-xl"
             >
               <div className="h-[96%] w-[99%] overflow-auto pr-2">
                 <div className="flex items-center justify-center gap-4">
@@ -479,7 +479,7 @@ function Balance() {
   }, []);
 
   return (
-    <div className="bg-dark-750 rounded-l font-semibold pl-2 flex items-center gap-4 h-full max-md:absolute max-md:left-1/2 max-md:-translate-x-1/2  max-h-10">
+    <div className="flex items-center h-full gap-4 pl-2 font-semibold rounded-l bg-dark-750 max-md:absolute max-md:left-1/2 max-md:-translate-x-1/2 max-h-10">
       <button
         onClick={() => dispatch(changeCurrency())}
         className="relative flex items-center gap-1.5 px-0.5 cursor-pointer hover:opacity-75 transition-all text-sm"

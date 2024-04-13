@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <link rel="stylesheet" href="global.css" />
+    <link rel="stylesheet" href="crash.css" />
+    <link rel="stylesheet" href="assets/index-402b42ea.css" />
+  </head>
+  <body>
+    <div class="grid grid-cols-6 gap-2">
+      <button
+        class="flex items-center justify-center p-2 text-sm font-semibold text-gray-400 rounded-sm bg-dark-700"
+      >
+        1.53×</button
+      ><button
+        class="flex items-center justify-center p-2 text-sm font-semibold text-gray-400 rounded-sm bg-dark-700"
+      >
+        1.04×</button
+      ><button
+        class="flex items-center justify-center p-2 text-sm font-semibold text-gray-400 rounded-sm bg-dark-700"
+      >
+        1.04×</button
+      ><button
+        class="flex items-center justify-center p-2 text-sm font-semibold bg-green-400 rounded-sm bg-dark-700"
+      >
+        2.22×</button
+      ><button
+        class="flex items-center justify-center p-2 text-sm font-semibold text-gray-400 rounded-sm bg-dark-700"
+      >
+        1.01×</button
+      ><button
+        class="flex items-center justify-center p-2 text-sm font-semibold text-gray-400 rounded-sm bg-dark-700"
+      >
+        1.02×
+      </button>
+    </div>
+    <div
+      class="min-h-[450px] overflow-hidden relative w-full rounded-md"
+      id="crashRenderer"
+    >
+      <div
+        class="absolute top-0 left-0 overflow-hidden rounded-md pointer-events-none z-1 bg-dark-750"
+      >
+        <canvas width="397" height="450"></canvas>
+      </div>
+      <div class="absolute w-full flex p-2.5 z-5 gap-2 text-gray-500">
+        <button
+          class="transition-colors hover:text-white font-semibold text-sm flex items-center gap-0.5"
+        >
+          <svg
+            stroke="currentColor"
+            fill="currentColor"
+            stroke-width="0"
+            viewBox="0 0 1024 1024"
+            height="18"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M866.9 169.9L527.1 54.1C523 52.7 517.5 52 512 52s-11 .7-15.1 2.1L157.1 169.9c-8.3 2.8-15.1 12.4-15.1 21.2v482.4c0 8.8 5.7 20.4 12.6 25.9L499.3 968c3.5 2.7 8 4.1 12.6 4.1s9.2-1.4 12.6-4.1l344.7-268.6c6.9-5.4 12.6-17 12.6-25.9V191.1c.2-8.8-6.6-18.3-14.9-21.2zM694.5 340.7L481.9 633.4a16.1 16.1 0 0 1-26 0l-126.4-174c-3.8-5.3 0-12.7 6.5-12.7h55.2c5.1 0 10 2.5 13 6.6l64.7 89 150.9-207.8c3-4.1 7.8-6.6 13-6.6H688c6.5.1 10.3 7.5 6.5 12.8z"
+            ></path></svg
+          ><span>Provably Fair</span></button
+        ><button class="text-sm flex gap-0.5 font-semibold">
+          <svg
+            stroke="currentColor"
+            fill="currentColor"
+            stroke-width="0"
+            viewBox="0 0 512 512"
+            height="18"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M256 176a80 80 0 1080 80 80.24 80.24 0 00-80-80zm172.72 80a165.53 165.53 0 01-1.64 22.34l48.69 38.12a11.59 11.59 0 012.63 14.78l-46.06 79.52a11.64 11.64 0 01-14.14 4.93l-57.25-23a176.56 176.56 0 01-38.82 22.67l-8.56 60.78a11.93 11.93 0 01-11.51 9.86h-92.12a12 12 0 01-11.51-9.53l-8.56-60.78A169.3 169.3 0 01151.05 393L93.8 416a11.64 11.64 0 01-14.14-4.92L33.6 331.57a11.59 11.59 0 012.63-14.78l48.69-38.12A174.58 174.58 0 0183.28 256a165.53 165.53 0 011.64-22.34l-48.69-38.12a11.59 11.59 0 01-2.63-14.78l46.06-79.52a11.64 11.64 0 0114.14-4.93l57.25 23a176.56 176.56 0 0138.82-22.67l8.56-60.78A11.93 11.93 0 01209.94 26h92.12a12 12 0 0111.51 9.53l8.56 60.78A169.3 169.3 0 01361 119l57.2-23a11.64 11.64 0 0114.14 4.92l46.06 79.52a11.59 11.59 0 01-2.63 14.78l-48.69 38.12a174.58 174.58 0 011.64 22.66z"
+            ></path></svg
+          >Settings
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

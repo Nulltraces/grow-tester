@@ -5,6 +5,7 @@ import { clearUser } from "@/store/slices/auth";
 import { API_URL } from "@/utils/constants";
 // api.js
 import axios, { AxiosError } from "axios";
+import { toast } from "react-toastify";
 const api = axios.create({
   baseURL: `${API_URL}/api`,
   headers: {
@@ -52,6 +53,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       console.log("REMOVING_USER");
       store.dispatch(clearUser());
+      toast.info("Logged out");
     }
     return Promise.reject(error);
   },

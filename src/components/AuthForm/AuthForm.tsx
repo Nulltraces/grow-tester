@@ -45,6 +45,13 @@ export default function AuthForm({ route = "sign-in" }: Props) {
   };
 
   useEffect(() => {
+    return () => {
+      console.log("EXITING AUTH_FORM");
+      setSearchParams({ modal: "false" });
+    };
+  }, []);
+
+  useEffect(() => {
     console.log(
       { isDisabled },
       formData?.email,

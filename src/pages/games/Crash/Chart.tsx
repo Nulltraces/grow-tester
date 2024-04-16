@@ -1,4 +1,3 @@
-import { Tooltip } from "chart.js";
 import { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 

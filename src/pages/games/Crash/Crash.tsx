@@ -1,7 +1,112 @@
 import { Bets } from "@/pages/landing/components";
 import Chart from "./Chart";
+import { useEffect, useState } from "react";
+import socket from "@/utils/constants";
+import { useAppSelector } from "@/hooks/store";
+import { SilverLockIcon } from "@/assets/icons";
+import { GearIcon, ShieldIcon, XClose } from "@/assets/svgs";
+import clsx from "clsx";
+import { Input } from "@/components";
+import { toast } from "react-toastify";
+
+type Player = {
+  user?: { username: string; photo: string };
+  multiplier: number;
+  bet: number;
+  profit: number;
+};
 
 export default function Crash() {
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [player, setPlayer] = useState<Player>({
+    bet: 0,
+    multiplier: 0,
+    profit: 0,
+    user: undefined,
+  });
+  const [autoCashout, setAutoCashout] = useState(2);
+
+  const auth = useAppSelector((state) => state.auth);
+
+  const totalBets = players
+    .map((player) => player.bet)
+    .reduce((acc, curr) => acc + curr, 0);
+
+  console.log({ totalBets, bets: players.map((player) => player.bet) });
+
+  const joinGame = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+
+    if (!player.bet) return toast.error("please enter a valid bet amount");
+
+    socket.emit("crash:join_room", {
+      player: {
+        bet: player?.bet,
+        multiplier: player?.multiplier,
+        user: { username: auth.user?.username, photo: auth.user?.photo },
+      } as Player,
+      socketId: socket.id,
+    });
+
+    toast.success("bet placed!");
+  };
+
+  useEffect(() => {
+    socket.emit("crash:get_players");
+
+    socket.on("crash:players", (players: Player[]) => {
+      console.log("CRASH_PLAYERS: ", { players });
+      setPlayers(players);
+    });
+
+    // return () => {
+    //   socket.off("join_chat");
+    // };
+  }, []);
+
+  // const
+
+  const PlayerRow = ({ player }: { player: Player }) => (
+    <tr className="text-[0.8rem] text-gray-400 font-semibold cursor-pointer hover:bg-dark-600 transition-colors">
+      <td className="pl-1.5 rounded-l-sm text-left w-[20%]">
+        <div className="flex gap-1.5 items-center">
+          <div className="sc-1nayyv1-1 kAmJof">
+            <img
+              draggable="false"
+              src="https://avatar.growdice.lol/0-4182-0-7922-4684-362-00-04-3370516479.png"
+              alt="Picture"
+              className="sc-1nayyv1-0 kedPun"
+            />
+          </div>
+          {player.user?.username}
+        </div>
+      </td>
+      <td className="text-center">-</td>
+      <td className="text-center">
+        <span className="flex items-center justify-center gap-1">
+          {player.bet || 0.65}
+          <img
+            src={SilverLockIcon}
+            width="18"
+            height="18"
+            className="sc-x7t9ms-0 dnLnNz"
+          />
+        </span>
+      </td>
+      <td className="rounded-r-sm text-right h-[40px] pr-1.5">
+        <span className="flex items-center justify-end gap-1">
+          -
+          <img
+            src={SilverLockIcon}
+            width="18"
+            height="18"
+            className="sc-x7t9ms-0 dnLnNz"
+          />
+        </span>
+      </td>
+    </tr>
+  );
+
   return (
     <div className="w-full  overflow-hidden h-full-app max-sm:max-h-[calc(var(--app-height)-var(--header-height)-var(--bottom-height))]">
       <div className="flex flex-col items-center flex-grow w-full h-full overflow-y-auto">
@@ -32,14 +137,14 @@ export default function Crash() {
                 <div className="flex justify-between w-full text-sm font-semibold">
                   <div className="flex items-center gap-1 text-gray-500">
                     <span className="online-circle"></span>
-                    <span>7 players</span>
+                    <span>{players.length} players</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="text-gray-500">Total bets:</span>
                     <span className="flex items-center gap-1 text-white">
-                      14.21
+                      {totalBets}
                       <img
-                        src="/assets/dl-2a39d38a.webp"
+                        src={SilverLockIcon}
                         width="18"
                         height="18"
                         className="sc-x7t9ms-0 dnLnNz"
@@ -63,272 +168,12 @@ export default function Crash() {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="text-[0.8rem] text-gray-400 font-semibold cursor-pointer hover:bg-dark-600 transition-colors">
-                          <td className="pl-1.5 rounded-l-sm text-left w-[20%]">
-                            <div className="flex gap-1.5 items-center">
-                              <div className="sc-1nayyv1-1 kAmJof">
-                                <img
-                                  draggable="false"
-                                  src="https://avatar.growdice.lol/0-4182-0-7922-4684-362-00-04-3370516479.png"
-                                  alt="Picture"
-                                  className="sc-1nayyv1-0 kedPun"
-                                />
-                              </div>
-                              Wup2
-                            </div>
-                          </td>
-                          <td className="text-center">-</td>
-                          <td className="text-center">
-                            <span className="flex items-center justify-center gap-1">
-                              0.65
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                          <td className="rounded-r-sm text-right h-[40px] pr-1.5">
-                            <span className="flex items-center justify-end gap-1">
-                              -
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                        </tr>
-                        <tr className="text-[0.8rem] text-gray-400 font-semibold cursor-pointer hover:bg-dark-600 transition-colors">
-                          <td className="pl-1.5 rounded-l-sm text-left w-[20%]">
-                            <div className="flex gap-1.5 items-center">
-                              <div className="sc-1nayyv1-1 iNqkVN">
-                                <img
-                                  draggable="false"
-                                  src="https://avatar.growdice.lol/710-270-34-8442-256-1672-10-14-3370516479.png"
-                                  alt="Picture"
-                                  className="sc-1nayyv1-0 kedPun"
-                                />
-                              </div>
-                              boombadeer
-                            </div>
-                          </td>
-                          <td className="text-center">-</td>
-                          <td className="text-center">
-                            <span className="flex items-center justify-center gap-1">
-                              0.11
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                          <td className="rounded-r-sm text-right h-[40px] pr-1.5">
-                            <span className="flex items-center justify-end gap-1">
-                              -
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                        </tr>
-                        <tr className="text-[0.8rem] text-gray-400 font-semibold cursor-pointer hover:bg-dark-600 transition-colors">
-                          <td className="pl-1.5 rounded-l-sm text-left w-[20%]">
-                            <div className="flex gap-1.5 items-center">
-                              <div className="sc-1nayyv1-1 jXwOeI">
-                                <img
-                                  draggable="false"
-                                  src="https://avatar.growdice.lol/0-0-0-0-0-0-00-04-3370516479.png"
-                                  alt="Picture"
-                                  className="sc-1nayyv1-0 kedPun"
-                                />
-                              </div>
-                              tobatjudi9...
-                            </div>
-                          </td>
-                          <td className="text-center">-</td>
-                          <td className="text-center">
-                            <span className="flex items-center justify-center gap-1">
-                              0.10
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                          <td className="rounded-r-sm text-right h-[40px] pr-1.5">
-                            <span className="flex items-center justify-end gap-1">
-                              -
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                        </tr>
-                        <tr className="text-[0.8rem] text-gray-400 font-semibold cursor-pointer hover:bg-dark-600 transition-colors">
-                          <td className="pl-1.5 rounded-l-sm text-left w-[20%]">
-                            <div className="flex gap-1.5 items-center">
-                              <div className="sc-1nayyv1-1 jXwOeI">
-                                <img
-                                  draggable="false"
-                                  src="https://avatar.growdice.lol/0-0-0-0-0-0-00-04-3370516479.png"
-                                  alt="Picture"
-                                  className="sc-1nayyv1-0 kedPun"
-                                />
-                              </div>
-                              babalito31...
-                            </div>
-                          </td>
-                          <td className="text-center text-green-400">2.00×</td>
-                          <td className="text-center">
-                            <span className="flex items-center justify-center gap-1">
-                              10.00
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                          <td className="text-green-400 rounded-r-sm text-right h-[40px] pr-1.5">
-                            <span className="flex items-center justify-end gap-1">
-                              10.00
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                        </tr>
-                        <tr className="text-[0.8rem] text-gray-400 font-semibold cursor-pointer hover:bg-dark-600 transition-colors">
-                          <td className="pl-1.5 rounded-l-sm text-left w-[20%]">
-                            <div className="flex gap-1.5 items-center">
-                              <div className="sc-1nayyv1-1 fJPwZo">
-                                <img
-                                  draggable="false"
-                                  src="https://avatar.growdice.lol/1386-2416-2052-1456-0-2642-02-06-3317842431.png"
-                                  alt="Picture"
-                                  className="sc-1nayyv1-0 kedPun"
-                                />
-                              </div>
-                              mikeygang
-                            </div>
-                          </td>
-                          <td className="text-center text-green-400">2.00×</td>
-                          <td className="text-center">
-                            <span className="flex items-center justify-center gap-1">
-                              3.00
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                          <td className="text-green-400 rounded-r-sm text-right h-[40px] pr-1.5">
-                            <span className="flex items-center justify-end gap-1">
-                              3.00
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                        </tr>
-                        <tr className="text-[0.8rem] text-gray-400 font-semibold cursor-pointer hover:bg-dark-600 transition-colors">
-                          <td className="pl-1.5 rounded-l-sm text-left w-[20%]">
-                            <div className="flex gap-1.5 items-center">
-                              <div className="sc-1nayyv1-1 jXwOeI">
-                                <img
-                                  draggable="false"
-                                  src="https://avatar.growdice.lol/0-0-0-0-0-0-00-04-3370516479.png"
-                                  alt="Picture"
-                                  className="sc-1nayyv1-0 kedPun"
-                                />
-                              </div>
-                              Houtandhov
-                            </div>
-                          </td>
-                          <td className="text-center text-green-400">1.50×</td>
-                          <td className="text-center">
-                            <span className="flex items-center justify-center gap-1">
-                              0.20
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                          <td className="text-green-400 rounded-r-sm text-right h-[40px] pr-1.5">
-                            <span className="flex items-center justify-end gap-1">
-                              0.10
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                        </tr>
-                        <tr className="text-[0.8rem] text-gray-400 font-semibold cursor-pointer hover:bg-dark-600 transition-colors">
-                          <td className="pl-1.5 rounded-l-sm text-left w-[20%]">
-                            <div className="flex gap-1.5 items-center">
-                              <div className="sc-1nayyv1-1 jXwOeI">
-                                <img
-                                  draggable="false"
-                                  src="https://avatar.growdice.lol/0-0-0-0-0-0-00-04-3370516479.png"
-                                  alt="Picture"
-                                  className="sc-1nayyv1-0 kedPun"
-                                />
-                              </div>
-                              Nico12
-                            </div>
-                          </td>
-                          <td className="text-center text-green-400">2.00×</td>
-                          <td className="text-center">
-                            <span className="flex items-center justify-center gap-1">
-                              0.15
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                          <td className="text-green-400 rounded-r-sm text-right h-[40px] pr-1.5">
-                            <span className="flex items-center justify-end gap-1">
-                              0.15
-                              <img
-                                src="/assets/dl-2a39d38a.webp"
-                                width="18"
-                                height="18"
-                                className="sc-x7t9ms-0 dnLnNz"
-                              />
-                            </span>
-                          </td>
-                        </tr>
+                        {players.map((player) => (
+                          <PlayerRow
+                            player={player}
+                            key={player.user?.username}
+                          />
+                        ))}
                       </tbody>
                     </table>
                   </div>
@@ -340,9 +185,11 @@ export default function Crash() {
                   id="crashRenderer"
                 >
                   <div className="absolute top-0 left-0 overflow-hidden rounded-md pointer-events-none z-1 bg-dark-750">
-                    <canvas width="827" height="450"></canvas>
+                    {/* <canvas width="827" height="450" className="bg-red-400_"> */}
+                    <Chart />
+                    {/* </canvas> */}
                   </div>
-                  <div className="absolute w-full flex p-2.5 z-5 gap-2 text-gray-500">
+                  {/* <div className="absolute w-full flex p-2.5 z-5 gap-2 text-gray-500">
                     <button className="transition-colors hover:text-white font-semibold text-sm flex items-center gap-0.5">
                       <svg
                         stroke="currentColor"
@@ -371,34 +218,58 @@ export default function Crash() {
                       </svg>
                       Settings
                     </button>
+                  </div> */}
+                  <div className="flex gap-3 items-center capitalize w-[98%] mx-auto">
+                    <div className="flex items-center gap-1 group">
+                      <ShieldIcon className="!stroke-gray-500 !fill-gray-500 group-hover:!fill-white group-hover:!stoke-white" />
+                      <p className="font-semibold text-gray-500 group-hover:text-white">
+                        provably fair
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 group">
+                      <GearIcon className="!stroke-gray-500 !fill-gray-500 group-hover:!fill-white group-hover:!stoke-white" />
+                      <p className="font-semibold text-gray-500 group-hover:text-white">
+                        settings
+                      </p>
+                    </div>
                   </div>
                   {/* NOTE: chart */}
-                  <Chart />
+                  {/* <Chart /> */}
                 </div>
-                <div
+                <form
+                  onSubmit={joinGame}
                   // NOTE: Opacity, Relative
-                  className="relative flex flex-col gap-2 p-3 text-sm font-medium rounded-sm bg-dark-750 opacity-40"
+                  className={clsx(
+                    "relative flex flex-col gap-2 p-3 text-sm font-medium rounded-sm",
+                    auth.isAuthenticated ? "opacity-100" : "opacity-40",
+                  )}
                 >
                   <div className="flex flex-col gap-1">
                     <span className="text-sm font-medium text-white">
                       Bet Amount
                     </span>
-                    <div className="bg-dark-700 h-[38px] text-gray-400 rounded-sm py-0.5 border transition-colors px-2 flex items-center gap-1.5 w-full border-dark-650">
-                      <div className="flex items-center gap-2">
+                    <div className="relative flex items-center w-full">
+                      <div className="absolute flex items-center gap-2 left-2">
                         <img
-                          src="/assets/dl-2a39d38a.webp"
+                          src={SilverLockIcon}
                           width="18"
                           height="18"
                           className="sc-x7t9ms-0 grLtgJ"
                         />
                       </div>
-                      <input
+                      <Input
                         placeholder="Bet"
-                        className="bg-transparent outline-none border-none p-1 text-[0.9rem] flex-grow text-white font-medium font-medium"
-                        type="text"
-                        value="0.1"
+                        className="outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
+                        type="number"
+                        value={(player?.bet || 0.0).toFixed(2)}
+                        onChange={(e) =>
+                          setPlayer((prev) => ({
+                            ...prev,
+                            bet: parseFloat(e.target.value),
+                          }))
+                        }
                       />
-                      <div className="flex items-center gap-2">
+                      <div className="absolute flex items-center gap-2 right-2">
                         <div className="flex gap-2.5 font-semibold">
                           <button className="transition-colors hover:text-white">
                             1/2
@@ -414,31 +285,19 @@ export default function Crash() {
                     <span className="text-sm font-medium text-white">
                       Auto Cashout
                     </span>
-                    <div className="bg-dark-700 h-[38px] text-gray-400 rounded-sm py-0.5 border transition-colors px-2 flex items-center gap-1.5 w-full border-dark-650">
-                      <div className="flex items-center gap-2">
-                        <svg
-                          stroke="currentColor"
-                          fill="none"
-                          stroke-width="0"
-                          viewBox="0 0 15 15"
-                          height="20"
-                          width="20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z"
-                            fill="currentColor"
-                          ></path>
-                        </svg>
+                    <div className="relative flex items-center w-full">
+                      <div className="absolute flex items-center gap-2 left-2">
+                        <XClose className="!stroke-gray-400" />
                       </div>
-                      <input
-                        className="bg-transparent outline-none border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
+                      <Input
+                        className="outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
                         type="text"
-                        value="2"
+                        value={autoCashout}
+                        onChange={(e) =>
+                          setAutoCashout(parseFloat(e.target.value))
+                        }
                       />
-                      <div className="flex items-center gap-2">
+                      <div className="absolute flex items-center gap-2 right-2">
                         <div className="flex gap-2.5 font-semibold">
                           <button className="transition-colors hover:text-white">
                             1/2
@@ -451,6 +310,7 @@ export default function Crash() {
                     </div>
                   </div>
                   <button
+                    type="submit"
                     aria-disabled="true"
                     id="placeBet"
                     // NOTE: Min-h, Max-h
@@ -458,8 +318,10 @@ export default function Crash() {
                   >
                     <span>Place Bet</span>
                   </button>
-                  <div className="absolute top-0 left-0 w-full h-full cursor-not-allowed z-5"></div>
-                </div>
+                  {!auth.isAuthenticated && (
+                    <div className="absolute top-0 left-0 w-full h-full bg-red-400 cursor-not-allowed z-5" />
+                  )}
+                </form>
               </div>
             </div>
           </div>
@@ -476,7 +338,7 @@ export default function Crash() {
                   <span className="flex items-center gap-1.5">
                     1,000.00
                     <img
-                      src="/assets/dl-2a39d38a.webp"
+                      src={SilverLockIcon}
                       width="18"
                       height="18"
                       className="sc-x7t9ms-0 dnLnNz"
@@ -488,7 +350,7 @@ export default function Crash() {
                   <span className="flex items-center gap-1.5">
                     10,000.00
                     <img
-                      src="/assets/dl-2a39d38a.webp"
+                      src={SilverLockIcon}
                       width="18"
                       height="18"
                       className="sc-x7t9ms-0 dnLnNz"

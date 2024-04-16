@@ -56,7 +56,7 @@ export default function Chart() {
 
   return (
     <AreaChart
-      width={800}
+      width={1000}
       height={450}
       data={data}
       margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
@@ -71,9 +71,9 @@ export default function Chart() {
           <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
         </linearGradient>
       </defs>
-      <XAxis dataKey="name" />
+      {/* <XAxis dataKey="name" /> */}
       <YAxis />
-      {/* <CartesianGrid strokeDasharray="3 3" /> */}
+      <CartesianGrid strokeDasharray="3 3" horizontal={{}} opacity={0.3} />
       {/* <Tooltip /> */}
       {/* <Area
         type="monotone"

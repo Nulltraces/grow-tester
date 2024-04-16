@@ -323,7 +323,7 @@ export default function Crash() {
                     <span>Place Bet</span>
                   </button>
                   {!auth.isAuthenticated && (
-                    <div className="absolute top-0 left-0 w-full h-full bg-red-400 cursor-not-allowed z-5" />
+                    <div className="absolute top-0 left-0 w-full h-full cursor-not-allowed z-5" />
                   )}
                 </form>
               </div>

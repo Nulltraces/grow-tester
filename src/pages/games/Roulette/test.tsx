@@ -186,7 +186,17 @@ const Roulette: React.FC = () => {
   const rouletteRef = useRef<HTMLDivElement>(null);
   const itemWidth = 100; // Width of each item in pixels
 
-  const timeLeft = useTimer();
+  // const timeLeft = useTimer();
+
+  const [timeLeft, setTimeLeft] = useState(9);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft((prevTime) => (prevTime === 0 ? 9 : prevTime - 1));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const { elements, totalSum } = generateItems();
@@ -205,30 +215,17 @@ const Roulette: React.FC = () => {
 
     // Scroll to the selected item
     if (rouletteRef.current) {
-      const rouletteWidth = rouletteRef.current.offsetWidth;
-      const currentScrollLeft = rouletteRef.current.scrollLeft;
-      const currentPosition = currentScrollLeft + rouletteWidth / 2;
-      const nextPosition = selectedItemIndex * itemWidth;
-
-      console.log({ currentPosition, nextPosition });
-
-      let totalScrollDistance: number;
-      if (nextPosition > currentPosition) {
-        totalScrollDistance = nextPosition - currentScrollLeft;
-      } else {
-        totalScrollDistance =
-          items.elements.length * itemWidth - currentScrollLeft;
-      }
-
-      rouletteRef.current.scrollLeft = totalScrollDistance;
+      rouletteRef.current.scrollLeft =
+        selectedItemIndex * itemWidth -
+        rouletteRef.current.offsetWidth / 2 +
+        itemWidth / 2;
 
       // rouletteRef.current.scrollLeft = items.elements.length * itemWidth;
 
-      // console.log({
-      //   scrollLeft: rouletteRef.current.scrollLeft,
-      //   offSetWidth: rouletteRef.current.offsetWidth,
-      //   totalScrollDistance,
-      // });
+      console.log({
+        scrollLeft: rouletteRef.current.scrollLeft,
+        offSetWidth: rouletteRef.current.offsetWidth,
+      });
     }
 
     setIsSpinning(false);

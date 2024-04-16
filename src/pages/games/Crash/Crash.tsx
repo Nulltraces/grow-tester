@@ -59,6 +59,10 @@ export default function Crash() {
       setPlayers(players);
     });
 
+    socket.on("crash:end", (data) => {
+      console.log("CRASH:End", { data });
+    });
+
     // return () => {
     //   socket.off("join_chat");
     // };
@@ -184,7 +188,7 @@ export default function Crash() {
                   className="min-h-[450px] overflow-hidden relative w-full rounded-md"
                   id="crashRenderer"
                 >
-                  <div className="absolute top-0 left-0 overflow-hidden rounded-md pointer-events-none z-1 bg-dark-750">
+                  <div className="absolute top-0 left-0 w-full overflow-hidden rounded-md pointer-events-none z-1 bg-dark-750">
                     {/* <canvas width="827" height="450" className="bg-red-400_"> */}
                     <Chart />
                     {/* </canvas> */}

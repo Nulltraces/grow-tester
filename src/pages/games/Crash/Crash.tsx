@@ -2,12 +2,13 @@ import { Bets } from "@/pages/landing/components";
 import Chart from "./Chart";
 import { useEffect, useState } from "react";
 import socket from "@/utils/constants";
-import { useAppSelector } from "@/hooks/store";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { SilverLockIcon } from "@/assets/icons";
 import { GearIcon, ShieldIcon, XClose } from "@/assets/svgs";
 import clsx from "clsx";
-import { Input } from "@/components";
+import { Button, Input, UserProfile } from "@/components";
 import { toast } from "react-toastify";
+import { triggerModal } from "@/store/slices/modal";
 
 type Player = {
   user?: { username: string; photo: string };
@@ -17,14 +18,15 @@ type Player = {
 };
 
 export default function Crash() {
+  const dispatch = useAppDispatch();
+
   const [players, setPlayers] = useState<Player[]>([]);
   const [player, setPlayer] = useState<Player>({
     bet: 0,
-    multiplier: 0,
+    multiplier: 1.2,
     profit: 0,
     user: undefined,
   });
-  const [autoCashout, setAutoCashout] = useState(2);
 
   const auth = useAppSelector((state) => state.auth);
 
@@ -63,6 +65,9 @@ export default function Crash() {
       console.log("CRASH:End", { data });
     });
 
+    socket.on("crash:end", (data) => {
+      console.log("CRASH:End", { data });
+    });
     // return () => {
     //   socket.off("join_chat");
     // };
@@ -71,21 +76,30 @@ export default function Crash() {
   // const
 
   const PlayerRow = ({ player }: { player: Player }) => (
-    <tr className="text-[0.8rem] text-gray-400 font-semibold cursor-pointer hover:bg-dark-600 transition-colors">
+    <tr
+      onClick={() => {
+        dispatch(
+          triggerModal({
+            children: <UserProfile username={player.user?.username || ""} />,
+          }),
+        );
+      }}
+      className="text-[0.8rem] text-gray-400 font-semibold cursor-pointer hover:bg-dark-600 transition-colors "
+    >
       <td className="pl-1.5 rounded-l-sm text-left w-[20%]">
         <div className="flex gap-1.5 items-center">
-          <div className="sc-1nayyv1-1 kAmJof">
+          <div className="w-6 h-6 sc-1nayyv1-1 kAmJof">
             <img
               draggable="false"
               src="https://avatar.growdice.lol/0-4182-0-7922-4684-362-00-04-3370516479.png"
               alt="Picture"
-              className="sc-1nayyv1-0 kedPun"
+              className="w-full h-full sc-1nayyv1-0 kedPun"
             />
           </div>
           {player.user?.username}
         </div>
       </td>
-      <td className="text-center">-</td>
+      <td className="text-center">{player.multiplier || "-"}</td>
       <td className="text-center">
         <span className="flex items-center justify-center gap-1">
           {player.bet || 0.65}
@@ -99,7 +113,7 @@ export default function Crash() {
       </td>
       <td className="rounded-r-sm text-right h-[40px] pr-1.5">
         <span className="flex items-center justify-end gap-1">
-          -
+          {player.profit || "-"}
           <img
             src={SilverLockIcon}
             width="18"
@@ -188,7 +202,7 @@ export default function Crash() {
                   className="min-h-[450px] overflow-hidden relative w-full rounded-md"
                   id="crashRenderer"
                 >
-                  <div className="absolute top-0 left-0 w-full overflow-hidden rounded-md pointer-events-none z-1 bg-dark-750">
+                  <div className="relative top-0 left-0 flex items-center justify-center w-full overflow-hidden rounded-md pointer-events-none z-1 bg-dark-750">
                     {/* <canvas width="827" height="450" className="bg-red-400_"> */}
                     <Chart />
                     {/* </canvas> */}
@@ -296,9 +310,12 @@ export default function Crash() {
                       <Input
                         className="outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
                         type="text"
-                        value={autoCashout}
+                        value={(player?.multiplier || 0.0).toFixed(2)}
                         onChange={(e) =>
-                          setAutoCashout(parseFloat(e.target.value))
+                          setPlayer((prev) => ({
+                            ...prev,
+                            multiplier: parseFloat(e.target.value),
+                          }))
                         }
                       />
                       <div className="absolute flex items-center gap-2 right-2">
@@ -313,15 +330,15 @@ export default function Crash() {
                       </div>
                     </div>
                   </div>
-                  <button
+                  <Button
                     type="submit"
                     aria-disabled="true"
                     id="placeBet"
                     // NOTE: Min-h, Max-h
-                    className="sc-1xm9mse-0 fzZXbl min-h-[40px] max-h-[40px] text-sm rounded-sm text-nowrap"
+                    className="sc-1xm9mse-0 fzZXbl w-full min-h-[40px] max-h-[40px] text-sm rounded-sm text-nowrap"
                   >
                     <span>Place Bet</span>
-                  </button>
+                  </Button>
                   {!auth.isAuthenticated && (
                     <div className="absolute top-0 left-0 w-full h-full cursor-not-allowed z-5" />
                   )}
@@ -387,7 +404,9 @@ export default function Crash() {
             </div>
           </div>
         </div>
-        <Bets />
+        <div className="w-full">
+          <Bets />
+        </div>
       </div>
       <footer className="flex justify-center w-full text-sm font-medium text-gray-400">
         <div className="p-3 max-w-page"></div>

@@ -38,9 +38,9 @@ export default function Bets() {
         transition={{ type: "keyframes", duration: 0.6 }}
         className={navDropClassnames}
       >
-        <div className="max-h-[500px] min-h-[500px]_ overflow-y-auto overflow-hidden overflow-x-auto min-h-[100px]">
-          <div className="table-wrapper">
-            <table className="border-separate overflow-y-auto overflow-x-scroll table-fixed border-spacing-0 border-spacing-y-1 pr-1 sm:w-full">
+        <div className="max-h-[500px] min-h-[500px]_ overflow-y-auto overflow-hidden overflow-x-auto min-h-[100px] bg-green-400_  ">
+          <div className="table-wrapper ">
+            <table className="pr-1 overflow-x-scroll max-w-[100vw] overflow-y-auto border-separate table-fixed border-spacing-0 border-spacing-y-1 sm:w-full">
               {children}
             </table>
           </div>
@@ -50,7 +50,7 @@ export default function Bets() {
   };
 
   return (
-    <div className="pt-1 table-test rounded-md font-semibold text-sm flex flex-col gap-1 w-full ">
+    <div className="flex flex-col w-full gap-1 pt-1 text-sm font-semibold rounded-md table-test ">
       <div className="flex relative justify-between gap-2.5 items-center w-full">
         <span className="flex max-sm:hidden">{navOption}</span>
         <div className="flex gap-1.5">

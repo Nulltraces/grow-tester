@@ -1,3 +1,5 @@
+import socket from "@/utils/constants";
+import { domMax } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
   Area,
@@ -54,46 +56,109 @@ import {
 // ];
 
 export default function Chart() {
-  const data = useData();
+  // const data = useData();
+  const [data, setData] = useState<any[]>([]);
+
+  const [multiplier, setMultiplier] = useState(0);
+
+  useEffect(() => {
+    socket.emit("crash:get_graph");
+
+    socket.on("crash:start", (data) => {
+      console.log("STARTED: ", data);
+      setMultiplier(0);
+      setData([]);
+    });
+
+    socket.on("crash:end", (data) => {
+      console.log("CRASH:End", { data });
+      setMultiplier(data);
+    });
+
+    // socket.on("crash:multiplier", (data) => {
+    //   const { elapsedTime, multiplier } = data;
+    //   setMultiplier(multiplier);
+    //   const currentValue = {
+    //     name: Math.round(elapsedTime / 1000) + "s",
+    //     uv: elapsedTime / 1000,
+    //     pv: multiplier,
+    //     amt: 1000,
+    //   };
+
+    //   console.log("CRASH:Multiplier", { data });
+    //   setData((prev) => [...prev, currentValue]);
+    // });
+
+    socket.on("crash:graph", (data, multiplier) => {
+      //  console.log("CRASH:End", { data });
+      setMultiplier(multiplier);
+      console.log("GET_GRAPH: ", data);
+      setData(data);
+    });
+    // return () => {
+    //   socket.off("join_chat");
+    // };
+  }, []);
 
   return (
-    <ResponsiveContainer width={"100%"} height={450}>
-      <AreaChart
-        // width={1000}
-        // height={450}
-        data={data}
-        // margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+    <>
+      <div className="absolute z-10 flex font-bold text-white -translate-y-12 text-7xl">
+        <p>{multiplier}</p>
+        <span className="text-6xl">×</span>
+      </div>
+      <ResponsiveContainer
+        width={"100%"}
+        height={450}
+        className="relative flex items-center justify-center"
       >
-        <defs>
-          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <XAxis dataKey="name" />
-        <YAxis />
-        <CartesianGrid strokeDasharray="3 3" horizontal={{}} opacity={0.3} />
-        {/* <Tooltip /> */}
-        {/* <Area
-        type="monotone"
-        dataKey="uv"
-        stroke="#8884d8"
-        fillOpacity={1}
-        fill="url(#colorUv)"
-      /> */}
-        <Area
+        <AreaChart
+          // width={1000}
+          // height={450}
+          data={data}
+          // margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+        >
+          <defs>
+            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <XAxis
+            dataKey="time"
+            accumulate="sum"
+            // type="number"
+            // domain={([dataMin, dataMax]) => {
+            //   if (!(dataMin && dataMax)) return [1, 1];
+            //   const absMax = Math.max(Math.abs(dataMin), Math.abs(dataMax));
+            //   return [-absMax, absMax];
+            // }}
+            allowDataOverflow
+            // allowDuplicatedCategory={false}
+          />
+          <YAxis scale={"linear"} />
+          <CartesianGrid strokeDasharray="3 3" horizontal={{}} opacity={0.3} />
+          {/* <Tooltip /> */}
+          {/* <Area
           type="monotone"
-          dataKey="pv"
-          stroke="#82ca9d"
+          dataKey="uv"
+          stroke="#8884d8"
           fillOpacity={1}
-          fill="url(#colorPv)"
-        />
-      </AreaChart>
-    </ResponsiveContainer>
+          fill="url(#colorUv)"
+        /> */}
+          <Area
+            type="monotone"
+            dataKey="pv"
+            stroke="#82ca9d"
+            fillOpacity={1}
+            fill="url(#colorPv)"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </>
   );
 }
 
@@ -168,3 +233,5 @@ function useData() {
   }, []);
   return data;
 }
+
+// These multiplier values are just meant to form the graph, and not to replace the game multiplier value

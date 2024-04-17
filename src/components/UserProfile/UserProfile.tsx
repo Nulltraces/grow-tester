@@ -83,11 +83,11 @@ export default function UserProfile({
     <div className="overflow-y-auto sm:overflow-visible_ sm:mb-0 sm:w-[90vw] sm:h-[86vh]_ md:w-[65vw] md:h-[86vh]_ lg:w-[40vw] rounded space-y-1 px-2 pt-2 max-h-[95vh]">
       <div className="w-[98%] mx-auto pb-4 shrink-0 flex flex-col overflow-auto">
         <header className="shrink-0">
-          <h2 className="capitalize font-semibold text-gray-400">
+          <h2 className="font-semibold text-gray-400 capitalize">
             user profile
           </h2>
         </header>
-        <div className="overflow-y-auto flex-1">{children}</div>
+        <div className="flex-1 overflow-y-auto">{children}</div>
       </div>
     </div>
   );
@@ -102,12 +102,12 @@ export default function UserProfile({
   return (
     <ProfileWrapper>
       {loading ? (
-        <div className="h-24 w-full flex items-center justify-center">
+        <div className="flex items-center justify-center w-full h-24">
           <Spinner />
         </div>
       ) : user ? (
         <>
-          <div className="rounded-md flex flex-col sm:flex-row sm:items-end overflow-clip __user-bg__ sm:h-40 mt-2">
+          <div className="flex flex-col mt-2 rounded-md sm:flex-row sm:items-end overflow-clip __user-bg__ sm:h-40">
             <div className="mx-auto sm:mx-0 sm:w-24 sm:ml-4">
               <img
                 src={user?.photo || User1}
@@ -118,20 +118,20 @@ export default function UserProfile({
               />
             </div>
             <div className="h-full w-[96%] mx-auto sm:mx-0 sm:p-6 sm:pl-4 space-y-2">
-              <div className="flex gap-1 items-center justify-center sm:justify-start">
+              <div className="flex items-center justify-center gap-1 sm:justify-start">
                 <h2 className="text-3xl font-bold">{user?.username}</h2>
                 <div className="p-1 h-fit py-[2px] rounded uppercase bg-[rgb(161,152,121)] text font-bold bg-amber text-gray-950 whitespace-nowrap">
                   {/* User Level */}
                   lvl {user.level}
                 </div>
               </div>
-              <div className="space-y-1 w-full flex flex-col items-center sm:items-start">
-                <div className="flex gap-2 items-center text-xs font-semibold">
+              <div className="flex flex-col items-center w-full space-y-1 sm:items-start">
+                <div className="flex items-center gap-2 text-xs font-semibold">
                   <span className="uppercase  text-[#A3A6C2]">xp:</span>{" "}
                   <span>{"8,110/10,563"}</span>
                 </div>
-                <div className="w-full h-3 relative after:bg-primary after:rounded overflow-clip after:absolute after:left-0 after:w-1/2 after:h-full  bg-gray-800/60 rounded-md" />
-                <div className="flex gap-2 items-center text-sm font-semibold">
+                <div className="relative w-full h-3 rounded-md after:bg-primary after:rounded overflow-clip after:absolute after:left-0 after:w-1/2 after:h-full bg-gray-800/60" />
+                <div className="flex items-center gap-2 text-sm font-semibold">
                   <span className="uppercase text-[#A3A6C2]">join date:</span>{" "}
                   <span>
                     {/* NOTE: Format date */}
@@ -148,10 +148,10 @@ export default function UserProfile({
               </div>
             </div>
           </div>
-          <div className="space-y-1 p-2 bg-dark-800 rounded mt-3">
+          <div className="p-2 mt-3 space-y-1 rounded bg-dark-800">
             {ownAccount ? (
               <div className="bg-dark-800 gap-2 flex flex-col p-2.5 rounded-sm">
-                <button className="sc-1xm9mse-0 lfSLTO text-sm rounded-sm text-nowrap">
+                <button className="text-sm rounded-sm sc-1xm9mse-0 lfSLTO text-nowrap">
                   <span className="flex gap-1">
                     <UserEditIcon />
                     Edit Profile
@@ -172,12 +172,12 @@ export default function UserProfile({
                         (Not Verified)
                       </span>
                     </span>
-                    <button className="sc-1xm9mse-0 lfSLTO text-sm rounded-sm text-nowrap">
+                    <button className="text-sm rounded-sm sc-1xm9mse-0 lfSLTO text-nowrap">
                       Send Verification Email
                     </button>
                   </div>
                 </div>
-                <button className="sc-1xm9mse-0 lfSLTO text-sm rounded-sm text-nowrap">
+                <button className="text-sm rounded-sm sc-1xm9mse-0 lfSLTO text-nowrap">
                   Reset Password
                 </button>
                 <button
@@ -198,7 +198,7 @@ export default function UserProfile({
                       }),
                     );
                   }}
-                  className="sc-1xm9mse-0 fkyWKB text-sm rounded-sm text-nowrap gap-1"
+                  className="gap-1 text-sm rounded-sm sc-1xm9mse-0 fkyWKB text-nowrap"
                 >
                   <svg
                     stroke="currentColor"
@@ -218,7 +218,7 @@ export default function UserProfile({
             ) : (
               <>
                 <header>
-                  <h3 className="capitalize text-sm sm:text-base font-semibold text-gray-400">
+                  <h3 className="text-sm font-semibold text-gray-400 capitalize sm:text-base">
                     actions
                   </h3>
                 </header>
@@ -234,31 +234,31 @@ export default function UserProfile({
               <StatsIcon />
               User Statistics
             </span>
-            <div className="grid auto-rows-auto grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 auto-rows-auto">
               <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-                <span className="flex gap-1 items-center">
+                <span className="flex items-center gap-1">
                   <DieIcon />
                   <span>Total Bets</span>
                 </span>
-                <span className="text-white gap-1 flex items-center">
+                <span className="flex items-center gap-1 text-white">
                   {user.bets}
                 </span>
               </div>
               <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-                <span className="flex gap-1 items-center">
+                <span className="flex items-center gap-1">
                   <DieIcon />
                   <span>Games Won</span>
                 </span>
-                <span className="text-white gap-1 flex items-center">
+                <span className="flex items-center gap-1 text-white">
                   {user.wins}
                 </span>
               </div>
               <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-                <span className="flex gap-1 items-center">
+                <span className="flex items-center gap-1">
                   <CoinsIcon />
                   <span>Total Wagered</span>
                 </span>
-                <span className="text-white gap-1 flex items-center">
+                <span className="flex items-center gap-1 text-white">
                   {user.wagered}
                   <img
                     src={SilverLockIcon}
@@ -269,11 +269,11 @@ export default function UserProfile({
                 </span>
               </div>
               <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-                <span className="flex gap-1 items-center">
+                <span className="flex items-center gap-1">
                   <HanCoinsIcon />
                   <span>Net Profit</span>
                 </span>
-                <span className="text-white gap-1 flex items-center">
+                <span className="flex items-center gap-1 text-white">
                   <span className="flex items-center gap-1">
                     {user.netProfit}
                     <img
@@ -286,11 +286,11 @@ export default function UserProfile({
                 </span>
               </div>
               <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-                <span className="flex gap-1 items-center">
+                <span className="flex items-center gap-1">
                   <StatsIcon />
                   <span>All Time High</span>
                 </span>
-                <span className="text-white gap-1 flex items-center">
+                <span className="flex items-center gap-1 text-white">
                   {user.allTimeHigh}
                   <img
                     src={SilverLockIcon}
@@ -301,11 +301,11 @@ export default function UserProfile({
                 </span>
               </div>
               <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
-                <span className="flex gap-1 items-center">
+                <span className="flex items-center gap-1">
                   <StatsIcon />
                   <span>All Time Low</span>
                 </span>
-                <span className="text-white gap-1 flex items-center">
+                <span className="flex items-center gap-1 text-white">
                   {user.allTimeLow}
                   <img
                     src={SilverLockIcon}
@@ -319,8 +319,8 @@ export default function UserProfile({
           </div>
         </>
       ) : (
-        <div className="w-full h-40 flex items-center justify-center">
-          <p className="text-4xl text-center font-bold text-gray-400">
+        <div className="flex items-center justify-center w-full h-40">
+          <p className="text-4xl font-bold text-center text-gray-400">
             User Unavailable
           </p>
         </div>

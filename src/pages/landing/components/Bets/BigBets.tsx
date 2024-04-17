@@ -9,11 +9,11 @@ export default function BigBets() {
           <th className="bg-dark-850 rounded-l-md py-3 pl-3 text-left w-[1/2]">
             Game
           </th>
-          <th className="bg-dark-850 py-2 text-left">Player</th>
-          <th className="bg-dark-850 py-2 text-center">Bet</th>
-          <th className="bg-dark-850 py-2 text-center">Profit</th>
-          <th className="bg-dark-850 py-2 text-center w-2/12">Multiplier</th>
-          <th className="bg-dark-850 rounded-r-sm py-2 pr-3 text-right">
+          <th className="py-2 text-left bg-dark-850">Player</th>
+          <th className="py-2 text-center bg-dark-850">Bet</th>
+          <th className="py-2 text-center bg-dark-850">Profit</th>
+          <th className="w-2/12 py-2 text-center bg-dark-850">Multiplier</th>
+          <th className="py-2 pr-3 text-right rounded-r-sm bg-dark-850">
             Time
           </th>
         </tr>
@@ -23,7 +23,7 @@ export default function BigBets() {
           return (
             <tr
               key={i}
-              className="bg-dark-850 text-sm text-light overflow-hidden"
+              className="overflow-hidden text-sm bg-dark-850 text-light"
             >
               <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
                 Slots
@@ -34,7 +34,7 @@ export default function BigBets() {
                 </Link>
               </td>
               <td className="text-center  min-w-[80px]">
-                <span className="flex gap-1 justify-center items-center">
+                <span className="flex items-center justify-center gap-1">
                   0.40
                   <img
                     src={SilverLockIcon}
@@ -45,7 +45,7 @@ export default function BigBets() {
                 </span>
               </td>
               <td className="text-center min-w-[80px]">
-                <span className="flex gap-1 justify-center items-center">
+                <span className="flex items-center justify-center gap-1">
                   -0.40
                   <img
                     src={SilverLockIcon}

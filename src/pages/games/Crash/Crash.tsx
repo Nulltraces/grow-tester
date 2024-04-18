@@ -28,6 +28,8 @@ export default function Crash() {
     user: undefined,
   });
 
+  const [history, setHistory] = useState<number[]>([]);
+
   const auth = useAppSelector((state) => state.auth);
 
   const totalBets = players
@@ -59,6 +61,10 @@ export default function Crash() {
     socket.on("crash:players", (players: Player[]) => {
       console.log("CRASH_PLAYERS: ", { players });
       setPlayers(players);
+    });
+
+    socket.on("crash:history", (data) => {
+      setHistory(data);
     });
 
     socket.on("crash:end", (data) => {
@@ -131,24 +137,16 @@ export default function Crash() {
         <div className="gap-3 p-3 max-w-page">
           <div className="flex flex-col w-full gap-3 p-5 rounded-md bg-dark-800 ">
             <div className="grid grid-cols-6 gap-2">
-              <button className="flex items-center justify-center p-2 text-sm font-semibold bg-green-400 rounded-sm bg-dark-700">
-                3.31×
-              </button>
-              <button className="flex items-center justify-center p-2 text-sm font-semibold text-gray-400 rounded-sm bg-dark-700">
-                1.14×
-              </button>
-              <button className="flex items-center justify-center p-2 text-sm font-semibold text-gray-400 rounded-sm bg-dark-700">
-                1.14×
-              </button>
-              <button className="flex items-center justify-center p-2 text-sm font-semibold text-gray-400 rounded-sm bg-dark-700">
-                1.04×
-              </button>
-              <button className="flex items-center justify-center p-2 text-sm font-semibold text-gray-400 rounded-sm bg-dark-700">
-                1.33×
-              </button>
-              <button className="flex items-center justify-center p-2 text-sm font-semibold bg-green-400 rounded-sm bg-dark-700">
-                1.95×
-              </button>
+              {history.map((item) => (
+                <button
+                  className={clsx(
+                    "flex items-center justify-center p-2 text-sm font-semibold rounded-sm bg-dark-700",
+                    item > 1 ? "bg-green-400" : "",
+                  )}
+                >
+                  {item}×
+                </button>
+              ))}
             </div>
             <div className="flex flex-row-reverse w-full gap-3 max-xl:flex-col-reverse">
               <div className="relative flex flex-col w-full max-w-[350px] max-xl:max-w-full bg-dark-750 rounded-sm p-2.5">

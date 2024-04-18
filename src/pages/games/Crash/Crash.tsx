@@ -57,6 +57,7 @@ export default function Crash() {
 
   useEffect(() => {
     socket.emit("crash:get_players");
+    socket.emit("crash:get_history");
 
     socket.on("crash:players", (players: Player[]) => {
       console.log("CRASH_PLAYERS: ", { players });

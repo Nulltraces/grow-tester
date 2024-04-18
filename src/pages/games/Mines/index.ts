@@ -1,1 +1,1 @@
-export { default } from "./Mines";
+export { default } from "./Minesweeper";

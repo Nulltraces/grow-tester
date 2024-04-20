@@ -414,7 +414,7 @@ export default function Roulette() {
               <span className="flex items-center gap-1.5">
                 1,000.00
                 <img
-                  src="/assets/dl-2a39d38a.webp"
+                  src={SilverLockIcon}
                   width="18"
                   height="18"
                   className="sc-x7t9ms-0 dnLnNz"

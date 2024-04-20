@@ -1,3 +1,5 @@
+import { SilverLockIcon } from "@/assets/icons";
+
 export default function Leaderboard() {
   return (
     <div
@@ -47,7 +49,7 @@ export default function Leaderboard() {
                 <th className="transition-colors cursor-pointer hover:text-gray-300">
                   Wagered
                 </th>
-                <th className="transition-colors cursor-pointer hover:text-gray-300 text-white">
+                <th className="text-white transition-colors cursor-pointer hover:text-gray-300">
                   Profit
                 </th>
                 <th className="transition-colors cursor-pointer hover:text-gray-300">
@@ -95,11 +97,11 @@ export default function Leaderboard() {
                         <div className="sc-ji84sw-0 brWwEp w-[50px]"> 62</div>
                       </div>
                     </td>
-                    <td className="text-center px-4">
-                      <div className="flex items-center gap-1 justify-center">
+                    <td className="px-4 text-center">
+                      <div className="flex items-center justify-center gap-1">
                         26,705.63
                         <img
-                          src="/assets/dl-2a39d38a.webp"
+                          src={SilverLockIcon}
                           width="18"
                           height="18"
                           className="sc-x7t9ms-0 dnLnNz"
@@ -107,40 +109,40 @@ export default function Leaderboard() {
                       </div>
                     </td>
                     <td className="px-4">
-                      <div className="flex gap-1 items-center justify-center text-green-500">
+                      <div className="flex items-center justify-center gap-1 text-green-500">
                         9,525.49
                         <img
-                          src="/assets/dl-2a39d38a.webp"
+                          src={SilverLockIcon}
                           width="18"
                           height="18"
                           className="sc-x7t9ms-0 dnLnNz"
                         />
                       </div>
                     </td>
-                    <td className=" px-4">
-                      <div className="flex items-center gap-1 justify-center">
+                    <td className="px-4 ">
+                      <div className="flex items-center justify-center gap-1">
                         16,044.87
                         <img
-                          src="/assets/dl-2a39d38a.webp"
+                          src={SilverLockIcon}
                           width="18"
                           height="18"
                           className="sc-x7t9ms-0 dnLnNz"
                         />
                       </div>
                     </td>
-                    <td className=" px-4">
-                      <div className="flex gap-1 items-center justify-center">
+                    <td className="px-4 ">
+                      <div className="flex items-center justify-center gap-1">
                         -204.98
                         <img
-                          src="/assets/dl-2a39d38a.webp"
+                          src={SilverLockIcon}
                           width="18"
                           height="18"
                           className="sc-x7t9ms-0 dnLnNz"
                         />
                       </div>
                     </td>
-                    <td className="text-center px-4">2,377</td>
-                    <td className="rounded-r-sm px-4 text-center">375</td>
+                    <td className="px-4 text-center">2,377</td>
+                    <td className="px-4 text-center rounded-r-sm">375</td>
                   </tr>
                 ))}
             </tbody>

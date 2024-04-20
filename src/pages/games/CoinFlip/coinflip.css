@@ -1,0 +1,15 @@
+.coinFlipCoin {
+  transform-style: preserve-3d;
+}
+.coinFlipCoin {
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .coinFlipCoin div {
+  backface-visibility: hidden;
+  position: absolute; 
+} */

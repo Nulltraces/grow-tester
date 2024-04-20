@@ -32,16 +32,6 @@ export const games: Game[] = [
     element: <Roulette />,
   },
   {
-    image: "slots.webp",
-    title: "slots",
-    element: <Slots />,
-  },
-  {
-    image: "blackjack.webp",
-    title: "blackjack",
-    element: <BlackJack />,
-  },
-  {
     image: "reme.webp",
     title: "reme",
     element: <Reme />,

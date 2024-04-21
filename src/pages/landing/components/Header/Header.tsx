@@ -326,7 +326,7 @@ function HeaderItemsSM() {
     return (
       <button onClick={(e) => onClick?.(e)} className="flex gap-1">
         <Icon />
-        <p className="text-sm font-bold text-white uppercase md:hidden">
+        <p className="text-sm font-bold text-white uppercase md:hidden 2xl:inline-block">
           {text}
         </p>
       </button>
@@ -344,9 +344,9 @@ function HeaderItemsSM() {
           <>
             <Menu.Button className="flex flex-row items-center justify-between gap-1 w-fit">
               <DieIcon className="!fill-white !stroke-white" />
-              {/* <h5 className="md:hidden text-white !font-bold uppercase">
+              <h5 className="md:hidden 2xl:inline-block text-white !font-bold uppercase">
                 games
-              </h5> */}
+              </h5>
               <ExpandMoreIcon
                 className={`${
                   open ? "rotate-180" : "rotate-0"
@@ -375,9 +375,9 @@ function HeaderItemsSM() {
           <>
             <Menu.Button className="flex flex-row items-center justify-between gap-1 w-fit">
               <GiftBoxIcon className="!fill-white !stroke-white" />
-              {/* <h5 className="md:hidden text-primary !font-bold uppercase">
+              <h5 className="md:hidden 2xl:inline-block text-white !font-bold uppercase">
                 rewards
-              </h5> */}
+              </h5>
               <ExpandMoreIcon
                 className={`${
                   open ? "rotate-180" : "rotate-0"

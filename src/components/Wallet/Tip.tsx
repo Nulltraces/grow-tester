@@ -42,7 +42,7 @@ export default function Tip() {
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
         <div className="flex flex-col gap-1">
-          <span className="font-medium text-white text-sm">Username</span>
+          <span className="text-sm font-medium text-white">Username</span>
           {/* <div className="bg-dark-700 h-[38px] text-gray-400 rounded-sm py-0.5 border transition-colors px-2 flex items-center gap-1.5 w-full border-dark-650">
             <input
               className="bg-transparent outline-none border-none p-1 text-[0.9rem] flex-grow text-white"
@@ -58,9 +58,9 @@ export default function Tip() {
           />
         </div>
         <div className="flex flex-col gap-1">
-          <span className="font-medium text-white text-sm">Amount</span>
+          <span className="text-sm font-medium text-white">Amount</span>
           <div className="bg-dark-700 h-[38px] text-gray-400 relative rounded-sm py-0.5 border transition-colors px-2 flex items-center gap-1.5 w-full border-dark-650">
-            <div className="flex items-center gap-2 w-fit absolute left-2">
+            <div className="absolute flex items-center gap-2 w-fit left-2">
               <img
                 src={SilverLockIcon}
                 width="18"
@@ -83,7 +83,7 @@ export default function Tip() {
         <button
           disabled={!(amount && username)}
           aria-disabled="true"
-          className="sc-1xm9mse-0 wallet-button text-sm rounded-sm"
+          className="text-sm rounded-sm sc-1xm9mse-0 wallet-button"
         >
           Send Tip
         </button>

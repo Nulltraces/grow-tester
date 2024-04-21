@@ -13,18 +13,6 @@ const api = axios.create({
   },
 });
 
-// Add a request interceptor
-// api.interceptors.request.use(
-//   (config) => {
-//     // You can modify the request config here, e.g., add authentication headers
-//     config.headers.Authorization = `Bearer ${getToken()}`;
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   },
-// );
-
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");

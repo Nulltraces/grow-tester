@@ -9,6 +9,16 @@ import clsx from "clsx";
 import { Button, Input, UserProfile } from "@/components";
 import { toast } from "react-toastify";
 import { triggerModal } from "@/store/slices/modal";
+import api from "@/api/axios";
+import { updateBalance } from "@/store/slices/wallet";
+
+enum GameType {
+  CRASH = "CRASH",
+  BLACKJACK = "BLACKJACK",
+  ROULETTE = "ROULETTE",
+  PLINKO = "PLINKO",
+  TOWERS = "TOWERS",
+}
 
 type Player = {
   user?: { username: string; photo: string };
@@ -19,8 +29,14 @@ type Player = {
 
 export default function Crash() {
   const dispatch = useAppDispatch();
+  const auth = useAppSelector((state) => state.auth);
+  const { balance } = useAppSelector((state) => state.wallet);
 
   const [players, setPlayers] = useState<Player[]>([]);
+  const [bet, setBet] = useState<Partial<Bet>>({
+    gameType: GameType.CRASH,
+    multiplier: 1.2,
+  });
   const [player, setPlayer] = useState<Player>({
     bet: 0,
     multiplier: 1.2,
@@ -30,57 +46,62 @@ export default function Crash() {
 
   const [history, setHistory] = useState<number[]>([]);
 
-  const auth = useAppSelector((state) => state.auth);
-
   const totalBets = players
     .map((player) => player.bet)
     .reduce((acc, curr) => acc + curr, 0);
 
   console.log({ totalBets, bets: players.map((player) => player.bet) });
 
-  const joinGame = (e: React.SyntheticEvent) => {
+  const joinGame = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    if (!player.bet) return toast.error("please enter a valid bet amount");
+    console.log("PLACE_BET: ", bet);
 
-    socket.emit("crash:join_room", {
+    if (!(player.bet && bet.stake))
+      return toast.error("please enter a valid bet amount");
+
+    const response = await api.post("/bet", bet);
+
+    console.log("BET_RESPONSE", response.data);
+
+    if (response.status !== 201) return;
+
+    socket.emit("CRASH:join_room", {
       player: {
-        bet: player?.bet,
-        multiplier: player?.multiplier,
         user: { username: auth.user?.username, photo: auth.user?.photo },
       } as Player,
       socketId: socket.id,
     });
 
+    dispatch(updateBalance(balance - bet.stake));
+
     toast.success("bet placed!");
   };
 
   useEffect(() => {
-    socket.emit("crash:get_players");
-    socket.emit("crash:get_history");
+    socket.emit("CRASH:get_players");
+    socket.emit("CRASH:get_history");
 
-    socket.on("crash:players", (players: Player[]) => {
+    socket.on("CRASH:players", (players: Player[]) => {
       console.log("CRASH_PLAYERS: ", { players });
       setPlayers(players);
     });
 
-    socket.on("crash:history", (data) => {
+    socket.on("CRASH:history", (data) => {
       setHistory(data);
     });
 
-    socket.on("crash:end", (data) => {
+    socket.on("CRASH:end", (data) => {
       console.log("CRASH:End", { data });
     });
 
-    socket.on("crash:end", (data) => {
+    socket.on("CRASH:end", (data) => {
       console.log("CRASH:End", { data });
     });
     // return () => {
     //   socket.off("join_chat");
     // };
   }, []);
-
-  // const
 
   const PlayerRow = ({ player }: { player: Player }) => (
     <tr
@@ -202,40 +223,9 @@ export default function Crash() {
                   id="crashRenderer"
                 >
                   <div className="relative top-0 left-0 flex items-center justify-center w-full overflow-hidden rounded-md pointer-events-none z-1 bg-dark-750">
-                    {/* <canvas width="827" height="450" className="bg-red-400_"> */}
                     <Chart />
-                    {/* </canvas> */}
                   </div>
-                  {/* <div className="absolute w-full flex p-2.5 z-5 gap-2 text-gray-500">
-                    <button className="transition-colors hover:text-white font-semibold text-sm flex items-center gap-0.5">
-                      <svg
-                        stroke="currentColor"
-                        fill="currentColor"
-                        stroke-width="0"
-                        viewBox="0 0 1024 1024"
-                        height="18"
-                        width="18"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M866.9 169.9L527.1 54.1C523 52.7 517.5 52 512 52s-11 .7-15.1 2.1L157.1 169.9c-8.3 2.8-15.1 12.4-15.1 21.2v482.4c0 8.8 5.7 20.4 12.6 25.9L499.3 968c3.5 2.7 8 4.1 12.6 4.1s9.2-1.4 12.6-4.1l344.7-268.6c6.9-5.4 12.6-17 12.6-25.9V191.1c.2-8.8-6.6-18.3-14.9-21.2zM694.5 340.7L481.9 633.4a16.1 16.1 0 0 1-26 0l-126.4-174c-3.8-5.3 0-12.7 6.5-12.7h55.2c5.1 0 10 2.5 13 6.6l64.7 89 150.9-207.8c3-4.1 7.8-6.6 13-6.6H688c6.5.1 10.3 7.5 6.5 12.8z"></path>
-                      </svg>
-                      <span>Provably Fair</span>
-                    </button>
-                    <button className="text-sm flex gap-0.5 font-semibold">
-                      <svg
-                        stroke="currentColor"
-                        fill="currentColor"
-                        stroke-width="0"
-                        viewBox="0 0 512 512"
-                        height="18"
-                        width="18"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M256 176a80 80 0 1080 80 80.24 80.24 0 00-80-80zm172.72 80a165.53 165.53 0 01-1.64 22.34l48.69 38.12a11.59 11.59 0 012.63 14.78l-46.06 79.52a11.64 11.64 0 01-14.14 4.93l-57.25-23a176.56 176.56 0 01-38.82 22.67l-8.56 60.78a11.93 11.93 0 01-11.51 9.86h-92.12a12 12 0 01-11.51-9.53l-8.56-60.78A169.3 169.3 0 01151.05 393L93.8 416a11.64 11.64 0 01-14.14-4.92L33.6 331.57a11.59 11.59 0 012.63-14.78l48.69-38.12A174.58 174.58 0 0183.28 256a165.53 165.53 0 011.64-22.34l-48.69-38.12a11.59 11.59 0 01-2.63-14.78l46.06-79.52a11.64 11.64 0 0114.14-4.93l57.25 23a176.56 176.56 0 0138.82-22.67l8.56-60.78A11.93 11.93 0 01209.94 26h92.12a12 12 0 0111.51 9.53l8.56 60.78A169.3 169.3 0 01361 119l57.2-23a11.64 11.64 0 0114.14 4.92l46.06 79.52a11.59 11.59 0 01-2.63 14.78l-48.69 38.12a174.58 174.58 0 011.64 22.66z"></path>
-                      </svg>
-                      Settings
-                    </button>
-                  </div> */}
+
                   <div className="flex gap-3 items-center capitalize w-[98%] mx-auto">
                     <div className="flex items-center gap-1 group">
                       <ShieldIcon className="!stroke-gray-500 !fill-gray-500 group-hover:!fill-white group-hover:!stoke-white" />
@@ -250,8 +240,6 @@ export default function Crash() {
                       </p>
                     </div>
                   </div>
-                  {/* NOTE: chart */}
-                  {/* <Chart /> */}
                 </div>
                 <form
                   onSubmit={joinGame}
@@ -279,12 +267,17 @@ export default function Crash() {
                         className="outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
                         type="number"
                         value={(player?.bet || 0.0).toFixed(2)}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           setPlayer((prev) => ({
                             ...prev,
                             bet: parseFloat(e.target.value),
-                          }))
-                        }
+                          }));
+
+                          setBet((prev) => ({
+                            ...prev,
+                            stake: parseFloat(e.target.value),
+                          }));
+                        }}
                       />
                       <div className="absolute flex items-center gap-2 right-2">
                         <div className="flex gap-2.5 font-semibold">
@@ -310,12 +303,17 @@ export default function Crash() {
                         className="outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
                         type="text"
                         value={(player?.multiplier || 0.0).toFixed(2)}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           setPlayer((prev) => ({
                             ...prev,
                             multiplier: parseFloat(e.target.value),
-                          }))
-                        }
+                          }));
+
+                          setBet((prev) => ({
+                            ...prev,
+                            multiplier: parseFloat(e.target.value),
+                          }));
+                        }}
                       />
                       <div className="absolute flex items-center gap-2 right-2">
                         <div className="flex gap-2.5 font-semibold">

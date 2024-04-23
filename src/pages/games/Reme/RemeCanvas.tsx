@@ -85,6 +85,8 @@
 
 import { AnimateInOut } from "@/components";
 import Roulette from "./assets/roulette.png";
+import Wheel from "./assets/wheel.png";
+import Base from "./assets/base.png";
 import classes from "./reme.module.css";
 import clsx from "clsx";
 type Props = {
@@ -147,13 +149,8 @@ export default function RemeGame({
 
         <div className="h-full w-full_ absolute_">
           {/* <canvas width="955" height="500"></canvas> */}
-          <div
-            className={clsx(
-              `mx-auto ${classes["spinner-container"]}`,
-              loading && "animate-spin",
-            )}
-          >
-            <img
+          <div className={clsx(`mx-auto ${classes["spinner-container"]}`)}>
+            {/* <img
               src={Roulette}
               alt="Roulette Wheels"
               draggable={false}
@@ -161,7 +158,31 @@ export default function RemeGame({
               style={{
                 imageRendering: "pixelated",
               }}
-            />
+            /> */}
+            <div className="flex flex-col">
+              <img
+                src={Wheel}
+                alt="Roulette Wheels"
+                draggable={false}
+                // className={`object-cover ${classes["spinner"]} shrink-0`}
+                className={clsx(
+                  `object-cover ${classes["spinner-container"]}`,
+                  loading && "animate-spin",
+                )}
+                style={{
+                  imageRendering: "pixelated",
+                }}
+              />
+              <img
+                src={Base}
+                alt="Roulette Wheels"
+                draggable={false}
+                className={`object-cover ${classes["spinner"]} shrink-0`}
+                style={{
+                  imageRendering: "pixelated",
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>

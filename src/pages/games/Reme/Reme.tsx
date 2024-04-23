@@ -172,7 +172,7 @@ export default function Reme() {
                     onClick={() => {
                       !loading && resetGame();
                     }}
-                    className="absolute top-0 left-0 z-10 w-full h-full bg-dark-800 opacity-70"
+                    className="absolute top-0 left-0 z-10 w-full h-full cursor-pointer bg-dark-800 opacity-70"
                   />
                 )}
                 <div className="flex flex-col gap-1">

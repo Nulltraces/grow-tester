@@ -1,0 +1,8 @@
+export enum GameType {
+  CRASH = "CRASH",
+  BLACKJACK = "BLACKJACK",
+  ROULETTE = "ROULETTE",
+  PLINKO = "PLINKO",
+  TOWERS = "TOWERS",
+  REME = "REME",
+}

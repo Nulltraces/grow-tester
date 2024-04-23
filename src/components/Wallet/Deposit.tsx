@@ -50,7 +50,7 @@ export default function Deposit() {
               Enter the generated world in Growtopia. (make sure that the world
               owner is in the world before dropping your locks).
             </li>
-            <li className="numbered-list-item flex gap-1">
+            <li className="flex gap-1 numbered-list-item">
               Drop the amount of{" "}
               <img
                 src={YellowLockIcon}
@@ -136,7 +136,7 @@ export default function Deposit() {
             disabled={!growId || growId.length < 6}
             onClick={startDeposit}
             aria-disabled="true"
-            className="sc-1xm9mse-0 wallet-button text-sm rounded-sm"
+            className="text-sm rounded-sm sc-1xm9mse-0 wallet-button"
             content="w-full h-[40px]"
           >
             Start Deposit

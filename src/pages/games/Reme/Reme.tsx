@@ -1,6 +1,157 @@
 import { SilverLockIcon } from "@/assets/icons";
+import { Bets } from "@/pages/landing/components";
+import RemeGame from "./RemeCanvas";
+import { BetInput, Button, Input } from "@/components";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
+import { updateBalance } from "@/store/slices/wallet";
+import { toast } from "react-toastify";
+import socket from "@/utils/constants";
+import api from "@/api/axios";
+import { GameType } from "@/game-types";
 
+type Player = {
+  user?: { username: string; photo: string };
+  multiplier: number;
+  bet: number;
+  profit: number;
+};
+
+let walletBalance = 0;
 export default function Reme() {
+  const dispatch = useAppDispatch();
+  const { balance } = useAppSelector((state) => state.wallet);
+  const auth = useAppSelector((state) => state.auth);
+
+  // const [balance, dispatch(updateBalance] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
+  const [gameRunning, setGameRunning] = useState(false);
+  const [message, setMessage] = useState("");
+  const [playerSpin, setPlayerSpin] = useState(0);
+  const [houseSpin, setHouseSpin] = useState(0);
+  // const [bet.stake, setStake] = useState(0);
+  const [bet, setBet] = useState<Partial<Bet>>({
+    gameType: GameType.REME as Bet["gameType"],
+  });
+
+  const [player, setPlayer] = useState<Player>({
+    bet: 0,
+    multiplier: 1.2,
+    profit: 0,
+    user: undefined,
+  });
+
+  useEffect(() => {
+    socket.on("REME:result", (data) => {
+      setLoading(false);
+      console.log("REME:result", data);
+      console.log("PROFIT: ", data.profit);
+      setPlayerSpin(data.playerSpin);
+      setHouseSpin(data.houseSpin);
+      dispatch(updateBalance(walletBalance + data.profit));
+      setMessage(data.message);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!balance) return;
+
+    walletBalance = balance;
+  }, [balance]);
+
+  const playGame = async () => {
+    if (!bet.stake || isNaN(bet.stake) || bet.stake <= 0)
+      return toast.error("Invalid input. Please enter a valid bet amount.");
+
+    try {
+      console.log("PLACE_BET: ", bet);
+      setLoading(true);
+      setGameRunning(true);
+
+      const response = await api.post("/bet", bet);
+
+      console.log("BET_RESPONSE", response.data);
+
+      if (response.status !== 201) return toast.error("Couldn't play game");
+
+      socket.emit("REME:join_game", {
+        player: {
+          user: { username: auth.user?.username, photo: auth.user?.photo },
+        } as Player,
+        socketId: socket.id,
+      });
+
+      dispatch(updateBalance(balance - bet.stake));
+
+      toast.success("bet placed!");
+    } catch (error) {
+      toast.error("Could not lace bet!");
+      setLoading(false);
+      setGameRunning(true);
+    }
+  };
+
+  const resetGame = () => {
+    setBet((prev) => ({ ...prev, stake: 0 }));
+    setGameRunning(false);
+    setMessage("");
+    setHouseSpin(0);
+    setPlayerSpin(0);
+  };
+
+  // const spinWheel = () => {
+  //   const startingAmt = balance;
+  //   let currentProfit = profit;
+  //   let roundsCounter = roundsPlayed;
+  //   let totalBets = totalBet;
+  //   const messages: string[] = [];
+
+  //   const player = Math.floor(Math.random() * 100);
+  //   const house = Math.floor(Math.random() * 100);
+  //   const player1 = convert(player);
+  //   const house1 = convert(house);
+
+  //   let outcomeMessage = `Player spun the wheel and got ${player}. `;
+  //   outcomeMessage += `Host spun the wheel and got ${house}. `;
+
+  //   setPlayerSpin(player);
+  //   setHouseSpin(house);
+
+  //   if (player1 > house1) {
+  //     currentProfit += bet.stake * 2;
+  //     dispatch(updateBalance(balance + bet.stake * 2));
+  //     messages.push(
+  //       `${outcomeMessage}You won double your bet! +${bet.stake * 2}`,
+  //     );
+  //   } else if (player1 === house1) {
+  //     messages.push(`${outcomeMessage}It's a tie!`);
+  //   } else {
+  //     dispatch(updateBalance(balance - bet.stake));
+  //     messages.push(`${outcomeMessage}You lost! -${bet.stake}`);
+  //   }
+
+  //   if (player1 === 0 && player1 !== house1) {
+  //     currentProfit += bet.stake * 3;
+  //     dispatch(updateBalance(balance + bet.stake * 3));
+  //     messages.push(`You won triple your bet! +${bet.stake * 3}`);
+  //   }
+
+  //   totalBets += bet.stake;
+  //   roundsCounter++;
+
+  //   setProfit(currentProfit);
+  //   setRoundsPlayed(roundsCounter);
+  //   setTotalBet(totalBets);
+  //   setMessage(messages);
+
+  //   return startingAmt !== balance;
+  // };
+
+  // const convert = (num: number) => {
+  //   const sum = (num % 10) + Math.floor(num / 10);
+  //   return sum >= 10 ? sum % 10 : sum;
+  // };
+
   return (
     <div className="gap-3 p-3 max-w-page">
       <div className="flex flex-col w-full">
@@ -15,74 +166,53 @@ export default function Reme() {
         <div className="flex flex-row w-full h-full max-md:flex-col-reverse">
           <div className="bg-dark-800 flex justify-start flex-col max-md:w-full w-[400px]">
             <div className="text-sm font-medium">
-              <div className="flex flex-col gap-2 p-3 text-sm font-medium text-white">
+              <div className="relative flex flex-col gap-2 p-3 text-sm font-medium text-white">
+                {(!auth.isAuthenticated || loading || gameRunning) && (
+                  <div
+                    onClick={() => {
+                      !loading && resetGame();
+                    }}
+                    className="absolute top-0 left-0 z-10 w-full h-full bg-dark-800 opacity-70"
+                  />
+                )}
                 <div className="flex flex-col gap-1">
                   <span className="text-sm font-medium text-white">
                     Bet Amount
                   </span>
-                  <div className="bg-dark-700 h-[38px] text-gray-400 rounded-sm py-0.5 border transition-colors px-2 flex items-center gap-1.5 w-full border-dark-650">
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 grLtgJ"
-                      />
-                    </div>
-                    <input
-                      placeholder="Bet"
-                      className="bg-transparent outline-none border-none p-1 text-[0.9rem] flex-grow text-white font-medium font-medium"
-                      type="text"
-                      value="0.1"
-                    />
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-2.5 font-semibold">
-                        <button className="transition-colors hover:text-white">
-                          1/2
-                        </button>
-                        <button className="transition-colors hover:text-white">
-                          2×
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  <BetInput
+                    inputProps={{
+                      onChange(e) {
+                        setBet((prev) => ({
+                          ...prev,
+                          stake: parseFloat(e.target.value),
+                        }));
+                      },
+                      value: bet.stake || 0,
+                    }}
+                  />
                 </div>
-                <button className="flex items-center gap-1.5 group">
+                {/* <button className="flex items-center gap-1.5 group">
                   <div className="flex items-center justify-center p-1 transition-all duration-300 border rounded-sm border-dark-600 group-hover:bg-dark-700 size-6 ease-smooth"></div>
                   <span className="text-sm font-medium">Skip Animations</span>
-                </button>
-                <button
+                </button> */}
+                <Button
+                  disabled={loading || gameRunning}
+                  onClick={() => playGame()}
                   aria-disabled="false"
-                  className="text-sm rounded-sm sc-1xm9mse-0 fzZXbl text-nowrap"
+                  className="w-full text-sm rounded-sm sc-1xm9mse-0 fzZXbl text-nowrap"
                 >
-                  Insufficient funds
-                </button>
+                  {balance ? "play game" : "Insufficient funds"}
+                </Button>
               </div>
             </div>
           </div>
-          <div className="overflow-hidden bg-dark-850 w-full h-full min-h-[400px] max-sm:min-h-[300px] flex justify-center relative">
-            <div className="relative w-full h-[500px] max-sm:max-h-[325px]">
-              <div className="absolute flex items-center justify-between w-full p-20 max-sm:p-5">
-                <div className="flex upper flex-col justify-center items-center gap-1.5 text-xl font-semibold">
-                  <span className="max-sm:text-[1rem]">YOU</span>
-                  <div className="bg-dark-800 select-none overflow-hidden rounded-sm max-sm:h-[50px] max-sm:w-[50px] w-[75px] h-[75px] flex justify-center items-center">
-                    <span className="text-3xl font-semibold text-white max-sm:text-xl"></span>
-                  </div>
-                </div>
-                <div className="font-semibold max-sm:text-[1rem] flex-nowrap text-3xl transition-colors"></div>
-                <div className="flex upper flex-col justify-center items-center gap-1.5 text-xl font-semibold">
-                  <span className="max-sm:text-[1rem]">HOUSE</span>
-                  <div className="bg-dark-800 select-none overflow-hidden rounded-sm max-sm:h-[50px] max-sm:w-[50px] w-[75px] h-[75px] flex justify-center items-center">
-                    <span className="text-3xl font-semibold text-white max-sm:text-xl"></span>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute h-full w-full bg-red-700 z-[5] bg-transparent"></div>
-              <div className="absolute w-full h-full">
-                <canvas width="955" height="500"></canvas>
-              </div>
-            </div>
-          </div>
+          <RemeGame
+            message={message}
+            houseSpin={houseSpin}
+            playerSpin={playerSpin}
+            loading={loading}
+            reset={resetGame}
+          />
         </div>
         <div className="flex flex-row-reverse items-center min-h-[50px] bg-dark-800 rounded-b-md border-t border-gray-700">
           <div className="flex justify-start w-full gap-3 p-3 text-gray-500">
@@ -161,736 +291,7 @@ export default function Reme() {
           </div>
         </div>
       </div>
-      <div
-        className="flex flex-col w-full gap-1 pt-1 text-sm font-semibold rounded-md "
-        style={{
-          mask: `linear-gradient(rgb(0, 0, 0) 0px, rgb(0, 0, 0) 80%, rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0) 0px) 100% 50% / 100% 100% repeat-x`,
-        }}
-      >
-        <div className="flex justify-between gap-2.5 items-center w-full">
-          <span className="flex max-sm:hidden">All Bets</span>
-          <div className="flex gap-1.5">
-            <button className="flex px-2 py-1 text-white transition-colors rounded-sm hover:text-white bg-dark-800">
-              All Bets
-            </button>
-            <button className="flex px-2 py-1 text-gray-500 transition-colors rounded-sm hover:text-white">
-              Big Bets
-            </button>
-            <button className="flex px-2 py-1 text-gray-500 transition-colors rounded-sm hover:text-white">
-              My Bets
-            </button>
-            <button className="flex px-2 py-1 text-gray-500 transition-colors rounded-sm hover:text-white">
-              Race
-            </button>
-          </div>
-        </div>
-        <div className="max-h-[500px] min-h-[500px] overflow-y-auto overflow-hidden overflow-x-auto  overflow-y-hidden min-h-[100px]">
-          <div>
-            <table className="pr-1 overflow-x-scroll overflow-y-auto border-separate table-fixed border-spacing-0 border-spacing-y-1 sm:w-full">
-              <thead className="uppercase text-gray-500 text-[0.85rem] bg-dark-800">
-                <tr>
-                  <th className="rounded-l-sm py-3 pl-3 text-left w-[1/2]">
-                    Game
-                  </th>
-                  <th className="py-2 text-left">Player</th>
-                  <th className="py-2 text-center">Bet</th>
-                  <th className="py-2 text-center">Profit</th>
-                  <th className="w-2/12 py-2 text-center">Multiplier</th>
-                  <th className="py-2 pr-3 text-right rounded-r-sm">Time</th>
-                </tr>
-              </thead>
-              <tbody className="border-spacing-y-3">
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Towers
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">NotArchey</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      1.50
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -1.50
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:36
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Dice
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">WiliamMorgan</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.10
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px] text-green-400">
-                    <span className="flex items-center justify-center gap-1">
-                      0.05
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px] text-green-500">
-                    1.50×
-                  </td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:36
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Reme
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">pwetmokulot</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.16
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.16
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:36
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Towers
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">khuzai</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.03
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.03
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:36
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Slots
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">Juusikko11</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.01
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.01
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:36
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Slots
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">richs4</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.10
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.10
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:36
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Slots
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">Kingfarmer899</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.06
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.06
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:36
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Keno
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">LostKings</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      1.00
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -1.00
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:35
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Reme
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">Ashiap000</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      1.00
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -1.00
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:35
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Slots
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">kissat1234</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.01
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px] text-green-400">
-                    <span className="flex items-center justify-center gap-1">
-                      0.26
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px] text-green-500">
-                    27.00×
-                  </td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:35
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Towers
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">mque</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.10
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.10
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:35
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Mines
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">AFEtekor</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.15
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px] text-green-400">
-                    <span className="flex items-center justify-center gap-1">
-                      0.34
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px] text-green-500">
-                    3.29×
-                  </td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:35
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Towers
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">Ibnulel1</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.10
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.10
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:34
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Mines
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">Ezrakun</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      1.00
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -1.00
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:35
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Cross the Road
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">joniponi2</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.01
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.01
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:34
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Slots
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">kissat1234</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.01
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.01
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:35
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Towers
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">MisterNegative</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.05
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.05
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:34
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Coin Flip
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">Bossuwu331</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.80
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.80
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:34
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Slots
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">Juusikko11</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.01
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.01
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:34
-                  </td>
-                </tr>
-                <tr className="overflow-hidden text-sm bg-dark-800 text-light">
-                  <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                    Slots
-                  </td>
-                  <td className="text-left text-white overflow-hidden min-w-[130px]">
-                    <a className="cursor-pointer">richs4</a>
-                  </td>
-                  <td className="text-center  min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      0.10
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">
-                    <span className="flex items-center justify-center gap-1">
-                      -0.10
-                      <img
-                        src={SilverLockIcon}
-                        width="18"
-                        height="18"
-                        className="sc-x7t9ms-0 dnLnNz"
-                      />
-                    </span>
-                  </td>
-                  <td className="text-center min-w-[80px]">0.00×</td>
-                  <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                    16:07:34
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <Bets />
     </div>
   );
 }

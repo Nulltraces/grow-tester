@@ -1,4 +1,9 @@
-type User = {};
+type User = {
+  id: string;
+  username: string;
+  email: string;
+  photo: string;
+};
 
 type Message = {
   owner: {
@@ -20,6 +25,7 @@ enum GameType {
   ROULETTE = "ROULETTE",
   PLINKO = "PLINKO",
   TOWERS = "TOWERS",
+  REME = "REME",
 }
 
 type Game = {

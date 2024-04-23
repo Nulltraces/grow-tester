@@ -11,14 +11,7 @@ import { toast } from "react-toastify";
 import { triggerModal } from "@/store/slices/modal";
 import api from "@/api/axios";
 import { updateBalance } from "@/store/slices/wallet";
-
-enum GameType {
-  CRASH = "CRASH",
-  BLACKJACK = "BLACKJACK",
-  ROULETTE = "ROULETTE",
-  PLINKO = "PLINKO",
-  TOWERS = "TOWERS",
-}
+import { GameType } from "@/game-types";
 
 type Player = {
   user?: { username: string; photo: string };
@@ -37,6 +30,7 @@ export default function Crash() {
     gameType: GameType.CRASH,
     multiplier: 1.2,
   });
+
   const [player, setPlayer] = useState<Player>({
     bet: 0,
     multiplier: 1.2,
@@ -91,6 +85,11 @@ export default function Crash() {
       setHistory(data);
     });
 
+    socket.on("CRASH:win", (players: Player[]) => {
+      console.log("YOU WON! ", players);
+      toast.success("You won!");
+    });
+
     socket.on("CRASH:end", (data) => {
       console.log("CRASH:End", { data });
     });
@@ -98,6 +97,7 @@ export default function Crash() {
     socket.on("CRASH:end", (data) => {
       console.log("CRASH:End", { data });
     });
+
     // return () => {
     //   socket.off("join_chat");
     // };

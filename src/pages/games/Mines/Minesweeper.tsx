@@ -5,75 +5,87 @@ import React, {
   useState,
 } from "react";
 import Minesweeper, { CellStatus } from "./Minesweeper.controller"; // Assuming you have Minesweeper class in Minesweeper.ts file
-import { Button, Select } from "@/components";
+import { AnimateInOut, Button, Select } from "@/components";
 import clsx from "clsx";
 import { GearIcon, ShieldIcon } from "@/assets/svgs";
 import { SilverLockIcon } from "@/assets/icons";
 import { Bets } from "@/pages/landing/components";
 import socket from "@/utils/constants";
+// import "./mines.css ";
 
 const BOARD_SIZE = 5;
 const NUMBER_OF_MINES = 5;
 
 const Mines: React.FC = () => {
+  const [minesNum, setMinesNum] = useState(0);
   const [game, setGame] = useState(
-    new Minesweeper(BOARD_SIZE, NUMBER_OF_MINES),
+    new Minesweeper(BOARD_SIZE, minesNum || NUMBER_OF_MINES),
   );
-  // const [board, setBoard] = useState<CellStatus[][]>(initializeBoard());
-  const [board, setBoard] = useState<CellStatus[][] | null>(null);
+  const [board, setBoard] = useState<CellStatus[][]>(initializeBoard());
 
-  // function initializeBoard(): CellStatus[][] {
-  //   const board: CellStatus[][] = [];
-  //   for (let i = 0; i < BOARD_SIZE; i++) {
-  //     board[i] = [];
-  //     for (let j = 0; j < BOARD_SIZE; j++) {
-  //       board[i][j] = CellStatus.Hidden;
-  //     }
-  //   }
-  //   return board;
-  // }
+  const getMinesNum = (val: number) => {
+    setMinesNum(val);
+  };
 
-  // function handleCellClick(row: number, col: number) {
-  //   if (game.isGameOver()) return;
+  const [gameOver, setGameOver] = useState(false);
+  // const [board, setBoard] = useState<CellStatus[][] | null>([[]]);
 
-  //   const gameOver = game.revealCell(row, col);
-  //   const newBoard = [...board];
-  //   newBoard[row][col] = CellStatus.Revealed;
-  //   setBoard(newBoard);
+  function initializeBoard(): CellStatus[][] {
+    const board: CellStatus[][] = [];
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      board[i] = [];
+      for (let j = 0; j < BOARD_SIZE; j++) {
+        board[i][j] = CellStatus.Hidden;
+      }
+    }
+    return board;
+  }
 
-  //   if (gameOver) {
-  //     console.log("Game Over!");
-  //   }
-  // }
+  function handleCellClick(row: number, col: number) {
+    socket.emit("MINES:reveal_cell", row, col);
+    if (game.isGameOver()) return;
 
-  // function handleRightClick(
-  //   event: React.MouseEvent<HTMLButtonElement>,
-  //   row: number,
-  //   col: number,
-  // ) {
-  //   event.preventDefault(); // Prevent default right-click behavior
+    const gameOver = game.revealCell(row, col);
+    const newBoard = [...board];
+    newBoard[row][col] = CellStatus.Revealed;
+    setBoard(newBoard);
 
-  //   if (game.isGameOver()) return;
+    if (gameOver) {
+      console.log("Game Over!");
+      setGameOver(true);
+    }
+  }
 
-  //   game.toggleFlag(row, col);
-  //   const newBoard = [...board];
-  //   newBoard[row][col] =
-  //     newBoard[row][col] === CellStatus.Flagged
-  //       ? CellStatus.Hidden
-  //       : CellStatus.Flagged;
-  //   setBoard(newBoard);
-  // }
+  function handleRightClick(
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.TouchEvent<HTMLButtonElement>,
+    row: number,
+    col: number,
+  ) {
+    event.preventDefault(); // Prevent default right-click behavior
+
+    if (game.isGameOver()) return;
+
+    game.toggleFlag(row, col);
+    const newBoard = [...board];
+    newBoard[row][col] =
+      newBoard[row][col] === CellStatus.Flagged
+        ? CellStatus.Hidden
+        : CellStatus.Flagged;
+    setBoard(newBoard);
+  }
 
   useEffect(() => {
-    startGame();
+    // startGame();
 
-    socket.on("game_started", (initialBoard: CellStatus[][]) => {
+    socket.on("MINES:game_started", (initialBoard: CellStatus[][]) => {
       console.log("MINES_STARTED!");
       setBoard(initialBoard);
     });
 
     socket.on(
-      "cell_revealed",
+      "MINES:cell_revealed",
       ({ row, col, cell }: { row: number; col: number; cell: CellStatus }) => {
         const newBoard = [...board!];
         newBoard[row][col] = cell;
@@ -82,7 +94,7 @@ const Mines: React.FC = () => {
     );
 
     socket.on(
-      "flag_toggled",
+      "MINES:flag_toggled",
       ({ row, col, cell }: { row: number; col: number; cell: CellStatus }) => {
         const newBoard = [...board!];
         newBoard[row][col] = cell;
@@ -90,7 +102,7 @@ const Mines: React.FC = () => {
       },
     );
 
-    socket.on("game_over", () => {
+    socket.on("MINES:game_over", () => {
       console.log("Game Over!");
     });
 
@@ -99,27 +111,32 @@ const Mines: React.FC = () => {
     };
   }, [board]);
 
-  function handleCellClick(row: number, col: number) {
-    console.log("CELL_CLICKED");
-    // if (board && board[row][col] === CellStatus.Hidden) {
-    socket.emit("reveal_cell", row, col);
-    // }
-  }
+  // function handleCellClick(row: number, col: number) {
+  //   console.log("CELL_CLICKED");
+  //   // if (board && board[row][col] === CellStatus.Hidden) {
+  //   socket.emit("MINES:reveal_cell", row, col);
 
-  function handleRightClick(
-    event: React.MouseEvent<HTMLButtonElement>,
-    row: number,
-    col: number,
-  ) {
-    event.preventDefault(); // Prevent default right-click behavior
-    if (board) {
-      socket.emit("toggle_flag", row, col);
-    }
-  }
+  //   console.log("CELL_CLICKED:after");
+  //   // }
+  // }
 
-  function startGame() {
-    socket.emit("start_game");
-  }
+  // function handleRightClick(
+  //   event:
+  //     | React.MouseEvent<HTMLButtonElement>
+  //     | React.TouchEvent<HTMLButtonElement>,
+  //   row: number,
+  //   col: number,
+  // ) {
+  //   console.log("RIGHT_CLICKED");
+  //   event.preventDefault(); // Prevent default right-click behavior
+  //   if (board) {
+  //     socket.emit("toggle_flag", row, col);
+  //   }
+  // }
+
+  // function startGame() {
+  //   socket.emit("start_game");
+  // }
 
   return (
     <div>
@@ -162,7 +179,8 @@ const Mines: React.FC = () => {
                 <div className="absolute w-full bg-dark-800">
                   <Select
                     label="3"
-                    data={Array(24)
+                    getValue={getMinesNum}
+                    options={Array(24)
                       .fill(0)
                       .map((_, i) => ({
                         label: (i + 1).toString(),
@@ -177,7 +195,23 @@ const Mines: React.FC = () => {
             </form>
           </div>
           <div className="overflow-hidden bg-dark-850 w-full h-full min-h-[400px] max-sm:min-h-[300px] flex justify-center relative">
-            <div className="flex items-center justify-center w-full p-3">
+            <div className="relative flex items-center justify-center w-full">
+              <AnimateInOut
+                show={gameOver}
+                initial={{ translateY: -100, opacity: 0 }}
+                animate={{ translateY: 0, opacity: 1 }}
+                exit={{ translateY: -100, opacity: 0 }}
+                className="absolute z-10 flex items-center justify-center w-full h-full backdrop-blur-sm"
+              >
+                <div className="relative flex items-center justify-center">
+                  <p className="absolute text-6xl font-extrabold animate-ping">
+                    Game Over
+                  </p>
+                  <p className="relative z-20 text-6xl font-extrabold">
+                    Game Over
+                  </p>
+                </div>
+              </AnimateInOut>
               <div className="w-full grid grid-cols-[repeat(5,1fr)] max-w-[540px] max-sm:max-w-[300px] h-full max-sm:gap-1.5 gap-2.5">
                 {board &&
                   board.map((row, rowIndex) =>
@@ -185,6 +219,9 @@ const Mines: React.FC = () => {
                       <Box
                         onClick={() => handleCellClick(rowIndex, colIndex)}
                         onContextMenu={(event) =>
+                          handleRightClick(event, rowIndex, colIndex)
+                        }
+                        onTouchStart={(event) =>
                           handleRightClick(event, rowIndex, colIndex)
                         }
                       >

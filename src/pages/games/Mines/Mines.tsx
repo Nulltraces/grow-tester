@@ -52,7 +52,7 @@ export default function Mines() {
                 <div className="absolute w-full bg-dark-800">
                   <Select
                     label="3"
-                    data={Array(24)
+                    options={Array(24)
                       .fill(0)
                       .map((_, i) => ({
                         label: (i + 1).toString(),

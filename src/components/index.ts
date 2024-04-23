@@ -1,7 +1,7 @@
 export { default as AnimateInOut } from "./AnimateInOut";
 export { default as AuthForm } from "./AuthForm";
+export { default as BetInput } from "./BetInput";
 export { default as Button } from "./Button";
-export { default as DropdownMenu } from "./DropdownMenu";
 export { default as Input } from "./Input";
 export { default as Modal } from "./Modal";
 export { default as Notification } from "./Notification";

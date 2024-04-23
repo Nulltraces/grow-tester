@@ -6,7 +6,7 @@ export default function Race() {
     <>
       <thead className="uppercase text-gray-500 text-[0.85rem]">
         <tr>
-          {/* <th className="bg-dark-850 rounded-l-md py-3 pl-3 text-left w-[1/2]">
+          <th className="bg-dark-850 rounded-l-md py-3 pl-3 text-left w-[1/2]">
             Game
           </th>
           <th className="py-2 text-left bg-dark-850">Player</th>
@@ -15,11 +15,11 @@ export default function Race() {
           <th className="w-2/12 py-2 text-center bg-dark-850">Multiplier</th>
           <th className="py-2 pr-3 text-right rounded-r-sm bg-dark-850">
             Time
-          </th> */}
+          </th>
         </tr>
       </thead>
       <tbody className="border-spacing-y-3">
-        {[].map((_, i) => (
+        {[11, 1, 1, 1, 1, 1, 1, 1, 11].map((_, i) => (
           <tr
             key={i}
             className="overflow-hidden text-sm bg-dark-850 text-light"

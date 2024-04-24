@@ -92,6 +92,7 @@ export default function Bets() {
                 // setNavOption(currentOption);
                 return (
                   <button
+                    key={i}
                     onClick={() => setNavOption(currentOption)}
                     className={clsx(
                       "flex py-1 px-2 rounded-sm transition-colors hover:text-white text-gray-400 ",

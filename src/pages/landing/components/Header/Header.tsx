@@ -67,8 +67,6 @@ export default function Header() {
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
 
-  console.log({ auth });
-
   const [_, setSearchParams] = useSearchParams();
   // const [user, setUser] = useState<User | null>(null);
 
@@ -453,11 +451,8 @@ function Balance() {
     socket.on("tip", (data) => {
       toast(data.message);
       dispatch(updateBalance(walletBalance + data.amount));
-      console.log("SOCKET_BALANCE", { socket: data, balance });
     });
   }, []);
-
-  console.log("BALANCE---->", balance);
 
   const [loading, setLoading] = useState(false);
 
@@ -467,7 +462,6 @@ function Balance() {
         setLoading(true);
 
         const result = await getBalance();
-        console.log("BALANCE_RESULT", result);
         if (!result) return;
         dispatch(updateBalance(result));
       } catch (error) {

@@ -182,15 +182,15 @@ const CoinFlipGame: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
   const [bet, setBet] = useState<number>(1);
   const [multiplier, setMultiplier] = useState<number>(1);
-  const [result, setResult] = useState<"Heads" | "Tails" | null>(null);
+  const [result, setResult] = useState<"H" | "T" | null>(null);
   const coinIconRef = useRef<HTMLDivElement>(null);
   const tossBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const tossCoinFunction = () => {
       const randomVal = Math.random();
-      const faceCoin = randomVal < 0.5 ? "Heads" : "Tails";
-      const imageUrl = faceCoin === "Heads" ? Heads : Tails;
+      const faceCoin = randomVal < 0.5 ? "H" : "T";
+      const imageUrl = faceCoin === "H" ? Heads : Tails;
 
       if (coinIconRef.current) {
         coinIconRef.current.classList.add("flip");
@@ -221,11 +221,11 @@ const CoinFlipGame: React.FC = () => {
     };
   }, []);
 
-  const flipCoin = (): "Heads" | "Tails" => {
-    return Math.random() < 0.5 ? "Heads" : "Tails";
+  const flipCoin = (): "H" | "T" => {
+    return Math.random() < 0.5 ? "H" : "T";
   };
 
-  const handleBet = (choice: "Heads" | "Tails") => {
+  const handleBet = (choice: "H" | "T") => {
     const coinResult = flipCoin();
     setResult(coinResult);
     if (coinResult === choice) {
@@ -250,8 +250,8 @@ const CoinFlipGame: React.FC = () => {
       <p>Current Bet: ${bet}</p>
       <p>Current Multiplier: {multiplier}x</p>
       {result && <p>Result: {result}</p>}
-      <button onClick={() => handleBet("Heads")}>Bet Heads</button>
-      <button onClick={() => handleBet("Tails")}>Bet Tails</button>
+      <button onClick={() => handleBet("H")}>Bet Heads</button>
+      <button onClick={() => handleBet("T")}>Bet Tails</button>
       <button onClick={handleCashOut}>Cash Out</button>
 
       <div className={"coin"} ref={coinIconRef}>

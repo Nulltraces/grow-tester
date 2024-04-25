@@ -98,9 +98,9 @@ export default function DashboardSideNavigation() {
                 hideNav && "-translate-x-full fixed",
               )}
             >
-              <div className="w-full h-full relative flex flex-col">
+              <div className="relative flex flex-col w-full h-full">
                 {showNav && (
-                  <div className="hidden sm:block right-0 bg-body absolute translate-x-full">
+                  <div className="absolute right-0 hidden translate-x-full sm:block bg-body">
                     <ChatToggle icon={XClose} />
                   </div>
                 )}

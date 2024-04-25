@@ -85,7 +85,7 @@ export default function Reme() {
 
       toast.success("bet placed!");
     } catch (error) {
-      toast.error("Could not lace bet!");
+      toast.error("Could not place bet!");
       setLoading(false);
       setGameRunning(true);
     }

@@ -16,7 +16,6 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    console.log("STORED_TOKEN: ", token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,13 +30,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     // You can modify the response data here, e.g., handling pagination
-    console.log("RES_STATUS: ", response.status);
 
-    console.log("INTERCEPTOR_DATA: ", response.data);
     return response;
   },
   (error: AxiosError) => {
-    console.log("INTERCEPTOR_ERROR: ", error.code);
+    // console.log("INTERCEPTOR_ERROR: ", error.code);
     if (error.response?.status === 401) {
       console.log("REMOVING_USER");
       store.dispatch(clearUser());

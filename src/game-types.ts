@@ -5,4 +5,5 @@ export enum GameType {
   PLINKO = "PLINKO",
   TOWERS = "TOWERS",
   REME = "REME",
+  COINFLIP = "COINFLIP",
 }

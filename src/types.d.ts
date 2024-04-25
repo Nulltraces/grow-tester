@@ -93,6 +93,13 @@ type User = {
   photo: string;
 };
 
+type Player = {
+  user?: { username: string; photo: string };
+  multiplier: number;
+  bet: number;
+  profit: number;
+};
+
 type UserProfile = {
   uid: string;
   username: string;

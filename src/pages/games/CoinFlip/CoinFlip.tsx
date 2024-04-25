@@ -35,8 +35,7 @@ export default function CoinFlip() {
 
   const [gameRunning, setGameRunning] = useState(false);
   const [result, setResult] = useState<typeof bet.choice | null>(null);
-  const coinRef = useRef<HTMLDivElement>(null);
-  const [roundEnd, setRoundEnd] = useState(false);
+  const [roundComplete, setRoundComplete] = useState(false);
   const [round, setRound] = useState(0);
   const [multipliers, setMultipliers] = useState<number[]>([]);
   const [currentMultiplier, setCurrentMultiplier] = useState<number | null>(
@@ -97,13 +96,13 @@ export default function CoinFlip() {
         result: typeof bet.choice;
       }) => {
         console.log("GAME_OVER", data);
-        setRoundEnd(true);
+        setRoundComplete(true);
         setMessage(data.message);
         setLoading(false);
         setResult(data.result);
         // setTimeout(() => {
         //   dispatch(updateBalance(walletBalance + data.winnings));
-        //   setRoundEnd(false);
+        //   setRoundComplete(false);
         // }, 3000);
       },
     );
@@ -119,7 +118,7 @@ export default function CoinFlip() {
       }) => {
         console.log("CONTINUE_PROMPT", data);
         setLoading(false);
-        setRoundEnd(true);
+        setRoundComplete(true);
         setRound(data.round);
         setResult(data.result);
         setWinnings(data.winnings);
@@ -131,11 +130,11 @@ export default function CoinFlip() {
   }, []);
 
   useEffect(() => {
-    console.log({ roundEnd });
-  }, [roundEnd]);
+    console.log({ roundComplete });
+  }, [roundComplete]);
 
   const handleResult = () => {
-    setRoundEnd(false);
+    setRoundComplete(false);
     const continueGame = () => {
       setLoading(true);
       socket.emit("COINFLIP:continue_response", true, socket.id);
@@ -143,6 +142,7 @@ export default function CoinFlip() {
 
     const endGame = () => {
       socket.emit("COINFLIP:continue_response", false);
+      resetGame();
     };
 
     return { continueGame, endGame };
@@ -195,7 +195,7 @@ export default function CoinFlip() {
     setCurrentMultiplier(multipliers[0]);
     setLoading(false);
     setMessage("");
-    setRoundEnd(false);
+    setRoundComplete(false);
     setRound(0);
   };
 
@@ -216,11 +216,11 @@ export default function CoinFlip() {
               <div
                 className={clsx(
                   "relative flex flex-col gap-2 text-sm",
-                  !auth.isAuthenticated && "opacity-40",
+                  (!auth.isAuthenticated || gameRunning) && "opacity-40",
                 )}
               >
                 {!auth.isAuthenticated ||
-                  (loading && (
+                  ((loading || gameRunning) && (
                     <div className="absolute top-0 left-0 w-full h-full cursor-not-allowed z-5" />
                   ))}
 
@@ -279,6 +279,7 @@ export default function CoinFlip() {
                   </div>
                 </div>
                 <Button
+                  loading={loading}
                   type="submit"
                   onClick={() => placeBet()}
                   aria-disabled="true"
@@ -288,7 +289,7 @@ export default function CoinFlip() {
                 </Button>
               </div>
               <AnimateInOut
-                show={roundEnd}
+                show={roundComplete}
                 initial={{ translateY: 100, opacity: 0 }}
                 animate={{ translateY: 0, opacity: 1 }}
                 exit={{ translateY: 100, opacity: 0 }}
@@ -377,7 +378,10 @@ export default function CoinFlip() {
                       </div> */}
                       {/* <Coin coinRef={coinRef} /> */}
                       <div
-                        className={clsx("coin", loading ? "flip" : "nope")}
+                        className={clsx(
+                          "coin !w-2/3 aspect-square",
+                          loading ? "flip" : "nope",
+                        )}
                         // ref={coinRef}
                       >
                         <img

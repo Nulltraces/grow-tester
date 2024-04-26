@@ -42,6 +42,8 @@ export default function CoinFlip() {
     null,
   );
 
+  const [continueGame, setContinueGame] = useState(false);
+
   // const flipCoin = async (): Promise<"H" | "T"> => {
   //   setLoading(true);
   //   const randomVal = Math.random();
@@ -100,6 +102,7 @@ export default function CoinFlip() {
         setMessage(data.message);
         setLoading(false);
         setResult(data.result);
+        setContinueGame(false);
         // setTimeout(() => {
         //   dispatch(updateBalance(walletBalance + data.winnings));
         //   setRoundComplete(false);
@@ -135,9 +138,13 @@ export default function CoinFlip() {
 
   const handleResult = () => {
     setRoundComplete(false);
+
     const continueGame = () => {
-      setLoading(true);
-      socket.emit("COINFLIP:continue_response", true, socket.id);
+      // setLoading(true);
+
+      setContinueGame(true);
+
+      // socket.emit("COINFLIP:continue_response", true, socket.id);
     };
 
     const endGame = () => {
@@ -156,8 +163,18 @@ export default function CoinFlip() {
     if (!bet.stake || isNaN(bet.stake) || bet.stake <= 0)
       return toast.error("Invalid input. Please enter a valid bet amount.");
     if (!bet.choice) return toast.error("please select either head or tail");
+    setLoading(true);
 
     try {
+      if (continueGame) {
+        return socket.emit(
+          "COINFLIP:continue_response",
+          true,
+          socket.id,
+          bet.choice,
+        );
+      }
+
       console.log("PLACE_BET: ", bet, socket.id);
       setLoading(true);
       setGameRunning(true);
@@ -216,11 +233,12 @@ export default function CoinFlip() {
               <div
                 className={clsx(
                   "relative flex flex-col gap-2 text-sm",
-                  (!auth.isAuthenticated || gameRunning) && "opacity-40",
+                  (!auth.isAuthenticated || (gameRunning && !continueGame)) &&
+                    "opacity-40",
                 )}
               >
                 {!auth.isAuthenticated ||
-                  ((loading || gameRunning) && (
+                  ((loading || gameRunning) && !continueGame && (
                     <div className="absolute top-0 left-0 w-full h-full cursor-not-allowed z-5" />
                   ))}
 
@@ -245,6 +263,7 @@ export default function CoinFlip() {
                   <span>Coin Side</span>
                   <div className="flex gap-2">
                     <Button
+                      disabled={loading}
                       type="button"
                       onClick={() => makeChoice("H")}
                       aria-disabled="true"
@@ -261,6 +280,7 @@ export default function CoinFlip() {
                       />
                     </Button>
                     <Button
+                      disabled={loading}
                       type="button"
                       onClick={() => makeChoice("T")}
                       aria-disabled="true"

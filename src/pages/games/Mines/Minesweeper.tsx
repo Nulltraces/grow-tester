@@ -5,27 +5,54 @@ import React, {
   useState,
 } from "react";
 import Minesweeper, { CellStatus } from "./Minesweeper.controller"; // Assuming you have Minesweeper class in Minesweeper.ts file
-import { AnimateInOut, Button, Select } from "@/components";
+import { AnimateInOut, BetInput, Button, Select } from "@/components";
 import clsx from "clsx";
 import { GearIcon, ShieldIcon } from "@/assets/svgs";
 import { SilverLockIcon } from "@/assets/icons";
 import { Bets } from "@/pages/landing/components";
 import socket from "@/utils/constants";
+import ExplosionIcon from "./assets/explosion-icon.svg";
+import FlagIcon from "./assets/flag-icon.svg";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
+import { toast } from "react-toastify";
+import { updateBalance } from "@/store/slices/wallet";
+import { GameType } from "@/game-types";
+import api from "@/api/axios";
 // import "./mines.css ";
 
 const BOARD_SIZE = 5;
 const NUMBER_OF_MINES = 5;
 
+let walletBalance = 0;
 const Mines: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const auth = useAppSelector((state) => state.auth);
+  const { balance } = useAppSelector((state) => state.wallet);
+  useEffect(() => {
+    if (!balance) return;
+
+    walletBalance = balance;
+  }, [balance]);
+
   const [minesNum, setMinesNum] = useState(0);
+  const [gameRunning, setGameRunning] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [game, setGame] = useState(
     new Minesweeper(BOARD_SIZE, minesNum || NUMBER_OF_MINES),
   );
   const [board, setBoard] = useState<CellStatus[][]>(initializeBoard());
+  const [bet, setBet] = useState<Partial<Bet & { socketId: string }>>({
+    gameType: GameType.MINES as Bet["gameType"],
+  });
 
   const getMinesNum = (val: number) => {
     setMinesNum(val);
   };
+
+  useEffect(() => {
+    console.log({ board: game.board });
+  }, []);
 
   const [gameOver, setGameOver] = useState(false);
   // const [board, setBoard] = useState<CellStatus[][] | null>([[]]);
@@ -111,6 +138,54 @@ const Mines: React.FC = () => {
     };
   }, [board]);
 
+  const placeBet = async () => {
+    if (!bet.stake || isNaN(bet.stake) || bet.stake <= 0)
+      return toast.error("Invalid input. Please enter a valid bet amount.");
+    if (!minesNum) return toast.error("please select either head or tail");
+    setLoading(true);
+
+    try {
+      console.log("PLACE_BET: ", bet, socket.id);
+      setLoading(true);
+      setGameRunning(true);
+
+      const response = await api.post("/bet", {
+        ...bet,
+        socketId: socket.id,
+      });
+
+      console.log("BET_RESPONSE", response.data);
+
+      if (response.status !== 201) return toast.error("Couldn't play game");
+
+      socket.emit("MINES:join_game", {
+        player: {
+          user: { username: auth.user?.username, photo: auth.user?.photo },
+        } as Player,
+        socketId: socket.id,
+      });
+
+      dispatch(updateBalance(balance - bet.stake));
+
+      toast.success("bet placed!");
+      setGame(new Minesweeper(BOARD_SIZE, minesNum || NUMBER_OF_MINES));
+      setLoading(false);
+      setGameRunning(true);
+    } catch (error) {
+      toast.error("Could not place bet!");
+      setLoading(false);
+      setGameRunning(false);
+    }
+  };
+
+  const resetGame = () => {
+    setBet((prev) => ({ ...prev, stake: 0, choice: undefined }));
+    setGameRunning(false);
+    setGameOver(false);
+    setLoading(false);
+    setGame(new Minesweeper(BOARD_SIZE, minesNum || NUMBER_OF_MINES));
+  };
+
   // function handleCellClick(row: number, col: number) {
   //   console.log("CELL_CLICKED");
   //   // if (board && board[row][col] === CellStatus.Hidden) {
@@ -153,7 +228,7 @@ const Mines: React.FC = () => {
                 <label className="text-sm font-semibold capitalize">
                   bet amount
                 </label>
-                <div
+                {/* <div
                   tabIndex={0}
                   className="relative flex items-center w-full rounded "
                 >
@@ -161,7 +236,7 @@ const Mines: React.FC = () => {
                     type="text"
                     className="focus:border-none focus:outline-none bg-dark-700 w-full rounded p-2 focus:border-[1px] focus:outline focus:outline-[1px] focus:outline-primary focus:border-primary border-gray-500 outline-gray-500"
                   />
-                  {/* <img src={SilverLockIcon} className="w-4 aspect-square" /> */}
+                  <img src={SilverLockIcon} className="w-4 aspect-square" />
                   <div className="absolute flex items-center gap-2 right-2">
                     <span className="text-sm font-semibold text-gray-600">
                       1/2
@@ -170,7 +245,18 @@ const Mines: React.FC = () => {
                       2x
                     </span>
                   </div>
-                </div>
+                </div> */}
+                <BetInput
+                  inputProps={{
+                    onChange(e) {
+                      setBet((prev) => ({
+                        ...prev,
+                        stake: parseFloat(e.target.value),
+                      }));
+                    },
+                    value: bet.stake || 0,
+                  }}
+                />
               </fieldset>
               <fieldset className="relative h-20 mt-2">
                 <label className="text-sm font-semibold capitalize">
@@ -189,8 +275,16 @@ const Mines: React.FC = () => {
                   />
                 </div>
               </fieldset>
-              <Button type="button" className="w-full capitalize">
-                insufficient funds
+              <Button
+                loading={loading}
+                disabled={loading || gameRunning}
+                onClick={() => placeBet()}
+                type="button"
+                className="w-full capitalize"
+              >
+                {!auth.isAuthenticated || !balance
+                  ? "insufficient funds"
+                  : "place bet"}
               </Button>
             </form>
           </div>
@@ -201,6 +295,7 @@ const Mines: React.FC = () => {
                 initial={{ translateY: -100, opacity: 0 }}
                 animate={{ translateY: 0, opacity: 1 }}
                 exit={{ translateY: -100, opacity: 0 }}
+                onClick={() => resetGame()}
                 className="absolute z-10 flex items-center justify-center w-full h-full backdrop-blur-sm"
               >
                 <div className="relative flex items-center justify-center">
@@ -215,38 +310,47 @@ const Mines: React.FC = () => {
               <div className="w-full grid grid-cols-[repeat(5,1fr)] max-w-[540px] max-sm:max-w-[300px] h-full max-sm:gap-1.5 gap-2.5">
                 {board &&
                   board.map((row, rowIndex) =>
-                    row.map((cell, colIndex) => (
-                      <Box
-                        onClick={() => handleCellClick(rowIndex, colIndex)}
-                        onContextMenu={(event) =>
-                          handleRightClick(event, rowIndex, colIndex)
-                        }
-                        onTouchStart={(event) =>
-                          handleRightClick(event, rowIndex, colIndex)
-                        }
-                      >
-                        {cell === CellStatus.Revealed &&
-                          game.board[rowIndex][colIndex].adjacentMines > 0 && (
+                    row.map((cell, colIndex) => {
+                      const hasMine = game.board[rowIndex][colIndex].hasMine;
+                      return (
+                        <Box
+                          disabled={!gameRunning || loading}
+                          key={colIndex}
+                          onClick={() => handleCellClick(rowIndex, colIndex)}
+                          onContextMenu={(event) =>
+                            handleRightClick(event, rowIndex, colIndex)
+                          }
+                          onTouchStart={(event) =>
+                            handleRightClick(event, rowIndex, colIndex)
+                          }
+                        >
+                          {/* cell === CellStatus.Revealed */}
+                          {/* {cell === CellStatus.Revealed &&
+                            game.board[rowIndex][colIndex].adjacentMines >
+                              0 && ( */}
+                          {cell === CellStatus.Revealed && (
                             <span className="text-sm">
-                              {game.board[rowIndex][colIndex].adjacentMines}
+                              <>
+                                {hasMine ? (
+                                  <img
+                                    className="w-8 h-8"
+                                    src={ExplosionIcon}
+                                    alt=""
+                                  />
+                                ) : (
+                                  game.board[rowIndex][colIndex].adjacentMines
+                                )}
+                              </>
                             </span>
                           )}
-                        {cell === CellStatus.Flagged && (
-                          <svg
-                            className="w-4 h-4 text-red-600"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M5.293 4.293a1 1 0 011.414 0L10 7.586l3.293-3.293a1 1 0 111.414 1.414L11.414 9l3.293 3.293a1 1 0 11-1.414 1.414L10 10.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 9 5.293 5.707a1 1 0 010-1.414z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      </Box>
-                    )),
+                          {cell === CellStatus.Flagged && (
+                            <div>
+                              <img className="w-6 h-6" src={FlagIcon} alt="" />
+                            </div>
+                          )}
+                        </Box>
+                      );
+                    }),
                   )}
               </div>
             </div>
@@ -326,7 +430,7 @@ function Box({
   return (
     <button
       {...buttonProps}
-      className="bg-dark-750 mines-tile cursor-pointer hover:-translate-y-1 hover:brightness-95 active:translate-y-0.5 w-full h-full max-sm:max-h[55px] max-sm:max-w-[55px] max-h-[100px] max-w-[100px]  max-sm:p-2 transition-transform p-4 ease-out rounded-sm relative aspect-square text-gray-500 text-[1.1rem] max-sm:text-sm font-semibold"
+      className="bg-dark-750 mines-tile cursor-pointer flex items-center justify-center hover:-translate-y-1 hover:brightness-95 active:translate-y-0.5 w-full h-full max-sm:max-h[55px] max-sm:max-w-[55px] max-h-[100px] max-w-[100px]  max-sm:p-2 transition-transform p-4 ease-out rounded-sm relative aspect-square text-gray-500 text-[1.1rem] max-sm:text-sm font-semibold"
     >
       {/* <span>1.09×</span> */}
       {children}

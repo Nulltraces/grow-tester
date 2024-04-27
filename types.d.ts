@@ -27,6 +27,7 @@ enum GameType {
   TOWERS = "TOWERS",
   REME = "REME",
   COINFLIP = "COINFLIP",
+  MINES = "MINES",
 }
 
 type Game = {

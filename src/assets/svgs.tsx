@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 
 interface SVGProps {
   className?: string;
@@ -6,7 +6,7 @@ interface SVGProps {
 export const EyeIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       width="16"
       height="16"
       viewBox="0 0 24 24"
@@ -34,7 +34,7 @@ export const EyeIcon = ({ className }: SVGProps) => {
 export const EyeSlashIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
@@ -69,7 +69,7 @@ export const EyeSlashIcon = ({ className }: SVGProps) => {
 export const Info: React.FC<SVGProps> = ({ className }) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="17"
@@ -101,7 +101,7 @@ export const Info: React.FC<SVGProps> = ({ className }) => {
 export const Hearts = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width="48"
       height="48"
@@ -131,7 +131,7 @@ export function Verse({
 }: React.HTMLAttributes<HTMLOrSVGElement>) {
   return (
     <svg
-      className={clsx('', className)}
+      className={clsx("", className)}
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       width="135"
@@ -182,7 +182,7 @@ export function Verse({
 export const MobileHearts = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -207,7 +207,7 @@ export const MobileHearts = ({ className }: SVGProps) => {
 export const HeartsIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={24}
       height={24}
@@ -233,7 +233,7 @@ export const HeartsIcon = ({ className }: SVGProps) => {
 export const SettingsIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={24}
       height={24}
@@ -259,7 +259,7 @@ export const SettingsIcon = ({ className }: SVGProps) => {
 export const AddIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={24}
       height={24}
@@ -279,7 +279,7 @@ export const AddIcon = ({ className }: SVGProps) => {
 export const SearchIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={24}
       height={24}
@@ -305,7 +305,7 @@ export const SearchIcon = ({ className }: SVGProps) => {
 export const DocIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={22}
       height={22}
@@ -325,7 +325,7 @@ export const DocIcon = ({ className }: SVGProps) => {
 export const HeartIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={20}
       height={20}
@@ -344,7 +344,7 @@ export const HeartIcon = ({ className }: SVGProps) => {
 export const ArchiveIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx(' stroke-gray-700_', className)}
+      className={clsx(" stroke-gray-700_", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={20}
       height={20}
@@ -363,7 +363,7 @@ export const ArchiveIcon = ({ className }: SVGProps) => {
 export const TrashIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={20}
       height={20}
@@ -382,7 +382,7 @@ export const TrashIcon = ({ className }: SVGProps) => {
 export function PlusIcon({ className }: SVGProps) {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width="14"
       height="14"
@@ -403,7 +403,7 @@ export function PlusIcon({ className }: SVGProps) {
 export const MenuHorizontalDotsIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       width="24"
       height="24"
       viewBox="0 0 24 24"
@@ -438,7 +438,7 @@ export const MenuHorizontalDotsIcon = ({ className }: SVGProps) => {
 export function DropDown({ className }: SVGProps) {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width="20"
       height="21"
@@ -459,7 +459,7 @@ export function DropDown({ className }: SVGProps) {
 export const ExpandMoreIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={20}
       height={21}
@@ -480,7 +480,7 @@ export const ExpandMoreIcon = ({ className }: SVGProps) => {
 export const LeftAlignIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -506,7 +506,7 @@ export const LeftAlignIcon = ({ className }: SVGProps) => {
 export const MenuIconsIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
@@ -541,7 +541,7 @@ export const MenuIconsIcon = ({ className }: SVGProps) => {
 export const HeartsOutlineIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={16}
       height={16}
@@ -568,7 +568,7 @@ export const HeartsOutlineIcon = ({ className }: SVGProps) => {
 export const TagIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width={16}
       height={16}
@@ -595,7 +595,7 @@ export const TagIcon = ({ className }: SVGProps) => {
 export const EditIcon = ({ className }: SVGProps) => {
   return (
     <svg
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
       xmlns="http://www.w3.org/2000/svg"
       width="16"
       height="16"
@@ -621,7 +621,7 @@ export const FolderIcon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M13 7L11.8845 4.76892C11.5634 4.1268 11.4029 3.80573 11.1634 3.57116C10.9516 3.36373 10.6963 3.20597 10.4161 3.10931C10.0992 3 9.74021 3 9.02229 3H5.2C4.0799 3 3.51984 3 3.09202 3.21799C2.71569 3.40973 2.40973 3.71569 2.21799 4.09202C2 4.51984 2 5.0799 2 6.2V7M2 7H17.2C18.8802 7 19.7202 7 20.362 7.32698C20.9265 7.6146 21.3854 8.07354 21.673 8.63803C22 9.27976 22 10.1198 22 11.8V16.2C22 17.8802 22 18.7202 21.673 19.362C21.3854 19.9265 20.9265 20.3854 20.362 20.673C19.7202 21 18.8802 21 17.2 21H6.8C5.11984 21 4.27976 21 3.63803 20.673C3.07354 20.3854 2.6146 19.9265 2.32698 19.362C2 18.7202 2 17.8802 2 16.2V7Z"
@@ -642,7 +642,7 @@ export const Tag2Icon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M8 8H8.01M4.56274 2.93726L2.93726 4.56274C2.59136 4.90864 2.4184 5.0816 2.29472 5.28343C2.18506 5.46237 2.10425 5.65746 2.05526 5.86154C2 6.09171 2 6.3363 2 6.82548L2 9.67452C2 10.1637 2 10.4083 2.05526 10.6385C2.10425 10.8425 2.18506 11.0376 2.29472 11.2166C2.4184 11.4184 2.59135 11.5914 2.93726 11.9373L10.6059 19.6059C11.7939 20.7939 12.388 21.388 13.0729 21.6105C13.6755 21.8063 14.3245 21.8063 14.927 21.6105C15.612 21.388 16.2061 20.7939 17.3941 19.6059L19.6059 17.3941C20.7939 16.2061 21.388 15.612 21.6105 14.927C21.8063 14.3245 21.8063 13.6755 21.6105 13.0729C21.388 12.388 20.7939 11.7939 19.6059 10.6059L11.9373 2.93726C11.5914 2.59136 11.4184 2.4184 11.2166 2.29472C11.0376 2.18506 10.8425 2.10425 10.6385 2.05526C10.4083 2 10.1637 2 9.67452 2L6.82548 2C6.3363 2 6.09171 2 5.86154 2.05526C5.65746 2.10425 5.46237 2.18506 5.28343 2.29472C5.0816 2.4184 4.90865 2.59135 4.56274 2.93726ZM8.5 8C8.5 8.27614 8.27614 8.5 8 8.5C7.72386 8.5 7.5 8.27614 7.5 8C7.5 7.72386 7.72386 7.5 8 7.5C8.27614 7.5 8.5 7.72386 8.5 8Z"
@@ -663,7 +663,7 @@ export const Tag3Icon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M21 11L13.4059 3.40589C12.887 2.88703 12.6276 2.6276 12.3249 2.44208C12.0564 2.27759 11.7638 2.15638 11.4577 2.08289C11.1124 2 10.7455 2 10.0118 2L6 2M3 8.7L3 10.6745C3 11.1637 3 11.4083 3.05526 11.6385C3.10425 11.8425 3.18506 12.0376 3.29472 12.2166C3.4184 12.4184 3.59136 12.5914 3.93726 12.9373L11.7373 20.7373C12.5293 21.5293 12.9253 21.9253 13.382 22.0737C13.7837 22.2042 14.2163 22.2042 14.618 22.0737C15.0747 21.9253 15.4707 21.5293 16.2627 20.7373L18.7373 18.2627C19.5293 17.4707 19.9253 17.0747 20.0737 16.618C20.2042 16.2163 20.2042 15.7837 20.0737 15.382C19.9253 14.9253 19.5293 14.5293 18.7373 13.7373L11.4373 6.43726C11.0914 6.09136 10.9184 5.9184 10.7166 5.79472C10.5376 5.68506 10.3425 5.60425 10.1385 5.55526C9.90829 5.5 9.6637 5.5 9.17452 5.5H6.2C5.0799 5.5 4.51984 5.5 4.09202 5.71799C3.7157 5.90973 3.40973 6.21569 3.21799 6.59202C3 7.01984 3 7.57989 3 8.7Z"
@@ -684,7 +684,7 @@ export const Expand4Icon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M20 14V16.8C20 17.9201 20 18.4802 19.782 18.908C19.5903 19.2843 19.2843 19.5903 18.908 19.782C18.4802 20 17.9201 20 16.8 20H14M10 4H7.2C6.0799 4 5.51984 4 5.09202 4.21799C4.71569 4.40973 4.40973 4.71569 4.21799 5.09202C4 5.51984 4 6.07989 4 7.2V10M15 9L21 3M21 3H15M21 3V9M9 15L3 21M3 21H9M3 21L3 15"
@@ -705,7 +705,7 @@ export const Share5Icon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M21 6H17.8C16.1198 6 15.2798 6 14.638 6.32698C14.0735 6.6146 13.6146 7.07354 13.327 7.63803C13 8.27976 13 9.11984 13 10.8V12M21 6L18 3M21 6L18 9M10 3H7.8C6.11984 3 5.27976 3 4.63803 3.32698C4.07354 3.6146 3.6146 4.07354 3.32698 4.63803C3 5.27976 3 6.11984 3 7.8V16.2C3 17.8802 3 18.7202 3.32698 19.362C3.6146 19.9265 4.07354 20.3854 4.63803 20.673C5.27976 21 6.11984 21 7.8 21H16.2C17.8802 21 18.7202 21 19.362 20.673C19.9265 20.3854 20.3854 19.9265 20.673 19.362C21 18.7202 21 17.8802 21 16.2V14"
@@ -726,7 +726,7 @@ export const MessageChatCircleIcon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M6.09436 11.2288C6.03221 10.8282 5.99996 10.4179 5.99996 10C5.99996 5.58172 9.60525 2 14.0526 2C18.4999 2 22.1052 5.58172 22.1052 10C22.1052 10.9981 21.9213 11.9535 21.5852 12.8345C21.5154 13.0175 21.4804 13.109 21.4646 13.1804C21.4489 13.2512 21.4428 13.301 21.4411 13.3735C21.4394 13.4466 21.4493 13.5272 21.4692 13.6883L21.8717 16.9585C21.9153 17.3125 21.9371 17.4895 21.8782 17.6182C21.8266 17.731 21.735 17.8205 21.6211 17.8695C21.4911 17.9254 21.3146 17.8995 20.9617 17.8478L17.7765 17.3809C17.6101 17.3565 17.527 17.3443 17.4512 17.3448C17.3763 17.3452 17.3245 17.3507 17.2511 17.3661C17.177 17.3817 17.0823 17.4172 16.893 17.4881C16.0097 17.819 15.0524 18 14.0526 18C13.6344 18 13.2237 17.9683 12.8227 17.9073M7.63158 22C10.5965 22 13 19.5376 13 16.5C13 13.4624 10.5965 11 7.63158 11C4.66668 11 2.26316 13.4624 2.26316 16.5C2.26316 17.1106 2.36028 17.6979 2.53955 18.2467C2.61533 18.4787 2.65322 18.5947 2.66566 18.6739C2.67864 18.7567 2.68091 18.8031 2.67608 18.8867C2.67145 18.9668 2.65141 19.0573 2.61134 19.2383L2 22L4.9948 21.591C5.15827 21.5687 5.24 21.5575 5.31137 21.558C5.38652 21.5585 5.42641 21.5626 5.50011 21.5773C5.5701 21.5912 5.67416 21.6279 5.88227 21.7014C6.43059 21.8949 7.01911 22 7.63158 22Z"
@@ -747,7 +747,7 @@ export const XClose = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M18 6L6 18M6 6L18 18"
@@ -768,7 +768,7 @@ export const Bell1 = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M9.35419 21C10.0593 21.6224 10.9856 22 12 22C13.0145 22 13.9407 21.6224 14.6458 21M18 8C18 6.4087 17.3679 4.88258 16.2427 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.8826 2.63214 7.75738 3.75736C6.63216 4.88258 6.00002 6.4087 6.00002 8C6.00002 11.0902 5.22049 13.206 4.34968 14.6054C3.61515 15.7859 3.24788 16.3761 3.26134 16.5408C3.27626 16.7231 3.31488 16.7926 3.46179 16.9016C3.59448 17 4.19261 17 5.38887 17H18.6112C19.8074 17 20.4056 17 20.5382 16.9016C20.6852 16.7926 20.7238 16.7231 20.7387 16.5408C20.7522 16.3761 20.3849 15.7859 19.6504 14.6054C18.7795 13.206 18 11.0902 18 8Z"
@@ -789,7 +789,7 @@ export const BellRinging1 = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M9.35442 21C10.0596 21.6224 10.9858 22 12.0002 22C13.0147 22 13.9409 21.6224 14.6461 21M2.29414 5.81989C2.27979 4.36854 3.06227 3.01325 4.32635 2.3M21.7024 5.8199C21.7167 4.36855 20.9342 3.01325 19.6702 2.3M18.0002 8C18.0002 6.4087 17.3681 4.88258 16.2429 3.75736C15.1177 2.63214 13.5915 2 12.0002 2C10.4089 2 8.88283 2.63214 7.75761 3.75736C6.63239 4.88258 6.00025 6.4087 6.00025 8C6.00025 11.0902 5.22072 13.206 4.34991 14.6054C3.61538 15.7859 3.24811 16.3761 3.26157 16.5408C3.27649 16.7231 3.31511 16.7926 3.46203 16.9016C3.59471 17 4.19284 17 5.3891 17H18.6114C19.8077 17 20.4058 17 20.5385 16.9016C20.6854 16.7926 20.724 16.7231 20.7389 16.5408C20.7524 16.3761 20.3851 15.7859 19.6506 14.6054C18.7798 13.206 18.0002 11.0902 18.0002 8Z"
@@ -810,7 +810,7 @@ export const AlertCircle = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
@@ -831,7 +831,7 @@ export const Image3Icon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M4.27209 20.7279L10.8686 14.1314C11.2646 13.7354 11.4627 13.5373 11.691 13.4632C11.8918 13.3979 12.1082 13.3979 12.309 13.4632C12.5373 13.5373 12.7354 13.7354 13.1314 14.1314L19.6839 20.6839M14 15L16.8686 12.1314C17.2646 11.7354 17.4627 11.5373 17.691 11.4632C17.8918 11.3979 18.1082 11.3979 18.309 11.4632C18.5373 11.5373 18.7354 11.7354 19.1314 12.1314L22 15M10 9C10 10.1046 9.10457 11 8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9ZM6.8 21H17.2C18.8802 21 19.7202 21 20.362 20.673C20.9265 20.3854 21.3854 19.9265 21.673 19.362C22 18.7202 22 17.8802 22 16.2V7.8C22 6.11984 22 5.27976 21.673 4.63803C21.3854 4.07354 20.9265 3.6146 20.362 3.32698C19.7202 3 18.8802 3 17.2 3H6.8C5.11984 3 4.27976 3 3.63803 3.32698C3.07354 3.6146 2.6146 4.07354 2.32698 4.63803C2 5.27976 2 6.11984 2 7.8V16.2C2 17.8802 2 18.7202 2.32698 19.362C2.6146 19.9265 3.07354 20.3854 3.63803 20.673C4.27976 21 5.11984 21 6.8 21Z"
@@ -852,7 +852,7 @@ export const Link1Icon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M12.7076 18.3639L11.2933 19.7781C9.34072 21.7308 6.1749 21.7308 4.22228 19.7781C2.26966 17.8255 2.26966 14.6597 4.22228 12.7071L5.63649 11.2929M18.3644 12.7071L19.7786 11.2929C21.7312 9.34024 21.7312 6.17441 19.7786 4.22179C17.826 2.26917 14.6602 2.26917 12.7076 4.22179L11.2933 5.636M8.50045 15.4999L15.5005 8.49994"
@@ -873,7 +873,7 @@ export const VideoRecorderIcon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M22 8.93137C22 8.32555 22 8.02265 21.8802 7.88238C21.7763 7.76068 21.6203 7.69609 21.4608 7.70865C21.2769 7.72312 21.0627 7.93731 20.6343 8.36569L17 12L20.6343 15.6343C21.0627 16.0627 21.2769 16.2769 21.4608 16.2914C21.6203 16.3039 21.7763 16.2393 21.8802 16.1176C22 15.9774 22 15.6744 22 15.0686V8.93137Z"
@@ -901,7 +901,7 @@ export const File7Icon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M14 2.26953V6.40007C14 6.96012 14 7.24015 14.109 7.45406C14.2049 7.64222 14.3578 7.7952 14.546 7.89108C14.7599 8.00007 15.0399 8.00007 15.6 8.00007H19.7305M8 15V18M16 13V18M12 10.5V18M20 9.98822V17.2C20 18.8802 20 19.7202 19.673 20.362C19.3854 20.9265 18.9265 21.3854 18.362 21.673C17.7202 22 16.8802 22 15.2 22H8.8C7.11984 22 6.27976 22 5.63803 21.673C5.07354 21.3854 4.6146 20.9265 4.32698 20.362C4 19.7202 4 18.8802 4 17.2V6.8C4 5.11984 4 4.27976 4.32698 3.63803C4.6146 3.07354 5.07354 2.6146 5.63803 2.32698C6.27976 2 7.11984 2 8.8 2H12.0118C12.7455 2 13.1124 2 13.4577 2.08289C13.7638 2.15638 14.0564 2.27759 14.3249 2.44208C14.6276 2.6276 14.887 2.88703 15.4059 3.40589L18.5941 6.59411C19.113 7.11297 19.3724 7.3724 19.5579 7.67515C19.7224 7.94356 19.8436 8.2362 19.9171 8.5423C20 8.88757 20 9.25445 20 9.98822Z"
@@ -922,7 +922,7 @@ export const CheckCircleIcon = ({ className }: SVGProps) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M7.5 12L10.5 15L16.5 9M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
@@ -943,7 +943,7 @@ export const FolderOutlineIcon = ({ className }: SVGProps) => {
       height="20"
       viewBox="0 0 20 20"
       fill="none"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M10.8337 5.83333L9.90404 3.9741C9.6365 3.439 9.50271 3.17144 9.30313 2.97597C9.12664 2.80311 8.91393 2.67164 8.68039 2.59109C8.4163 2.5 8.11716 2.5 7.5189 2.5H4.33366C3.40024 2.5 2.93353 2.5 2.57701 2.68166C2.2634 2.84144 2.00844 3.09641 1.84865 3.41002C1.66699 3.76654 1.66699 4.23325 1.66699 5.16667V5.83333M1.66699 5.83333H14.3337C15.7338 5.83333 16.4339 5.83333 16.9686 6.10582C17.439 6.3455 17.8215 6.72795 18.0612 7.19836C18.3337 7.73314 18.3337 8.4332 18.3337 9.83333V13.5C18.3337 14.9001 18.3337 15.6002 18.0612 16.135C17.8215 16.6054 17.439 16.9878 16.9686 17.2275C16.4339 17.5 15.7338 17.5 14.3337 17.5H5.66699C4.26686 17.5 3.5668 17.5 3.03202 17.2275C2.56161 16.9878 2.17916 16.6054 1.93948 16.135C1.66699 15.6002 1.66699 14.9001 1.66699 13.5V5.83333Z"
@@ -963,7 +963,7 @@ export const FontIcon = ({ className }: SVGProps) => {
       viewBox="0 0 15 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('stroke-gray-700', className)}
+      className={clsx("stroke-gray-700", className)}
     >
       <path
         d="M13.8867 0.109375L14.0625 3.83594H13.6172C13.5312 3.17969 13.4141 2.71094 13.2656 2.42969C13.0234 1.97656 12.6992 1.64453 12.293 1.43359C11.8945 1.21484 11.3672 1.10547 10.7109 1.10547H8.47266V13.2461C8.47266 14.2227 8.57812 14.832 8.78906 15.0742C9.08594 15.4023 9.54297 15.5664 10.1602 15.5664H10.7109V16H3.97266V15.5664H4.53516C5.20703 15.5664 5.68359 15.3633 5.96484 14.957C6.13672 14.707 6.22266 14.1367 6.22266 13.2461V1.10547H4.3125C3.57031 1.10547 3.04297 1.16016 2.73047 1.26953C2.32422 1.41797 1.97656 1.70312 1.6875 2.125C1.39844 2.54688 1.22656 3.11719 1.17188 3.83594H0.726562L0.914062 0.109375H13.8867Z"

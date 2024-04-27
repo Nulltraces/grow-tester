@@ -127,6 +127,7 @@ export default function CoinFlip() {
         setWinnings(data.winnings);
         setMessage(data.message);
         setCurrentMultiplier(data.currentMultiplier);
+        setContinueGame(false);
         console.log({ currentMultiplier: data.currentMultiplier });
       },
     );
@@ -198,7 +199,7 @@ export default function CoinFlip() {
     } catch (error) {
       toast.error("Could not place bet!");
       setLoading(false);
-      setGameRunning(true);
+      setGameRunning(false);
     }
   };
 

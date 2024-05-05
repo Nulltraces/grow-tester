@@ -1,5 +1,6 @@
 import SilverLockIcon from "@/assets/icons/silver-lock.webp";
 import socket from "@/utils/constants";
+import { formatLeaderboardTime } from "@/utils/strings";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -30,7 +31,7 @@ export default function AllBets() {
   }, []);
 
   useEffect(() => {
-    console.log({ leaderboardData, lBoardData });
+    console.log({ leaderboardData, lBoardData, date: lBoardData[0]?.time });
   }, [leaderboardData]);
 
   return (
@@ -93,7 +94,7 @@ export default function AllBets() {
               </td>
               <td className="text-center min-w-[80px]">{data.multiplier}×</td>
               <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                {data.time.toString() as string}
+                {formatLeaderboardTime(data.time.toString())}
               </td>
             </tr>
           );

@@ -1,10 +1,10 @@
 export function lettersAndNumbersOnly(
   inputString: string,
-  options?: { exception: string }
+  options?: { exception: string },
 ) {
   const regexPattern = new RegExp(
     `[^a-zA-Z0-9${options ? options.exception : ""}]`,
-    "g"
+    "g",
   );
 
   // Remove non-alphanumeric characters
@@ -27,4 +27,14 @@ export function capitalizeCamelCase(input: string): string {
 
 export function formatToSnakeCase(inputString: string): string {
   return inputString.replace(/([a-z\d])([A-Z])/g, "$1_$2").toLowerCase();
+}
+
+export function formatLeaderboardTime(dateString: string) {
+  const originalDate = new Date(dateString);
+
+  const hours = String(originalDate.getUTCHours()).padStart(2, "0");
+  const minutes = String(originalDate.getUTCMinutes()).padStart(2, "0");
+  const seconds = String(originalDate.getUTCSeconds()).padStart(2, "0");
+  const formattedTime = `${hours}:${minutes}:${seconds}`;
+  return formattedTime;
 }

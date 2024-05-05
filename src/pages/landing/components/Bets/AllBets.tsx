@@ -1,7 +1,38 @@
 import SilverLockIcon from "@/assets/icons/silver-lock.webp";
+import socket from "@/utils/constants";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+type LeaderBoardData = {
+  gameType: GameType;
+  player: string;
+  stake: number;
+  profit: number;
+  multiplier: number;
+  time: Date;
+};
+
+let lBoardData: LeaderBoardData[] = [];
+
 export default function AllBets() {
+  const [leaderboardData, setLeaderboardData] =
+    useState<LeaderBoardData[]>(lBoardData);
+
+  useEffect(() => {
+    socket.emit("LEADERBOARD:get_table");
+
+    socket.on("LEADERBOARD:table", (data) => {
+      console.log("LEADERBOARD: ", { data });
+      setLeaderboardData(data);
+      lBoardData = data;
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log({ leaderboardData, lBoardData });
+  }, [leaderboardData]);
+
   return (
     <>
       <thead className="uppercase text-gray-500 text-[0.85rem]">
@@ -19,23 +50,23 @@ export default function AllBets() {
         </tr>
       </thead>
       <tbody className="border-spacing-y-3">
-        {[1, 1, 1, 1].map((_, i) => {
+        {lBoardData.map((data, i) => {
           return (
             <tr
               key={i}
               className="overflow-hidden text-sm bg-dark-850 text-light"
             >
               <td className="rounded-l-sm py-3 text-left pl-3 min-w-[110px]">
-                Slots
+                {data.gameType}
               </td>
               <td className="text-left text-white overflow-hidden min-w-[130px]">
                 <Link to={"/"} className="text-white cursor-pointer">
-                  Iamthetopg
+                  {data.player}
                 </Link>
               </td>
               <td className="text-center  min-w-[80px]">
                 <span className="flex items-center justify-center gap-1">
-                  0.40
+                  {data.stake}
                   <img
                     src={SilverLockIcon}
                     width="18"
@@ -45,8 +76,13 @@ export default function AllBets() {
                 </span>
               </td>
               <td className="text-center min-w-[80px]">
-                <span className="flex items-center justify-center gap-1">
-                  -0.40
+                <span
+                  className={clsx(
+                    "flex items-center justify-center gap-1",
+                    data.profit > 0 && "text-green-500",
+                  )}
+                >
+                  {data.profit.toFixed(2)}
                   <img
                     src={SilverLockIcon}
                     width="18"
@@ -55,9 +91,9 @@ export default function AllBets() {
                   />
                 </span>
               </td>
-              <td className="text-center min-w-[80px]">0.00×</td>
+              <td className="text-center min-w-[80px]">{data.multiplier}×</td>
               <td className="pr-3 rounded-r-sm min-w-[90px] text-right">
-                12:07:03
+                {data.time.toString() as string}
               </td>
             </tr>
           );

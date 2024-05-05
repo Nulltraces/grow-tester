@@ -60,10 +60,14 @@ export default function Root() {
 
   return (
     <>
-      <ToastContainer position="bottom-right" className="z-[100000000000000]" />
+      <ToastContainer
+        position="bottom-right"
+        className="z-[100000000000000]"
+        stacked
+      />
       {loading ? (
         <div className="flex flex-col h-screen gap-3_ bg-body">
-          <div className="flex w-full h-full items-center justify-center">
+          <div className="flex items-center justify-center w-full h-full">
             <div className="space-y-3">
               <div className="animate-pulse w-[70%] sm:w-auto mx-auto">
                 <img src="/logo.png" />
@@ -71,7 +75,7 @@ export default function Root() {
               <div className="mx-auto w-fit">
                 <Link
                   to="/"
-                  className="text-2xl sm:text-3xl font-bold text-primary uppercase text-center"
+                  className="text-2xl font-bold text-center uppercase sm:text-3xl text-primary"
                 >
                   join our discord server
                 </Link>
@@ -86,7 +90,7 @@ export default function Root() {
           <main className="flex flex-col h-screen gap-3_ bg-body">
             <Header />
             <div className="flex flex-1_ overflow-auto h-[calc(100%-7.2rem)] sm:h-auto p-2 md:p-0">
-              <div className="fixed hidden sm:inline-block left-0 bottom-28 items-center_ justify-center items-center hover:-translate-y-1 bg-gray-800 transition-all duration-100 px-2 pt-2 rounded-sm z-10">
+              <div className="fixed left-0 z-10 items-center justify-center hidden px-2 pt-2 transition-all duration-100 bg-gray-800 rounded-sm sm:inline-block bottom-28 items-center_ hover:-translate-y-1">
                 <ChatToggle icon={MessageChatCircleIcon} />
               </div>
               <Chat />

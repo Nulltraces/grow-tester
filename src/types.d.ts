@@ -106,11 +106,11 @@ type UserProfile = {
   email: string;
   photo: string;
   level: number;
-  bets?: number;
-  wins?: number;
-  wagered?: number;
-  netProfit?: number;
+  gamesWon: number;
+  totalBets: number;
+  totalWagered?: number;
   allTimeHigh?: number;
   allTimeLow?: number;
+  netProfit?: number;
   joinDate: string;
 };

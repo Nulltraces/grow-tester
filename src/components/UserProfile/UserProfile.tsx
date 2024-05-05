@@ -241,7 +241,7 @@ export default function UserProfile({
                   <span>Total Bets</span>
                 </span>
                 <span className="flex items-center gap-1 text-white">
-                  {user.bets}
+                  {user.totalBets}
                 </span>
               </div>
               <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
@@ -250,7 +250,7 @@ export default function UserProfile({
                   <span>Games Won</span>
                 </span>
                 <span className="flex items-center gap-1 text-white">
-                  {user.wins}
+                  {user.gamesWon}
                 </span>
               </div>
               <div className="flex flex-col gap-2 bg-dark-700 text-sm font-semibold p-2.5 rounded-sm items-center">
@@ -259,7 +259,7 @@ export default function UserProfile({
                   <span>Total Wagered</span>
                 </span>
                 <span className="flex items-center gap-1 text-white">
-                  {user.wagered}
+                  {user.totalWagered}
                   <img
                     src={SilverLockIcon}
                     width="18"

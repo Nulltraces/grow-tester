@@ -149,7 +149,7 @@ export default function RemeGame({
 
         <div className="h-full w-full_ absolute_">
           {/* <canvas width="955" height="500"></canvas> */}
-          <div className={clsx(`mx-auto ${classes["spinner-container"]}`)}>
+          <div className={clsx(`mx-auto ${classes["reme-spinner-container"]}`)}>
             {/* <img
               src={Roulette}
               alt="Roulette Wheels"
@@ -177,7 +177,7 @@ export default function RemeGame({
                 src={Base}
                 alt="Roulette Wheels"
                 draggable={false}
-                className={`object-cover ${classes["spinner"]} shrink-0`}
+                className={`object-cover ${classes["reme-spinner"]} shrink-0`}
                 style={{
                   imageRendering: "pixelated",
                 }}

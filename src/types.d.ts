@@ -89,6 +89,7 @@ type APIResponse<T = any> = {
 type User = {
   id: string;
   username: string;
+  background?: string;
   email: string;
   photo: string;
 };

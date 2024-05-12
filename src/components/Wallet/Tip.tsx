@@ -9,8 +9,9 @@ import { updateBalance } from "@/store/slices/wallet";
 export default function Tip() {
   const searchParams = useSearchParams()[0];
   const isTip = searchParams.get("modal") === "tip";
+  const userToTip = searchParams.get("tip-user");
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(userToTip || "");
   const [amount, setAmount] = useState(0);
 
   const dispatch = useAppDispatch();

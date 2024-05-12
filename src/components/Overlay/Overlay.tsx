@@ -6,13 +6,13 @@ import { OverlayProps } from "./types";
 
 export default function Overlay({
   children,
-  disableOnClick,
+  closeOnClick,
   handleShowOverlay,
   show,
   className,
 }: OverlayProps) {
   const overlayStyles = `fixed h-screen w-screen bg-black/60 z-20tt ${
-    disableOnClick && "cursor-pointer"
+    closeOnClick && "cursor-pointer"
   } top-0 left-0 flex items-center justify-center backdrop-blur-sm_` as React.HTMLAttributes<HTMLDivElement>["className"];
 
   useEffect(() => {
@@ -27,8 +27,8 @@ export default function Overlay({
       {show &&
         (children ? (
           <motion.div
-            onClick={disableOnClick && handleShowOverlay?.()}
-            title={disableOnClick ? "close" : ""}
+            onClick={closeOnClick && handleShowOverlay?.()}
+            title={closeOnClick ? "close" : ""}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -38,8 +38,8 @@ export default function Overlay({
           </motion.div>
         ) : (
           <motion.div
-            onClick={disableOnClick && handleShowOverlay?.()}
-            title={disableOnClick ? "close" : ""}
+            onClick={closeOnClick && handleShowOverlay?.()}
+            title={closeOnClick ? "close" : ""}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -70,7 +70,7 @@ function OverlayChild({
 
 /* 
 className={`fixed h-screen w-screen bg-primary/80 ${
-            disableOnClick && "cursor-pointer"
+            closeOnClick && "cursor-pointer"
           } before:w-full before:h-full before:absolute before:left-0 before:bg-primary before:opacity-40 top-0 left-0 flex items-center justify-center z-50 active:backdrop-blur-lg backdrop-blur-sm`}
 */
 
@@ -85,8 +85,8 @@ className={`fixed h-screen w-screen bg-primary/80 ${
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={disableOnClick ? () => handleShowOverlay() : () => {}}
-            title={disableOnClick ? "close" : ""}
+            onClick={closeOnClick ? () => handleShowOverlay() : () => {}}
+            title={closeOnClick ? "close" : ""}
           >
             <AnimatePresence>
               {show && (
@@ -106,8 +106,8 @@ className={`fixed h-screen w-screen bg-primary/80 ${
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className={"fixed h-screen w-screen bg-red-400 top-0 left-0 "}
-            onClick={disableOnClick ? () => handleShowOverlay() : () => {}}
-            title={disableOnClick ? "close" : ""}
+            onClick={closeOnClick ? () => handleShowOverlay() : () => {}}
+            title={closeOnClick ? "close" : ""}
           />
         ))}
     </AnimatePresence>

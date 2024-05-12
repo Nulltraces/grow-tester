@@ -61,6 +61,8 @@ export async function tipUser(params: { amount: number; username: string }) {
       return true;
     }
 
+    toast.error(data.message);
+
     return false;
   } catch (error) {
     console.error("tipUser:service", error);

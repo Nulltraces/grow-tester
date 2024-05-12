@@ -30,7 +30,7 @@ export default function CoinFlip() {
     gameType: GameType.COINFLIP as Bet["gameType"],
   });
   const [loading, setLoading] = useState(false);
-  const [winnings, setWinnings] = useState(0);
+  const [profit, setProfit] = useState(0);
   const [message, setMessage] = useState("");
 
   const [gameRunning, setGameRunning] = useState(false);
@@ -44,25 +44,9 @@ export default function CoinFlip() {
 
   const [continueGame, setContinueGame] = useState(false);
 
-  // const flipCoin = async (): Promise<"H" | "T"> => {
-  //   setLoading(true);
-  //   const randomVal = Math.random();
-  //   const faceCoin = randomVal < 0.5 ? "H" : "T";
-
-  //   if (coinRef.current) {
-  //     await new Promise((resolve) => {
-  //       setTimeout((e) => {
-  //         setLoading(false);
-  //         resolve(e);
-  //       }, 1000);
-  //     });
-  //   }
-  //   return faceCoin;
-
   useEffect(() => {
     console.log("COMPARE_RESULT: ", result, bet.choice);
   }, [result]);
-  // };
 
   useEffect(() => {
     // setBet(prev=>{})
@@ -93,7 +77,7 @@ export default function CoinFlip() {
     socket.on(
       "COINFLIP:game_over",
       (data: {
-        winnings: number;
+        profit: number;
         message: string;
         result: typeof bet.choice;
       }) => {
@@ -104,7 +88,7 @@ export default function CoinFlip() {
         setResult(data.result);
         setContinueGame(false);
         // setTimeout(() => {
-        //   dispatch(updateBalance(walletBalance + data.winnings));
+        //   dispatch(updateBalance(walletBalance + data.profit));
         //   setRoundComplete(false);
         // }, 3000);
       },
@@ -115,7 +99,7 @@ export default function CoinFlip() {
       (data: {
         currentMultiplier: number;
         result: typeof bet.choice;
-        winnings: number;
+        profit: number;
         message: string;
         round: number;
       }) => {
@@ -124,7 +108,7 @@ export default function CoinFlip() {
         setRoundComplete(true);
         setRound(data.round);
         setResult(data.result);
-        setWinnings(data.winnings);
+        setProfit(data.profit);
         setMessage(data.message);
         setCurrentMultiplier(data.currentMultiplier);
         setContinueGame(false);
@@ -141,11 +125,7 @@ export default function CoinFlip() {
     setRoundComplete(false);
 
     const continueGame = () => {
-      // setLoading(true);
-
       setContinueGame(true);
-
-      // socket.emit("COINFLIP:continue_response", true, socket.id);
     };
 
     const endGame = () => {
@@ -161,13 +141,16 @@ export default function CoinFlip() {
   };
 
   const placeBet = async () => {
-    if (!bet.stake || isNaN(bet.stake) || bet.stake <= 0)
+    if (!bet.stake || bet.stake < 1 || isNaN(bet.stake) || bet.stake <= 0)
       return toast.error("Invalid input. Please enter a valid bet amount.");
+    if (bet.stake > balance) return toast.error("Insufficient Balance.");
+
     if (!bet.choice) return toast.error("please select either head or tail");
     setLoading(true);
 
     try {
       if (continueGame) {
+        console.log("CONTINUE!");
         return socket.emit(
           "COINFLIP:continue_response",
           true,
@@ -321,7 +304,7 @@ export default function CoinFlip() {
                     {message}
                   </p>
                   <small className="mx-auto text-base font-bold text-center">
-                    Winnings: {winnings.toFixed(2)}
+                    Winnings: {profit?.toFixed(2)}
                   </small>
 
                   <div className="flex items-center justify-between gap-3 mt-6 text-xl font-bold">
@@ -337,7 +320,7 @@ export default function CoinFlip() {
                           onClick={() => handleResult().endGame()}
                           className="w-full px-2 py-1 rounded-md outline outline-1 outline-dark-700 bg-dark-800/50 whitespace-nowrap"
                         >
-                          Take winnings
+                          Take profit
                         </button>
                       </>
                     ) : (

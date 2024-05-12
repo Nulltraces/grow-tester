@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { SetURLSearchParams, useSearchParams } from "react-router-dom";
 import Deposit from "./Deposit";
 import Tip from "./Tip";
 import Withdraw from "./Withdraw";
@@ -7,18 +7,21 @@ import "./wallet.css";
 
 type WalletView = "deposit" | "withdraw" | "tip";
 
+export const changeWalletView = (
+  view: WalletView,
+  setSearchParams: SetURLSearchParams,
+) => {
+  setSearchParams((searchParams) => {
+    const prevParams = {};
+    searchParams.forEach((value, key) => {
+      prevParams[key] = value;
+    });
+    return { ...prevParams, ...{ modal: view } };
+  });
+};
+
 export default function Wallet() {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const changeWalletView = (view: WalletView) => {
-    setSearchParams((searchParams) => {
-      const prevParams = {};
-      searchParams.forEach((value, key) => {
-        prevParams[key] = value;
-      });
-      return { ...prevParams, ...{ modal: view } };
-    });
-  };
 
   const walletView = searchParams.get("modal") as WalletView | null;
 
@@ -64,7 +67,7 @@ export default function Wallet() {
       <div className="flex flex-col">
         <div className="flex justify-center gap-2 py-1">
           <button
-            onClick={() => changeWalletView("deposit")}
+            onClick={() => changeWalletView("deposit", setSearchParams)}
             className={clsx(
               "text-sm font-semibold rounded-md px-3 py-1.5 transition-colors hover:bg-dark-800",
               walletView === "deposit" && "text-white bg-dark-800",
@@ -73,7 +76,7 @@ export default function Wallet() {
             Deposit
           </button>
           <button
-            onClick={() => changeWalletView("withdraw")}
+            onClick={() => changeWalletView("withdraw", setSearchParams)}
             className={clsx(
               "text-sm font-semibold rounded-md px-3 py-1.5 transition-colors hover:bg-dark-800",
               walletView === "withdraw" && "text-white bg-dark-800",
@@ -82,7 +85,7 @@ export default function Wallet() {
             Withdraw
           </button>
           <button
-            onClick={() => changeWalletView("tip")}
+            onClick={() => changeWalletView("tip", setSearchParams)}
             className={clsx(
               "text-sm font-semibold rounded-md px-3 py-1.5 transition-colors hover:bg-dark-800",
               walletView === "tip" && "text-white bg-dark-800",

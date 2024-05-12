@@ -26,6 +26,7 @@ enum GameType {
   PLINKO = "PLINKO",
   TOWERS = "TOWERS",
   REME = "REME",
+  DICE = "DICE",
   COINFLIP = "COINFLIP",
   MINES = "MINES",
 }

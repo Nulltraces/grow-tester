@@ -6,6 +6,7 @@ import socket from "@/utils/constants";
 import { useEffect, useState } from "react";
 import Rules from "./Rules";
 import "./chat.css";
+import api from "@/api/axios";
 
 export default function ChatFooter() {
   const [inputMessage, setInputMessage] = useState("");
@@ -41,7 +42,10 @@ export default function ChatFooter() {
 
     try {
       if (inputMessage.trim() !== "") {
-        socket.emit("send_message", message);
+        // socket.emit("send_message", message);
+        const response = await api.post("/chat/message", message);
+        const data = response.data;
+        console.log("SEND_MESSAGE: ", data);
         setInputMessage("");
       }
     } catch (error) {

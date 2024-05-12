@@ -72,7 +72,7 @@ export default function DashboardSideNavigation() {
       <Overlay
         show={showNav}
         handleShowOverlay={() => () => toggleNav(false)}
-        disableOnClick
+        closeOnClick
         className="z-[20]"
       />
     );

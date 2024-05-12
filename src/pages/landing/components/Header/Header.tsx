@@ -196,7 +196,7 @@ function HeaderItems() {
         handleShowOverlay={() => () =>
           setSearchParams({ "show-menu": String(!showMenuBar) })
         }
-        disableOnClick
+        closeOnClick
         className="mt-16"
       />
       <div

@@ -32,13 +32,7 @@ export default function Reme() {
   // const [bet.stake, setStake] = useState(0);
   const [bet, setBet] = useState<Partial<Bet>>({
     gameType: GameType.REME as Bet["gameType"],
-  });
-
-  const [player, setPlayer] = useState<Player>({
-    bet: 0,
     multiplier: 1.2,
-    profit: 0,
-    user: undefined,
   });
 
   useEffect(() => {
@@ -68,7 +62,7 @@ export default function Reme() {
       setLoading(true);
       setGameRunning(true);
 
-      const response = await api.post("/bet", bet);
+      const response = await api.post("/bet", { ...bet, socketId: socket.id });
 
       console.log("BET_RESPONSE", response.data);
 

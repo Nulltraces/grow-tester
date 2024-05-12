@@ -6,7 +6,7 @@ import {
   StatsIcon,
   UserEditIcon,
 } from "@/assets/svgs";
-import { Button, Spinner } from "..";
+import { Button, Spinner, Wallet } from "..";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import User1 from "@/assets/users/user-1.png";
 import "./userprofile.css";
@@ -16,6 +16,9 @@ import { AxiosResponse } from "axios";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { logout } from "@/services/auth";
 import { closeModal, triggerModal } from "@/store/slices/modal";
+import Edit from "./Edit";
+import BackgroundImage from "./BackgroundImage";
+import { useSearchParams } from "react-router-dom";
 
 const UserStats = {
   totalBets: "totalBets",
@@ -52,6 +55,8 @@ export default function UserProfile({
   const dispatch = useAppDispatch();
 
   const auth = useAppSelector((state) => state.auth);
+
+  const setSearchParams = useSearchParams()[1];
 
   // Check if the user profile being requested for belongs to the current user, to view as the owner of the account
   const ownAccount = self && username === auth.user?.username;
@@ -91,13 +96,6 @@ export default function UserProfile({
       </div>
     </div>
   );
-  const testRef = useRef<HTMLDivElement>();
-
-  useEffect(() => {
-    if (!testRef.current) return;
-    console.log("TEST_REF REACHED");
-    testRef.current.textContent = `Testing`;
-  }, []);
 
   return (
     <ProfileWrapper>
@@ -107,7 +105,7 @@ export default function UserProfile({
         </div>
       ) : user ? (
         <>
-          <div className="flex flex-col mt-2 rounded-md sm:flex-row sm:items-end overflow-clip __user-bg__ sm:h-40">
+          <BackgroundImage>
             <div className="mx-auto sm:mx-0 sm:w-24 sm:ml-4">
               <img
                 src={user?.photo || User1}
@@ -147,18 +145,28 @@ export default function UserProfile({
                 </div>
               </div>
             </div>
-          </div>
+          </BackgroundImage>
           <div className="p-2 mt-3 space-y-1 rounded bg-dark-800">
             {ownAccount ? (
               <div className="bg-dark-800 gap-2 flex flex-col p-2.5 rounded-sm">
-                <button className="text-sm rounded-sm sc-1xm9mse-0 lfSLTO text-nowrap">
+                <button
+                  onClick={() => {
+                    dispatch(
+                      triggerModal({
+                        children: <Edit />,
+                        show: true,
+                      }),
+                    );
+                  }}
+                  className="text-sm rounded-sm sc-1xm9mse-0 lfSLTO text-nowrap"
+                >
                   <span className="flex gap-1">
                     <UserEditIcon />
                     Edit Profile
                   </span>
                 </button>
                 <div className="text-sm font-semibold">
-                  <div className="sc-19jkrre-0 jDHDhD">
+                  <div className="flex text-[0.95rem] flex-col gap-[10px]">
                     <span className="flex items-center gap-1">
                       <span className="text-gray-500">Email:</span>
                       {user.email &&
@@ -198,7 +206,7 @@ export default function UserProfile({
                       }),
                     );
                   }}
-                  className="gap-1 text-sm rounded-sm sc-1xm9mse-0 fkyWKB text-nowrap"
+                  className="gap-1 text-sm rounded-sm sc-1xm9mse-0 logout-btn text-nowrap"
                 >
                   <svg
                     stroke="currentColor"
@@ -222,7 +230,15 @@ export default function UserProfile({
                     actions
                   </h3>
                 </header>
-                <Button className="flex items-center capitalize gap-1 w-full !py-1">
+                <Button
+                  onClick={() => {
+                    setSearchParams({ modal: "tip", "tip-user": username });
+                    dispatch(
+                      triggerModal({ children: <Wallet />, show: true }),
+                    );
+                  }}
+                  className="flex items-center capitalize gap-1 w-full !py-1"
+                >
                   <CurrencyNote2Icon />
                   <p>tip</p>
                 </Button>

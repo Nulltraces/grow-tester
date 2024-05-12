@@ -46,13 +46,13 @@ export default function Chart() {
           // margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
           <defs>
-            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+            {/* <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
               <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-            </linearGradient>
+            </linearGradient> */}
             <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+              <stop offset="5%" stopColor="#4483EB" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#4483EB" stopOpacity={0} />
             </linearGradient>
           </defs>
           <XAxis
@@ -66,7 +66,7 @@ export default function Chart() {
           <Area
             type="monotone"
             dataKey="pv"
-            stroke="#82ca9d"
+            stroke="#4483EB"
             fillOpacity={1}
             fill="url(#colorPv)"
           />

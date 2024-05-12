@@ -51,7 +51,7 @@ export default function AllBets() {
         </tr>
       </thead>
       <tbody className="border-spacing-y-3">
-        {lBoardData.map((data, i) => {
+        {lBoardData.reverse().map((data, i) => {
           return (
             <tr
               key={i}

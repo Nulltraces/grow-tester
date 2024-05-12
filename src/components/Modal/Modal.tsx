@@ -11,6 +11,7 @@ import clsx from "clsx";
 import Media from "react-media";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { closeModal } from "@/store/slices/modal";
+import { useSearchParams } from "react-router-dom";
 
 export default function Modal() {
   const {
@@ -22,11 +23,13 @@ export default function Modal() {
     children,
     className,
   } = useAppSelector((state) => state.modal);
+  const setSearchParams = useSearchParams()[1];
 
   const dispatch = useAppDispatch();
 
   const cancel = () => {
     actionCancel ? actionCancel() : dispatch(closeModal());
+    setSearchParams("");
   };
 
   const modalRef = useRef<HTMLDivElement>();
@@ -50,7 +53,7 @@ export default function Modal() {
             <Overlay
               show={showModal}
               handleShowOverlay={() => cancel}
-              disableOnClick={disableOnClick}
+              closeOnClick={disableOnClick}
               className="z-[999]"
             />
             <Media queries={{ small: { maxWidth: 640 } }}>

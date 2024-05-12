@@ -1,6 +1,6 @@
 export type OverlayProps = {
   children?: React.ReactNode;
-  disableOnClick?: boolean;
+  closeOnClick?: boolean;
   handleShowOverlay?: Function;
   show: boolean;
   className?: string;

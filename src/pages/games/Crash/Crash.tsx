@@ -12,6 +12,7 @@ import { triggerModal } from "@/store/slices/modal";
 import api from "@/api/axios";
 import { updateBalance } from "@/store/slices/wallet";
 import { GameType } from "@/game-types";
+import { ProvablyFair } from "@/components";
 
 type Player = {
   user?: { username: string; photo: string };
@@ -225,21 +226,7 @@ export default function Crash() {
                   <div className="relative top-0 left-0 flex items-center justify-center w-full overflow-hidden rounded-md pointer-events-none z-1 bg-dark-750">
                     <Chart />
                   </div>
-
-                  <div className="flex gap-3 items-center capitalize w-[98%] mx-auto">
-                    <div className="flex items-center gap-1 group">
-                      <ShieldIcon className="!stroke-gray-500 !fill-gray-500 group-hover:!fill-white group-hover:!stoke-white" />
-                      <p className="font-semibold text-gray-500 group-hover:text-white">
-                        provably fair
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 group">
-                      <GearIcon className="!stroke-gray-500 !fill-gray-500 group-hover:!fill-white group-hover:!stoke-white" />
-                      <p className="font-semibold text-gray-500 group-hover:text-white">
-                        settings
-                      </p>
-                    </div>
-                  </div>
+                  <ProvablyFair />
                 </div>
                 <form
                   onSubmit={joinGame}

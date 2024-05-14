@@ -17,7 +17,7 @@ type Props = {
   multiplier: number;
   rangeValue: number;
   setMultiplier(value: number): void;
-  setRangeValue: React.Dispatch<React.SetStateAction<number>>;
+  setRange(value: number): void;
   reset(): void;
 };
 
@@ -27,7 +27,7 @@ export default function DiceGame({
   reset,
   rangeValue,
   setMultiplier,
-  setRangeValue,
+  setRange,
 }: Props) {
   return (
     <div className="w-full min-h-[500px] flex m-3 gap-3 justify-center items-center flex-col relative">
@@ -89,7 +89,8 @@ export default function DiceGame({
             step={STEP}
             value={+rangeValue.toFixed()}
             onChange={(e) => {
-              setRangeValue(+e);
+              setRange(+e);
+              console.log("canging");
               const result = calculateMultiplier(+e, "greater");
               setMultiplier(+result.toFixed(2));
             }}
@@ -114,7 +115,7 @@ export default function DiceGame({
               className="bg-transparent outline-none border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
               type="number"
               value={rangeValue}
-              onChange={(e) => setRangeValue(parseFloat(e.target.value))}
+              onChange={(e) => setRange(parseFloat(e.target.value))}
             />
             <div className="flex items-center gap-2">
               <button className="transition-colors hover:text-white">

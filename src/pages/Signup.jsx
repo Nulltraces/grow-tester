@@ -1,47 +1,47 @@
-import React, { useState } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
-import API_BASE_URL from '../config.js';
+import React, { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import API_BASE_URL from "../config.js";
 function setCookie(name, value) {
   document.cookie = `${name}=${value};  path=/`; // Set the cookie with name, value, and path
 }
 // import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
 const Signup = ({ setModel }) => {
   function onChange(value) {
-    console.log('Captcha value:', value);
+    console.log("Captcha value:", value);
   }
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [affiliateCode, setaffiliateCode] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [affiliateCode, setaffiliateCode] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Perform data validation
-    if (username.trim() === '') {
+    if (username.trim() === "") {
       // Handle empty username error
-      alert('please add a username');
+      alert("please add a username");
       return;
     }
 
     if (!/^[A-Za-z0-9_!#$%&'*+/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/gm.test(email)) {
       // Handle invalid email error
-      alert('invalid email');
+      alert("invalid email");
       return;
     }
 
-    if (password.trim() === '' || password.length < 4) {
+    if (password.trim() === "" || password.length < 4) {
       // Handle empty or short password error
-      alert('the password should be more than 4 characters long');
+      alert("the password should be more than 4 characters long");
       return;
     }
     try {
       // Data is valid, send the registration request to the backend
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username,
@@ -55,14 +55,14 @@ const Signup = ({ setModel }) => {
         if (json_data.error) {
           // Registration failed, display an error message
           alert(json_data.error);
-        } else if (json_data.message === 'User successfully created') {
+        } else if (json_data.message === "User successfully created") {
           // Registration success, display a success message and redirect to the sign-in menu
           alert(json_data.message);
-          setCookie('jwt', json_data.jwt);
-          localStorage.setItem('userid', json_data.user);
-          localStorage.setItem('userName', username);
+          setCookie("jwt", json_data.jwt);
+          localStorage.setItem("userid", json_data.user);
+          localStorage.setItem("userName", username);
           // Perform the redirect here
-          window.location.href = '/home';
+          window.location.href = "/home";
         }
       } else {
         // Handle other non-200 status codes here
@@ -86,7 +86,7 @@ const Signup = ({ setModel }) => {
           <div className="top_flex">
             <div className="title">Register</div>
             <div onClick={() => setModel(false)} className="close_img">
-              {' '}
+              {" "}
               <svg
                 stroke="currentColor"
                 fill="currentColor"
@@ -155,7 +155,7 @@ const Signup = ({ setModel }) => {
 
           <ReCAPTCHA
             theme="dark"
-            style={{ background: 'rgb(51, 51, 51)' }}
+            style={{ background: "rgb(51, 51, 51)" }}
             className="custom mt-3"
             sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
             onChange={onChange}

@@ -2,7 +2,7 @@ import "./index.css";
 
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import { Landing, Root } from "./pages";
+import { Landing, Root, VerifyEmail } from "./pages";
 import { Providers } from "./store/provider";
 import { games } from "./data/games";
 import PersistLogin from "./utils/PersistLogin";
@@ -28,6 +28,10 @@ const router = createBrowserRouter([
               path: game.title,
               element: game.element,
             })),
+          },
+          {
+            path: "/verify/:token",
+            element: <VerifyEmail />,
           },
           {
             path: "about",

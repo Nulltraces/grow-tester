@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
-import API_BASE_URL from '../config.js';
+import React, { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import API_BASE_URL from "../config.js";
 // import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
 // Function to set a cookie
 function setCookie(name, value) {
@@ -9,29 +9,29 @@ function setCookie(name, value) {
 
 const Login = ({ setModel1 }) => {
   // email password capture
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Perform data validation
-    if (username.trim() === '') {
+    if (username.trim() === "") {
       // Handle empty username error
-      alert('please add a username');
+      alert("please add a username");
       return;
     }
-    if (password.trim() === '' || password.length < 4) {
+    if (password.trim() === "" || password.length < 4) {
       // Handle empty or short password error
-      alert('the password should be more than 4 characters long');
+      alert("the password should be more than 4 characters long");
       return;
     }
     try {
       // Data is valid, send the registration request to the backend
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username,
@@ -43,14 +43,14 @@ const Login = ({ setModel1 }) => {
         if (json_data.error) {
           // Registration failed, display an error message
           alert(json_data.error);
-        } else if (json_data.message === 'User successfully Logged in') {
+        } else if (json_data.message === "User successfully Logged in") {
           // Registration success, display a success message and redirect to the sign-in menu
           console.log(response.headers.entries());
-          localStorage.setItem('userName', username);
-          setCookie('jwt', json_data.jwt);
+          localStorage.setItem("userName", username);
+          setCookie("jwt", json_data.jwt);
           alert(json_data.message);
           // Perform the redirect here
-          window.location.href = '/home';
+          window.location.href = "/home";
         }
       } else {
         console.log(json_data);
@@ -64,12 +64,12 @@ const Login = ({ setModel1 }) => {
   // end email password capture
 
   function onChange(value) {
-    console.log('Captcha value:', value);
+    console.log("Captcha value:", value);
   }
   return (
     <form
       onSubmit={handleSubmit}
-      style={{ height: '500px', marginTop: '50px' }}
+      style={{ height: "500px", marginTop: "50px" }}
       className="modal"
     >
       <div className="register">
@@ -116,7 +116,7 @@ const Login = ({ setModel1 }) => {
         </div>
         <ReCAPTCHA
           theme="dark"
-          style={{ background: 'rgb(51, 51, 51)' }}
+          style={{ background: "rgb(51, 51, 51)" }}
           className="custom mt-3"
           sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
           onChange={onChange}

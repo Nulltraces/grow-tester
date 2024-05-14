@@ -6,12 +6,12 @@ type User = {
 };
 
 type Message = {
-  owner: {
+  senderInfo: {
     username: string;
     photo: string;
-    level: number | string;
-    uid: string;
+    level: number;
   };
+  sender?: string;
   content: string;
   date: Date;
   room?: "global" | "support";

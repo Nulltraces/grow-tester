@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { SilverLockIcon } from "@/assets/icons";
 import { GearIcon, ShieldIcon, XClose } from "@/assets/svgs";
 import clsx from "clsx";
-import { Button, Input, UserProfile } from "@/components";
+import { BetInput, Button, Input, UserProfile } from "@/components";
 import { toast } from "react-toastify";
 import { triggerModal } from "@/store/slices/modal";
 import api from "@/api/axios";
@@ -240,7 +240,7 @@ export default function Crash() {
                     <span className="text-sm font-medium text-white">
                       Bet Amount
                     </span>
-                    <div className="relative flex items-center w-full">
+                    {/* <div className="relative flex items-center w-full">
                       <div className="absolute flex items-center gap-2 left-2">
                         <img
                           src={SilverLockIcon}
@@ -268,15 +268,41 @@ export default function Crash() {
                       />
                       <div className="absolute flex items-center gap-2 right-2">
                         <div className="flex gap-2.5 font-semibold">
-                          <button className="transition-colors hover:text-white">
+                          <button
+                            type="button"
+                            className="transition-colors hover:text-white"
+                          >
                             1/2
                           </button>
-                          <button className="transition-colors hover:text-white">
+                          <button
+                            type="button"
+                            className="transition-colors hover:text-white"
+                          >
                             2×
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
+                    <BetInput
+                      inputProps={{
+                        onChange(e) {
+                          setPlayer((prev) => ({
+                            ...prev,
+                            bet: parseFloat(e.target.value),
+                          }));
+
+                          setBet((prev) => ({
+                            ...prev,
+                            stake: parseFloat(e.target.value),
+                          }));
+                        },
+                        placeholder: "Bet",
+                        className:
+                          "outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium",
+                        type: "number",
+                        value: (player?.bet || 0.0).toFixed(2),
+                      }}
+                    />
                   </div>
                   <div className="flex flex-col gap-1">
                     <span className="text-sm font-medium text-white">

@@ -12,13 +12,14 @@ import User1 from "@/assets/users/user-1.png";
 import "./userprofile.css";
 import { SilverLockIcon } from "@/assets/icons";
 import api from "@/api/axios";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { logout } from "@/services/auth";
 import { closeModal, triggerModal } from "@/store/slices/modal";
 import Edit from "./Edit";
 import BackgroundImage from "./BackgroundImage";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const UserStats = {
   totalBets: "totalBets",
@@ -50,6 +51,8 @@ export default function UserProfile({
   self?: boolean;
 }) {
   const [loading, setLoading] = useState(false);
+  const [verificationLoading, setVerificationLoading] = useState(false);
+
   const [user, setUser] = useState<UserProfile | null>();
 
   const dispatch = useAppDispatch();
@@ -76,6 +79,31 @@ export default function UserProfile({
     } finally {
       console.log("GET_USER_RUN");
       setLoading(false);
+    }
+  };
+
+  let message: "";
+  const verifyEmail = async () => {
+    console.log("USERNAME: ", username);
+    setVerificationLoading(true);
+    try {
+      const response: AxiosResponse<{ message: string }> = await api.post(
+        `/auth/request-verification`,
+      );
+      const data = response.data;
+      console.log("REQUEST_VERIFICATION_DATA: ", data);
+      if (response.status === 201)
+        return toast.success(
+          "An verification Link has been sent to your email",
+        );
+      if (response.status === 200) return toast.success(data.message);
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      console.error("VERIFY_EMAIL: ", err);
+      return toast.error(err.response?.data?.message);
+    } finally {
+      console.log("GET_USER_RUN");
+      setVerificationLoading(false);
     }
   };
 
@@ -176,11 +204,16 @@ export default function UserProfile({
                         ) +
                           "*".repeat(Math.max(0, user.email.indexOf("@") - 3)) +
                           user.email.slice(user.email.indexOf("@"))}
-                      <span className="text-xs font-semibold text-red-400">
-                        (Not Verified)
-                      </span>
+                      {ownAccount && !user.isVerified && (
+                        <span className="text-xs font-semibold text-red-400">
+                          (Not Verified)
+                        </span>
+                      )}
                     </span>
-                    <button className="text-sm rounded-sm sc-1xm9mse-0 lfSLTO text-nowrap">
+                    <button
+                      onClick={verifyEmail}
+                      className="text-sm rounded-sm sc-1xm9mse-0 lfSLTO text-nowrap"
+                    >
                       Send Verification Email
                     </button>
                   </div>
@@ -307,7 +340,7 @@ export default function UserProfile({
                   <span>All Time High</span>
                 </span>
                 <span className="flex items-center gap-1 text-white">
-                  {user.allTimeHigh}
+                  {user.allTimeHigh?.toFixed(2)}
                   <img
                     src={SilverLockIcon}
                     width="18"

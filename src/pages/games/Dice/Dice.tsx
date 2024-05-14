@@ -21,15 +21,16 @@ export default function Dice() {
   const [loading, setLoading] = useState(false);
   const [gameRunning, setGameRunning] = useState(false);
   const [message, setMessage] = useState("");
-  const [rangeValue, setRangeValue] = useState(50);
   // const [bet.stake, setStake] = useState(0);
   const [bet, setBet] = useState<
     Partial<Bet> & {
       direction: "over" | "under";
+      rangeValue: number;
     }
   >({
     gameType: GameType.DICE as Bet["gameType"],
-    multiplier: calculateMultiplier(rangeValue, "greater"),
+    multiplier: calculateMultiplier(50, "greater"),
+    rangeValue: 50,
     direction: "over",
   });
 
@@ -37,12 +38,26 @@ export default function Dice() {
     setBet((prev) => ({ ...prev, multiplier: value }));
   };
 
+  const setRange = (value: number) => {
+    setBet((prev) => ({ ...prev, rangeValue: value }));
+  };
+
+  useEffect(() => {
+    console.log("RANGE_VALUE: ", bet.rangeValue);
+  }, [bet.rangeValue]);
+
   useEffect(() => {
     socket.on("DICE:result", (data) => {
       setLoading(false);
       console.log("DICE:result", data);
       console.log("PROFIT: ", data.profit);
       dispatch(updateBalance(walletBalance + data.profit));
+      setMessage(data.message);
+    });
+
+    socket.on("DICE:error", (data) => {
+      setGameRunning(false);
+      setLoading(false);
       setMessage(data.message);
     });
   }, []);
@@ -152,8 +167,8 @@ export default function Dice() {
               message={message}
               setMultiplier={setMultiplier}
               multiplier={bet.multiplier!}
-              rangeValue={rangeValue}
-              setRangeValue={setRangeValue}
+              rangeValue={bet.rangeValue}
+              setRange={setRange}
               reset={resetGame}
             />
           </div>

@@ -8,9 +8,10 @@ type Props = {
   label: string;
   options: { label: string; value: any }[];
   getValue?(val: any): any;
+  value?: any;
 };
 
-export default function Select({ label, options, getValue }: Props) {
+export default function Select({ label, options, getValue, value }: Props) {
   const [selected, setSelected] = useState(options[0]);
 
   useEffect(() => {
@@ -28,8 +29,8 @@ export default function Select({ label, options, getValue }: Props) {
       {({ open }) => (
         <>
           <Listbox.Button className="flex flex-row items-center justify-between w-full gap-1 p-2 border border-gray-600 rounded bg-dark-700">
-            <label className="text-white !font-bold uppercase">
-              {selected.label || label}
+            <label className="text-white !font-semibold capitalize">
+              {value || selected.label || label}
             </label>
             <ExpandMoreIcon
               className={`${
@@ -45,7 +46,7 @@ export default function Select({ label, options, getValue }: Props) {
             transition={{ type: "keyframes" }}
             className="flex_ flex-col_ w-full pt-[5px] space-y-1 max-h-[15rem] overflow-auto rounded-b-lg px-1 bg-dark-700 py-1"
           >
-            <Listbox.Options className="focus:outline-none">
+            <Listbox.Options className="focus:outline-none space-y-1">
               {options.map((option, i) => (
                 <Listbox.Option value={option} key={i}>
                   {({ active, selected }) => (
@@ -58,7 +59,9 @@ export default function Select({ label, options, getValue }: Props) {
                       tabIndex={0}
                       key={i}
                     >
-                      <label>{option.label}</label>
+                      <label className="capitalize font-semibold">
+                        {option.label}
+                      </label>
                     </button>
                   )}
                 </Listbox.Option>

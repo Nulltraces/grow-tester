@@ -97,7 +97,7 @@ export default function Header() {
     <header className="shrink-0 relative md:static h-16 flex py-2.5 w-full fixed_ !z-40 top-0 left-0 min-h-[var(--header-height)] max-h-[var(--header-height)] bg-dark-850 shadow-md whitespace-nowrap">
       <div className="mx-auto w-[97%] flex items-center h-full">
         <div className="flex items-center w-full gap-4">
-          <Link to="/">
+          <Link to="/verify">
             <h1 className="logo-text !text-4xl">
               <div className="flex items-center -space-x-1 text-white sm:hidden">
                 <span className="">G</span>{" "}
@@ -228,12 +228,13 @@ function HeaderItems() {
                     className="cursor-pointer flex flex-col w-full pt-[5px] overflow-clip space-y-2"
                   >
                     {games.map((game, i) => (
-                      <p
+                      <Link
+                        to={`/games/${game.title}`}
                         className="text-sm text-white font-bold uppercase hover:-translate-y-[2px] transition-transform duration-100"
                         key={i}
                       >
                         {lettersAndNumbersOnly(game.title)}
-                      </p>
+                      </Link>
                     ))}
                   </AnimateInOut>
                 </>

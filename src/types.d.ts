@@ -103,6 +103,7 @@ type Player = {
 
 type UserProfile = {
   uid: string;
+  isVerified?: boolean;
   username: string;
   email: string;
   photo: string;

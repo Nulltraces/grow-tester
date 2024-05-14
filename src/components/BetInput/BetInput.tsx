@@ -1,10 +1,23 @@
 import { SilverLockIcon } from "@/assets/icons";
-import { ComponentProps } from "react";
+import { ComponentProps, useEffect, useState } from "react";
 import Input from "../Input";
 
 type Props = { inputProps: ComponentProps<typeof Input> };
 
 export default function BetInput({ inputProps }: Props) {
+  const { value: val, ...iProps } = inputProps;
+
+  const [value, setValue] = useState((val && +val) || 0);
+
+  const multiplyValue = (multiplier: number) => {
+    setValue(value * multiplier);
+  };
+
+  useEffect(() => {
+    console.log("VALUE: ", val);
+    setValue((prev) => (val ? +val : prev));
+  }, [val]);
+
   return (
     <div className="relative flex items-center w-full">
       <div className="absolute flex items-center gap-2 left-2">
@@ -20,12 +33,25 @@ export default function BetInput({ inputProps }: Props) {
         className="outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
         type="number"
         // onChange={onChange}
-        {...inputProps}
+        value={value}
+        {...iProps}
       />
       <div className="absolute flex items-center gap-2 right-2">
         <div className="flex gap-2.5 font-semibold">
-          <button className="transition-colors hover:text-white">1/2</button>
-          <button className="transition-colors hover:text-white">2×</button>
+          <button
+            type="button"
+            onClick={() => multiplyValue(0.5)}
+            className="active:scale-90 transition-all duration-200 hover:text-white"
+          >
+            1/2
+          </button>
+          <button
+            type="button"
+            onClick={() => multiplyValue(2)}
+            className="active:scale-90 transition-all duration-200 hover:text-white"
+          >
+            2×
+          </button>
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Rules from "./Rules";
 import "./chat.css";
 import api from "@/api/axios";
+import { toast } from "react-toastify";
 
 export default function ChatFooter() {
   const [inputMessage, setInputMessage] = useState("");
@@ -27,15 +28,11 @@ export default function ChatFooter() {
 
   const sendMessage = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    if (!auth.user?.id) return toast.error("Unauthenticated");
 
-    const message: Message = {
+    const message: Partial<Message> = {
       content: inputMessage,
-      owner: {
-        level: 11,
-        photo: auth.user?.photo || "",
-        uid: auth.user?.id || "",
-        username: auth.user?.username || "",
-      },
+      sender: auth.user?.id,
       date: new Date(),
       room: "global",
     };

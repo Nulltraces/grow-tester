@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import "./spinner.css";
+import clsx from "clsx";
 
 // const SMALL_CONTAINER = "w-8 h-8";
 // // const SMALL_CHILD = "w-[50%] h-4";
@@ -19,6 +20,7 @@ import "./spinner.css";
 export default function Spinner({
   color,
   size,
+  className,
 }: {
   color?: string;
   size?: "small" | "medium" | "large";
@@ -83,6 +85,6 @@ export default function Spinner({
     //     />
     //   </div>
     // </div>
-    <span className="spinner"></span>
+    <span className={clsx("spinner", className)}></span>
   );
 }

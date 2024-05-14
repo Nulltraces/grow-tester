@@ -185,7 +185,7 @@ export default function Edit() {
                                     username: e.target.value,
                                   }))
                                 }
-                                className="p-1 rounded-sm focus:outline outline-primary focus:outline-primary focus:border-none block text-white text-base"
+                                className="p-1 rounded-sm focus:outline outline-primary focus:outline-primary focus:border-none block text-white text-base bg-dark-800/50"
                               />
                             </div>
                           </div>

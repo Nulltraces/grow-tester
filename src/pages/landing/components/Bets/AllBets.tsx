@@ -24,15 +24,15 @@ export default function AllBets() {
     socket.emit("LEADERBOARD:get_table");
 
     socket.on("LEADERBOARD:table", (data) => {
-      console.log("LEADERBOARD: ", { data });
+      // console.log("LEADERBOARD: ", { data });
       setLeaderboardData(data);
       lBoardData = data;
     });
   }, []);
 
-  useEffect(() => {
-    console.log({ leaderboardData, lBoardData, date: lBoardData[0]?.time });
-  }, [leaderboardData]);
+  // useEffect(() => {
+  //   console.log({ leaderboardData, lBoardData, date: lBoardData[0]?.time });
+  // }, [leaderboardData]);
 
   return (
     <>

@@ -282,7 +282,7 @@ export default function Keno() {
                 />
               </div>
 
-              <Select<typeof riskLevel, typeof riskLevel>
+              <Select
                 label="Risk"
                 options={[
                   { label: "classic", value: "classic" },

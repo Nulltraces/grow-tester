@@ -2,18 +2,18 @@ import { ExpandMoreIcon } from "@/assets/svgs";
 import { Listbox } from "@headlessui/react";
 import { AnimateInOut } from "..";
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Select<Label, Value>({
+export default function Select({
   label,
   options,
   getValue,
   value,
 }: {
   label: string;
-  options: { label: Label; value: Value }[];
-  getValue?(val: Value): any;
-  value?: Value;
+  options: { label: any; value: any }[];
+  getValue?(val: any): any;
+  value?: any;
 }) {
   const [selected, setSelected] = useState(options[0]);
 

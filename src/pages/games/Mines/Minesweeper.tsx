@@ -55,7 +55,7 @@ const Mines: React.FC = () => {
   });
   const [betId, setBetId] = useState("");
 
-  const getMinesNum = (val: number) => {
+  const getMinesNum = (val) => {
     setMinesNum(+val);
   };
 

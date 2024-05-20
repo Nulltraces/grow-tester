@@ -71,6 +71,7 @@ export default function Edit() {
       console.log("UPDATE_PROFILE: ", { data });
 
       if (response.status === 201) {
+        const updatedUser = data.updatedUser;
         if (auth.user)
           dispatch(
             setUser({
@@ -78,15 +79,15 @@ export default function Edit() {
               user: {
                 ...auth.user,
                 photo:
-                  details.avatar ||
-                  (details.avatar === "none" ? "" : auth.user.photo),
-                username: details.username || auth.user.username,
-                background: details.background || auth.user.background,
+                  updatedUser?.avatar ||
+                  (updatedUser?.avatar === "none" ? "" : auth.user.photo),
+                username: updatedUser?.username || auth.user.username,
+                background: updatedUser?.background || auth.user.background,
               },
             }),
           );
 
-        return toast.success("Profile updated successfully");
+        return toast.info(data.message);
       }
     } catch (error) {
       console.error("UPDATE_PROFILE: ", error);

@@ -112,13 +112,13 @@ function DataRow({
   // const [isChecked, setIsChecked] = useState(false);
   const [isInteractingWithMore, setIsInteractingWithMore] = useState(false);
 
-  useEffect(() => {
-    if (!showMore || isInteractingWithMore) return;
-    const timeout = setTimeout(() => {
-      setShowMore(false);
-    }, 3000);
-    return () => clearTimeout(timeout);
-  }, [showMore, isInteractingWithMore]);
+  // useEffect(() => {
+  //   if (!showMore || isInteractingWithMore) return;
+  //   const timeout = setTimeout(() => {
+  //     setShowMore(false);
+  //   }, 3000);
+  //   return () => clearTimeout(timeout);
+  // }, [showMore, isInteractingWithMore]);
 
   return (
     <tr
@@ -137,7 +137,7 @@ function DataRow({
                   "whitespace-nowrap bg-dark-800 text-center overflow-ellipsis py-2 font-bold",
                   title === "invoice" && i === 1 ? "text-primary" : "",
                   i === 0 && "rounded-l-xl",
-                  i === data.length - 1 && "rounded-r-xl"
+                  i === data.length - 1 && "rounded-r-xl",
                 )}
               >
                 {itemKey.toLocaleLowerCase() === "bet" ||

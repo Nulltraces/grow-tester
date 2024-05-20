@@ -15,7 +15,8 @@ export default function BetInput({ inputProps }: Props) {
 
   useEffect(() => {
     console.log("VALUE: ", val);
-    setValue((prev) => (val ? +val : prev));
+    // setValue((prev) => (val ? +val : prev));
+    setValue(val !== undefined && !isNaN(+val) ? +val : 0);
   }, [val]);
 
   return (

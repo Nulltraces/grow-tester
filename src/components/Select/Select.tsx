@@ -2,16 +2,19 @@ import { ExpandMoreIcon } from "@/assets/svgs";
 import { Listbox } from "@headlessui/react";
 import { AnimateInOut } from "..";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-type Props = {
+export default function Select<Label, Value>({
+  label,
+  options,
+  getValue,
+  value,
+}: {
   label: string;
-  options: { label: string; value: any }[];
-  getValue?(val: any): any;
-  value?: any;
-};
-
-export default function Select({ label, options, getValue, value }: Props) {
+  options: { label: Label; value: Value }[];
+  getValue?(val: Value): any;
+  value?: Value;
+}) {
   const [selected, setSelected] = useState(options[0]);
 
   useEffect(() => {
@@ -30,7 +33,7 @@ export default function Select({ label, options, getValue, value }: Props) {
         <>
           <Listbox.Button className="flex flex-row items-center justify-between w-full gap-1 p-2 border border-gray-600 rounded bg-dark-700">
             <label className="text-white !font-semibold capitalize">
-              {value || selected.label || label}
+              <> {value || selected.label || label}</>
             </label>
             <ExpandMoreIcon
               className={`${
@@ -60,7 +63,7 @@ export default function Select({ label, options, getValue, value }: Props) {
                       key={i}
                     >
                       <label className="capitalize font-semibold">
-                        {option.label}
+                        {option.label as any}
                       </label>
                     </button>
                   )}

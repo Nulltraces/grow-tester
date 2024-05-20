@@ -1,6 +1,6 @@
 import { AnimateInOut } from "@/components";
 import { Menu } from "@headlessui/react";
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, memo, useEffect, useState } from "react";
 import AllBets from "./AllBets";
 import clsx from "clsx";
 import MyBets from "./MyBets";
@@ -26,7 +26,11 @@ export default function Bets() {
   const auth = useAppSelector((state) => state.auth);
   const [navOption, setNavOption] = useState<NavOptions>(NavOptions.ALL_BETS);
 
-  const TableWrapper = ({ children }: PropsWithChildren) => {
+  useEffect(() => {
+    console.log("TABLE_RERENDERING");
+  }, []);
+
+  const TableWrapper = memo(({ children }: PropsWithChildren) => {
     return (
       <AnimateInOut
         show
@@ -43,7 +47,7 @@ export default function Bets() {
         </div>
       </AnimateInOut>
     );
-  };
+  });
 
   return (
     <>

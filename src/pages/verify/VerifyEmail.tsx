@@ -8,15 +8,20 @@ import { toast } from "react-toastify";
 export default function VerifyEmail() {
   const [loading, setLoading] = useState(false);
   const [verified, setVerified] = useState(false);
-  const [message, setMessage] = useState(
-    "Please wait, Your email is being Verified",
-  );
+  const [end, setEnd] = useState(false);
+  const [message, setMessage] = useState("Verify Email");
   const params = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!params.token) {
+      navigate("/");
+      return;
+    }
     (async () => {
       try {
         setLoading(true);
+        setMessage("Please wait, Your email is being Verified");
         const response = await api.post(`/auth/verify/${params.token}`);
         const data = response.data;
         if (response.status === 200 || response.status === 201) {
@@ -30,6 +35,8 @@ export default function VerifyEmail() {
         toast.error(err.response?.data.message || "an error occurred");
       } finally {
         setLoading(false);
+        setMessage("Continue to site");
+        setEnd(true);
       }
     })();
   }, []);
@@ -42,7 +49,7 @@ export default function VerifyEmail() {
           {loading && (
             <Spinner className="!border-[#4483EB_#4483EB_transparent] !w-10 !h-10" />
           )}
-          {verified && (
+          {(verified || end) && (
             <Link to={"/"} className="">
               <Button className="px-12 py-3">Continue to site</Button>
             </Link>

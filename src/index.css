@@ -85,8 +85,10 @@ h1 {
   transition: all 0.1s ease 0s;
   color: white;
   background-color: rgb(68 131 235);
-  box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px inset,
-    rgba(0, 0, 0, 0.15) 0px -3px 0px inset, rgb(83, 97, 180) 0px 0px 12px inset;
+  box-shadow:
+    rgba(255, 255, 255, 0.2) 0px 1px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -3px 0px inset,
+    rgb(83, 97, 180) 0px 0px 12px inset;
   border: transparent;
   text-decoration: none;
   font-weight: 600;
@@ -113,4 +115,12 @@ thead th {
 .table th,
 tr {
   @apply py-3;
+}
+
+.Toastify__toast {
+  @apply !bg-dark-650 !text-white !fill-white;
+}
+
+.Toastify__toast > button > svg {
+  fill: white;
 }

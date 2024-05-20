@@ -6,7 +6,7 @@ import {
   StatsIcon,
   UserEditIcon,
 } from "@/assets/svgs";
-import { Button, Spinner, Wallet } from "..";
+import { AuthForm, Button, Spinner, Wallet } from "..";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import User1 from "@/assets/users/user-1.png";
 import "./userprofile.css";
@@ -56,6 +56,10 @@ export default function UserProfile({
   const [user, setUser] = useState<UserProfile | null>();
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    console.log({ username });
+  }, [username]);
 
   const auth = useAppSelector((state) => state.auth);
 
@@ -214,11 +218,25 @@ export default function UserProfile({
                       onClick={verifyEmail}
                       className="text-sm rounded-sm sc-1xm9mse-0 lfSLTO text-nowrap"
                     >
-                      Send Verification Email
+                      {verificationLoading ? (
+                        <Spinner />
+                      ) : (
+                        "Send Verification Email"
+                      )}
                     </button>
                   </div>
                 </div>
-                <button className="text-sm rounded-sm sc-1xm9mse-0 lfSLTO text-nowrap">
+                <button
+                  onClick={() => {
+                    dispatch(
+                      triggerModal({
+                        children: <AuthForm route="reset-password" />,
+                        show: true,
+                      }),
+                    );
+                  }}
+                  className="text-sm rounded-sm sc-1xm9mse-0 lfSLTO text-nowrap "
+                >
                   Reset Password
                 </button>
                 <button

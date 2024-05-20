@@ -430,8 +430,6 @@ export default function Roulette() {
           </div>
         </div>
       </div>
-      {/* NOTE: 3 */}
-      <Bets />
     </>
   );
 }

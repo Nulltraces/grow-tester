@@ -17,22 +17,24 @@ type LeaderBoardData = {
 let lBoardData: LeaderBoardData[] = [];
 
 export default function AllBets() {
-  const [leaderboardData, setLeaderboardData] =
-    useState<LeaderBoardData[]>(lBoardData);
+  const [leaderboardData, setLeaderboardData] = useState<LeaderBoardData[]>([]);
 
   useEffect(() => {
+    console.log("RE_RENDERING===>");
     socket.emit("LEADERBOARD:get_table");
+  }, []);
 
+  useEffect(() => {
     socket.on("LEADERBOARD:table", (data) => {
-      // console.log("LEADERBOARD: ", { data });
+      console.log("LEADERBOARD: ", { data });
       setLeaderboardData(data);
       lBoardData = data;
     });
   }, []);
 
-  // useEffect(() => {
-  //   console.log({ leaderboardData, lBoardData, date: lBoardData[0]?.time });
-  // }, [leaderboardData]);
+  useEffect(() => {
+    console.log({ leaderboardData, lBoardData, date: lBoardData[0]?.time });
+  }, [leaderboardData]);
 
   return (
     <>

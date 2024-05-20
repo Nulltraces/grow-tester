@@ -2,7 +2,13 @@ import "./index.css";
 
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import { Landing, Root, VerifyEmail } from "./pages";
+import {
+  GameWrapper,
+  Landing,
+  ResetPassword,
+  Root,
+  VerifyEmail,
+} from "./pages";
 import { Providers } from "./store/provider";
 import { games } from "./data/games";
 import PersistLogin from "./utils/PersistLogin";
@@ -22,7 +28,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/games",
-            element: <Outlet />,
+            element: <GameWrapper />,
 
             children: games.map((game) => ({
               path: game.title,
@@ -30,8 +36,20 @@ const router = createBrowserRouter([
             })),
           },
           {
+            path: "/verify",
+            element: <VerifyEmail />,
+          },
+          {
             path: "/verify/:token",
             element: <VerifyEmail />,
+          },
+          {
+            path: "/reset-password",
+            element: <ResetPassword />,
+          },
+          {
+            path: "/reset-password/:token",
+            element: <ResetPassword />,
           },
           {
             path: "about",

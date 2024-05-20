@@ -49,7 +49,6 @@ export default function Towers() {
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [gameWin, setGameWin] = useState<boolean>(false); // Track game win
   const [multiplier, setMultiplier] = useState<number>(1); // Initial multiplier
-  const [profit, setProfit] = useState<number>(0); // Track profit
   const [bet, setBet] = useState<Partial<Bet>>({
     stake: 0,
     gameType: GameType.TOWERS as Bet["gameType"],
@@ -75,7 +74,9 @@ export default function Towers() {
   }, [balance]);
 
   useEffect(() => {
-    if (!(gameOver && gameWin)) return;
+    console.log({ gameOver, gameWin });
+    if (!(gameOver || gameWin)) return;
+    console.log("ENNND");
     endGame();
   }, [gameOver, gameWin]);
 
@@ -207,7 +208,7 @@ export default function Towers() {
   };
 
   const takeProfit = () => {
-    setProfit(multiplier); // Set profit to the current multiplier
+    setBet((prev) => ({ ...prev, profit: 0 }));
     setGameOver(true); // End the game
   };
 
@@ -216,7 +217,7 @@ export default function Towers() {
     setGameOver(false);
     setGameWin(false);
     setMultiplier(1);
-    setProfit(0);
+    setBet((prev) => ({ ...prev, profit: 0 }));
     initializeGame();
     setMessage("");
     setGameRunning(false);
@@ -233,7 +234,7 @@ export default function Towers() {
 
       const data = response.data;
 
-      setBetId(data.bet.id);
+      setBetId(data.bet._id);
       dispatch(updateBalance(balance - bet.stake!));
 
       initializeGame();
@@ -243,10 +244,10 @@ export default function Towers() {
   };
 
   const endGame = async () => {
+    console.log("END_GAME: ");
     try {
       const response = await api.post("/bet/result", {
-        profit,
-        multiplier: bet.multiplier,
+        ...bet,
         id: betId,
       });
       const data = response.data;
@@ -336,128 +337,125 @@ export default function Towers() {
 
   return (
     <>
-      <div className="gap-3 p-3 max-w-page">
-        <div className="flex flex-col w-full">
-          <div className=" min-h-[50px] bg-dark-800 flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700">
-            <div className="w-full h-full flex gap-1.5 p-2  justify-start overflow-hidden relative shadow-dark-800 items-center">
-              <div
-                className="w-[6px] bg-dark-800 h-full absolute right-0 top-0 z-[5] "
-                style={{ boxShadow: "0 0 30px 40px var(--tw-shadow-color)" }}
-              ></div>
-            </div>
+      <div className="flex flex-col w-full">
+        <div className=" min-h-[50px] bg-dark-800 flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700">
+          <div className="w-full h-full flex gap-1.5 p-2  justify-start overflow-hidden relative shadow-dark-800 items-center">
+            <div
+              className="w-[6px] bg-dark-800 h-full absolute right-0 top-0 z-[5] "
+              style={{ boxShadow: "0 0 30px 40px var(--tw-shadow-color)" }}
+            ></div>
           </div>
-          <div className="flex flex-row w-full h-full max-md:flex-col-reverse">
-            <div className="bg-dark-800 flex justify-start flex-col max-md:w-full w-[400px]">
-              <div className="flex relative flex-col gap-2 p-3 text-sm font-medium">
-                {(!auth.isAuthenticated || loading || gameRunning) && (
-                  <div
-                    onClick={() => {
-                      !loading && resetGame();
-                    }}
-                    className="absolute top-0 left-0 z-10 w-full h-full cursor-not-allowed bg-dark-800 opacity-70"
-                  />
-                )}
+        </div>
+        <div className="flex flex-row w-full h-full max-md:flex-col-reverse">
+          <div className="bg-dark-800 flex justify-start flex-col max-md:w-full w-[400px]">
+            <div className="flex relative flex-col gap-2 p-3 text-sm font-medium">
+              {(!auth.isAuthenticated || loading || gameRunning) && (
                 <div
-                  className={clsx("relative flex h-full flex-col gap-2 p-3")}
-                >
-                  <div className="flex flex-col gap-1">
+                  onClick={() => {
+                    !loading && resetGame();
+                  }}
+                  className="absolute top-0 left-0 z-10 w-full h-full cursor-not-allowed bg-dark-800 opacity-70"
+                />
+              )}
+              <div className={clsx("relative flex h-full flex-col gap-2 p-3")}>
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-medium text-white">
+                    Bet Amount
+                  </span>
+                  <BetInput
+                    inputProps={{
+                      value: bet.stake,
+                      onChange(e) {
+                        setBet((prev) => ({
+                          ...prev,
+                          stake: parseFloat(e.target.value),
+                        }));
+                      },
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col text-white gap-[5px]">
+                  <div className="relative flex flex-col justify-start gap-1 whitespace-nowrap">
                     <span className="text-sm font-medium text-white">
-                      Bet Amount
+                      Difficulty
                     </span>
-                    <BetInput
-                      inputProps={{
-                        value: bet.stake,
-                        onChange(e) {
-                          setBet((prev) => ({
-                            ...prev,
-                            stake: parseFloat(e.target.value),
-                          }));
-                        },
+                    <Select
+                      label="Difficulty"
+                      options={Object.values(Difficulty).map((item) => ({
+                        label: item,
+                        value: item,
+                      }))}
+                      value={difficulty}
+                      getValue={(val) => {
+                        setDifficulty(val);
                       }}
                     />
                   </div>
-                  <div className="flex flex-col text-white gap-[5px]">
-                    <div className="relative flex flex-col justify-start gap-1 whitespace-nowrap">
-                      <span className="text-sm font-medium text-white">
-                        Difficulty
-                      </span>
-                      <Select
-                        label="Difficulty"
-                        options={Object.values(Difficulty).map((item) => ({
-                          label: item,
-                          value: item,
-                        }))}
-                        value={difficulty}
-                        getValue={(val) => {
-                          setDifficulty(val);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  {/* <div className="absolute top-0 left-0 w-full h-full cursor-not-allowed z-5"></div> */}
                 </div>
-                <Button
-                  onClick={placeBet}
-                  aria-disabled="true"
-                  className="text-sm py-2 w-full rounded-sm sc-1xm9mse-0 fzZXbl text-nowrap"
-                >
-                  Place Bet
-                </Button>
+                {/* <div className="absolute top-0 left-0 w-full h-full cursor-not-allowed z-5"></div> */}
               </div>
-            </div>
-            <div className="overflow-hidden bg-red-850 w-full h-full min-h-[400px] max-sm:min-h-[300px] flex justify-center relative">
-              <AnimateInOut
-                show={message !== ""}
-                initial={{ translateY: -100, opacity: 0 }}
-                animate={{ translateY: 0, opacity: 1 }}
-                exit={{ translateY: -100, opacity: 0 }}
-                onClick={() => resetGame()}
-                className="absolute z-50 flex flex-col items-center justify-center w-full h-full cursor-pointer backdrop-blur-sm_"
+              <Button
+                onClick={placeBet}
+                aria-disabled="true"
+                className="text-sm py-2 w-full rounded-sm sc-1xm9mse-0 fzZXbl text-nowrap"
               >
-                <div className="relative flex items-center justify-center">
-                  {/* <p className="absolute text-6xl font-extrabold animate-ping">
+                Place Bet
+              </Button>
+            </div>
+          </div>
+          <div className="overflow-hidden bg-red-850 w-full h-full min-h-[400px] max-sm:min-h-[300px] flex justify-center relative">
+            <AnimateInOut
+              show={message !== ""}
+              initial={{ translateY: -100, opacity: 0 }}
+              animate={{ translateY: 0, opacity: 1 }}
+              exit={{ translateY: -100, opacity: 0 }}
+              onClick={() => resetGame()}
+              className="absolute z-50 flex flex-col items-center justify-center w-full h-full cursor-pointer backdrop-blur-sm_"
+            >
+              <div className="relative flex items-center justify-center">
+                {/* <p className="absolute text-6xl font-extrabold animate-ping">
               {message}
             </p> */}
-                  <p className="relative z-20 text-6xl font-extrabold">
-                    {message}
-                  </p>
-                </div>
+                <p className="relative z-20 text-6xl font-extrabold">
+                  {message}
+                </p>
+              </div>
 
-                {/* <div className="mt-12 text-xl">
+              {/* <div className="mt-12 text-xl">
             <p>tap screen to reset</p>
           </div> */}
-              </AnimateInOut>
-              <div className="!max-h-[600px] w-full">
-                <div className="flex items-center justify-center w-full h-full p-2">
-                  <div className="w-[240px] gap-2 overflow-y-auto overflow-x-hidden flex flex-col h-full p-2 max-md:hidden">
-                    {Array(10)
-                      .fill(0)
-                      .map((_, i) => (
-                        <Multiplier key={i} index={i} />
-                      ))}
+            </AnimateInOut>
+            <div className="!max-h-[600px] w-full">
+              <div className="flex items-center justify-center w-full h-full p-2">
+                <div className="w-[240px] gap-2 overflow-y-auto overflow-x-hidden flex flex-col h-full p-2 max-md:hidden">
+                  {Array(10)
+                    .fill(0)
+                    .map((_, i) => (
+                      <Multiplier key={i} index={i} />
+                    ))}
+                </div>
+                <div className="flex flex-col items-center justify-center w-full">
+                  <div className="flex flex-col p-2 gap-1 rounded-md bg-dark-800 w-full max-w-[370px]">
+                    {grid.map((rows, rowIndex) => (
+                      <div
+                        key={rowIndex}
+                        className={clsx("flex w-full gap-2 rounded", {
+                          "outline outline-1 outline-primary":
+                            rowIndex === currentRow && gameRunning,
+                        })}
+                      >
+                        {rows.map((cell, colIndex) => (
+                          <Cell
+                            key={colIndex}
+                            cellContent={cell}
+                            row={rowIndex}
+                            col={colIndex}
+                          />
+                        ))}
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex flex-col items-center justify-center w-full">
-                    <div className="flex flex-col p-2 gap-1 rounded-md bg-dark-800 w-full max-w-[370px]">
-                      {grid.map((rows, rowIndex) => (
-                        <div
-                          key={rowIndex}
-                          className={clsx("flex w-full gap-2 rounded", {
-                            "outline outline-1 outline-primary":
-                              rowIndex === currentRow && gameRunning,
-                          })}
-                        >
-                          {rows.map((cell, colIndex) => (
-                            <Cell
-                              key={colIndex}
-                              cellContent={cell}
-                              row={rowIndex}
-                              col={colIndex}
-                            />
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                    {/* {gameOver && <div className="text-red-500">Game Over!</div>}
+                  {/* {gameOver && <div className="text-red-500">Game Over!</div>}
                     {gameWin && <div className="text-green-500">You Win!</div>}
                     <div className="text-white">Multiplier: {multiplier}</div>
                     <div className="text-white">Profit: {profit}</div>
@@ -475,65 +473,60 @@ export default function Towers() {
                     >
                       Restart Game
                     </button> */}
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="flex flex-row-reverse items-center min-h-[50px] bg-dark-800 rounded-b-md border-t border-gray-700">
-            <ProvablyFair />
-          </div>
         </div>
-        <div className="flex flex-col w-full gap-2 p-3 font-semibold text-gray-400 rounded-md bg-dark-800">
-          <span className="text-2xl text-white">Towers</span>
-          <div className="flex flex-row gap-2 max-md:flex-col">
-            <div className="flex flex-col min-w-[300px] max-md:w-full gap-2">
-              <div className="text-sm h-[40px] max-h-[40px] rounded-sm bg-dark-750 p-2 flex-grow flex justify-between items-center gap-2">
-                <span className="font-medium text-white">House Edge</span>
-                <span className="flex items-center gap-1.5">4%</span>
-              </div>
-              <div className="text-sm h-[40px] max-h-[40px] rounded-sm bg-dark-750 p-2 flex-grow flex justify-between items-center gap-2">
-                <span className="font-medium text-white">Max Bet</span>
-                <span className="flex items-center gap-1.5">
-                  1,000.00
-                  <img
-                    src={SilverLockIcon}
-                    width="18"
-                    height="18"
-                    className="sc-x7t9ms-0 dnLnNz"
-                  />
-                </span>
-              </div>
-              <div className="text-sm h-[40px] max-h-[40px] rounded-sm bg-dark-750 p-2 flex-grow flex justify-between items-center gap-2">
-                <span className="font-medium text-white">Max Win</span>
-                <span className="flex items-center gap-1.5">
-                  10,000.00
-                  <img
-                    src={SilverLockIcon}
-                    width="18"
-                    height="18"
-                    className="sc-x7t9ms-0 dnLnNz"
-                  />
-                </span>
-              </div>
+        <div className="flex flex-row-reverse items-center min-h-[50px] bg-dark-800 rounded-b-md border-t border-gray-700">
+          <ProvablyFair />
+        </div>
+      </div>
+      <div className="flex flex-col w-full gap-2 p-3 font-semibold text-gray-400 rounded-md bg-dark-800">
+        <span className="text-2xl text-white">Towers</span>
+        <div className="flex flex-row gap-2 max-md:flex-col">
+          <div className="flex flex-col min-w-[300px] max-md:w-full gap-2">
+            <div className="text-sm h-[40px] max-h-[40px] rounded-sm bg-dark-750 p-2 flex-grow flex justify-between items-center gap-2">
+              <span className="font-medium text-white">House Edge</span>
+              <span className="flex items-center gap-1.5">4%</span>
             </div>
-            <div className="bg-dark-750 rounded-md  p-2.5 text-sm font-medium w-full text-justify leading-5">
-              <span>
-                This game lets you get the highest multiplier possible by
-                climbing the rows to the top of the tower.
-                <br />
-                <br />
-                Make sure to avoid the Skulls at all costs, as they will make it
-                very difficult for you to reach the tower's roof.
+            <div className="text-sm h-[40px] max-h-[40px] rounded-sm bg-dark-750 p-2 flex-grow flex justify-between items-center gap-2">
+              <span className="font-medium text-white">Max Bet</span>
+              <span className="flex items-center gap-1.5">
+                1,000.00
+                <img
+                  src={SilverLockIcon}
+                  width="18"
+                  height="18"
+                  className="sc-x7t9ms-0 dnLnNz"
+                />
+              </span>
+            </div>
+            <div className="text-sm h-[40px] max-h-[40px] rounded-sm bg-dark-750 p-2 flex-grow flex justify-between items-center gap-2">
+              <span className="font-medium text-white">Max Win</span>
+              <span className="flex items-center gap-1.5">
+                10,000.00
+                <img
+                  src={SilverLockIcon}
+                  width="18"
+                  height="18"
+                  className="sc-x7t9ms-0 dnLnNz"
+                />
               </span>
             </div>
           </div>
+          <div className="bg-dark-750 rounded-md  p-2.5 text-sm font-medium w-full text-justify leading-5">
+            <span>
+              This game lets you get the highest multiplier possible by climbing
+              the rows to the top of the tower.
+              <br />
+              <br />
+              Make sure to avoid the Skulls at all costs, as they will make it
+              very difficult for you to reach the tower's roof.
+            </span>
+          </div>
         </div>
-        <Bets />
       </div>
-      <footer className="flex justify-center w-full text-sm font-medium text-gray-400">
-        <div className="p-3 max-w-page"></div>
-      </footer>
     </>
   );
 }

@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import Minesweeper, { CellStatus } from "./Minesweeper.controller"; // Assuming you have Minesweeper class in Minesweeper.ts file
+import Minesweeper, { Cell, CellStatus } from "./Minesweeper.controller"; // Assuming you have Minesweeper class in Minesweeper.ts file
 import { AnimateInOut, BetInput, Button, Select } from "@/components";
 import clsx from "clsx";
 import { GearIcon, ShieldIcon } from "@/assets/svgs";
@@ -23,6 +23,12 @@ import api from "@/api/axios";
 const BOARD_SIZE = 5;
 const NUMBER_OF_MINES = 5;
 
+const initialBetState: Partial<Bet> = {
+  gameType: GameType.MINES as Bet["gameType"],
+  stake: 0,
+  profit: 0,
+};
+
 let walletBalance = 0;
 const Mines: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -37,49 +43,63 @@ const Mines: React.FC = () => {
 
   const [minesNum, setMinesNum] = useState(0);
   const [gameRunning, setGameRunning] = useState(false);
+  const [gameWin, setGameWin] = useState<boolean>(false); // Track game win
+  const [message, setMessage] = useState("Game Over");
   const [loading, setLoading] = useState(false);
   const [game, setGame] = useState(
     new Minesweeper(BOARD_SIZE, minesNum || NUMBER_OF_MINES),
   );
-  const [board, setBoard] = useState<CellStatus[][]>(initializeBoard());
+  const [board, setBoard] = useState<Cell[][]>(game.board);
   const [bet, setBet] = useState<Partial<Bet & { socketId: string }>>({
     gameType: GameType.MINES as Bet["gameType"],
   });
+  const [betId, setBetId] = useState("");
 
   const getMinesNum = (val: number) => {
-    setMinesNum(val);
+    setMinesNum(+val);
   };
 
   useEffect(() => {
-    console.log({ board: game.board });
-  }, []);
+    console.log("GAME_CHANGED: ", { board: game.board });
+    setBoard(game.board);
+  }, [game]);
 
   const [gameOver, setGameOver] = useState(false);
   // const [board, setBoard] = useState<CellStatus[][] | null>([[]]);
 
-  function initializeBoard(): CellStatus[][] {
-    const board: CellStatus[][] = [];
-    for (let i = 0; i < BOARD_SIZE; i++) {
-      board[i] = [];
-      for (let j = 0; j < BOARD_SIZE; j++) {
-        board[i][j] = CellStatus.Hidden;
-      }
-    }
-    return board;
-  }
+  // function initializeBoard(): CellStatus[][] {
+  //   const board: CellStatus[][] = [];
+  //   for (let i = 0; i < BOARD_SIZE; i++) {
+  //     board[i] = [];
+  //     for (let j = 0; j < BOARD_SIZE; j++) {
+  //       board[i][j] = CellStatus.Hidden;
+  //     }
+  //   }
+  //   return board;
+  // }
 
   function handleCellClick(row: number, col: number) {
     socket.emit("MINES:reveal_cell", row, col);
-    if (game.isGameOver()) return;
+    if (game.isGameOver()) {
+      setGameOver(true);
+      setMessage("Game Over");
+      return;
+    }
 
     const gameOver = game.revealCell(row, col);
     const newBoard = [...board];
-    newBoard[row][col] = CellStatus.Revealed;
+    console.log("PRE: ", newBoard[row][col]);
+    newBoard[row][col].status = CellStatus.Revealed;
+    console.log("POST: ", newBoard);
     setBoard(newBoard);
 
-    if (gameOver) {
-      console.log("Game Over!");
+    if (gameOver || game.isGameOver()) {
+      if (game.mines === game.remainingCells) {
+        setMessage("You Win!");
+        setGameWin(true);
+      }
       setGameOver(true);
+      endGame();
     }
   }
 
@@ -96,8 +116,8 @@ const Mines: React.FC = () => {
 
     game.toggleFlag(row, col);
     const newBoard = [...board];
-    newBoard[row][col] =
-      newBoard[row][col] === CellStatus.Flagged
+    newBoard[row][col].status =
+      newBoard[row][col].status === CellStatus.Flagged
         ? CellStatus.Hidden
         : CellStatus.Flagged;
     setBoard(newBoard);
@@ -106,14 +126,14 @@ const Mines: React.FC = () => {
   useEffect(() => {
     // startGame();
 
-    socket.on("MINES:game_started", (initialBoard: CellStatus[][]) => {
+    socket.on("MINES:game_started", (initialBoard: Cell[][]) => {
       console.log("MINES_STARTED!");
       setBoard(initialBoard);
     });
 
     socket.on(
       "MINES:cell_revealed",
-      ({ row, col, cell }: { row: number; col: number; cell: CellStatus }) => {
+      ({ row, col, cell }: { row: number; col: number; cell: Cell }) => {
         const newBoard = [...board!];
         newBoard[row][col] = cell;
         setBoard(newBoard);
@@ -122,7 +142,7 @@ const Mines: React.FC = () => {
 
     socket.on(
       "MINES:flag_toggled",
-      ({ row, col, cell }: { row: number; col: number; cell: CellStatus }) => {
+      ({ row, col, cell }: { row: number; col: number; cell: Cell }) => {
         const newBoard = [...board!];
         newBoard[row][col] = cell;
         setBoard(newBoard);
@@ -149,12 +169,13 @@ const Mines: React.FC = () => {
       setLoading(true);
       setGameRunning(true);
 
-      const response = await api.post("/bet", {
+      const response = await api.post("/bet/quick", {
         ...bet,
         socketId: socket.id,
       });
 
-      console.log("BET_RESPONSE", response.data);
+      const data = response.data;
+      console.log("BET_RESPONSE", data);
 
       if (response.status !== 201) return toast.error("Couldn't play game");
 
@@ -165,6 +186,7 @@ const Mines: React.FC = () => {
         socketId: socket.id,
       });
 
+      setBetId(data.bet._id);
       dispatch(updateBalance(balance - bet.stake));
 
       toast.success("bet placed!");
@@ -178,12 +200,27 @@ const Mines: React.FC = () => {
     }
   };
 
+  const endGame = async () => {
+    console.log("END_GAME: ");
+    try {
+      const response = await api.post("/bet/result", {
+        ...bet,
+        id: betId,
+      });
+      const data = response.data;
+      dispatch(updateBalance(balance + (gameWin ? bet.profit! : 0)));
+    } catch (error) {
+      console.error("END_GAME: ", { error });
+    }
+  };
+
   const resetGame = () => {
-    setBet((prev) => ({ ...prev, stake: 0, choice: undefined }));
-    setGameRunning(false);
+    setBet(initialBetState);
+    setGameRunning(true);
     setGameOver(false);
     setLoading(false);
     setGame(new Minesweeper(BOARD_SIZE, minesNum || NUMBER_OF_MINES));
+    console.log("RESET_GAME");
   };
 
   // function handleCellClick(row: number, col: number) {
@@ -214,7 +251,7 @@ const Mines: React.FC = () => {
   // }
 
   return (
-    <div>
+    <>
       <div className="flex flex-col w-full">
         <div className="min-h-[50px] bg-dark-800 flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700" />
         <div className="flex flex-row w-full h-full max-md:flex-col-reverse">
@@ -228,24 +265,6 @@ const Mines: React.FC = () => {
                 <label className="text-sm font-semibold capitalize">
                   bet amount
                 </label>
-                {/* <div
-                  tabIndex={0}
-                  className="relative flex items-center w-full rounded "
-                >
-                  <input
-                    type="text"
-                    className="focus:border-none focus:outline-none bg-dark-700 w-full rounded p-2 focus:border-[1px] focus:outline focus:outline-[1px] focus:outline-primary focus:border-primary border-gray-500 outline-gray-500"
-                  />
-                  <img src={SilverLockIcon} className="w-4 aspect-square" />
-                  <div className="absolute flex items-center gap-2 right-2">
-                    <span className="text-sm font-semibold text-gray-600">
-                      1/2
-                    </span>
-                    <span className="text-sm font-semibold text-gray-600">
-                      2x
-                    </span>
-                  </div>
-                </div> */}
                 <BetInput
                   inputProps={{
                     onChange(e) {
@@ -254,7 +273,7 @@ const Mines: React.FC = () => {
                         stake: parseFloat(e.target.value),
                       }));
                     },
-                    value: bet.stake || 0,
+                    value: bet.stake,
                   }}
                 />
               </fieldset>
@@ -296,15 +315,18 @@ const Mines: React.FC = () => {
                 animate={{ translateY: 0, opacity: 1 }}
                 exit={{ translateY: -100, opacity: 0 }}
                 onClick={() => resetGame()}
-                className="absolute z-10 flex items-center justify-center w-full h-full backdrop-blur-sm"
+                className="absolute z-10 flex flex-col items-center justify-center w-full h-full backdrop-blur-sm"
               >
                 <div className="relative flex items-center justify-center">
                   <p className="absolute text-6xl font-extrabold animate-ping">
-                    Game Over
+                    {message}
                   </p>
                   <p className="relative z-20 text-6xl font-extrabold">
-                    Game Over
+                    {message}
                   </p>
+                </div>
+                <div>
+                  <small className="text-center">Tap to continue</small>
                 </div>
               </AnimateInOut>
               <div className="w-full grid grid-cols-[repeat(5,1fr)] max-w-[540px] max-sm:max-w-[300px] h-full max-sm:gap-1.5 gap-2.5">
@@ -328,7 +350,8 @@ const Mines: React.FC = () => {
                           {/* {cell === CellStatus.Revealed &&
                             game.board[rowIndex][colIndex].adjacentMines >
                               0 && ( */}
-                          {cell === CellStatus.Revealed && (
+                          {(cell.status === CellStatus.Revealed ||
+                            ((gameWin || gameOver) && !gameRunning)) && (
                             <span className="text-sm">
                               <>
                                 {hasMine ? (
@@ -343,7 +366,7 @@ const Mines: React.FC = () => {
                               </>
                             </span>
                           )}
-                          {cell === CellStatus.Flagged && (
+                          {cell.status === CellStatus.Flagged && (
                             <div>
                               <img className="w-6 h-6" src={FlagIcon} alt="" />
                             </div>
@@ -418,8 +441,7 @@ const Mines: React.FC = () => {
           </div>
         </div>
       </div>
-      <Bets />
-    </div>
+    </>
   );
 };
 

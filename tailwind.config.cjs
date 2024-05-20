@@ -6,7 +6,9 @@ module.exports = {
       colors: {
         "lg-heart": "rgba(254, 246, 244, 0.12)",
         primary: "#4483EB",
+        accent: "#4483EB",
 
+        "dark-650": "#2b2f3d",
         "dark-700": "#22242F",
         "dark-750": "#1F232D",
         "dark-800": "#1B1E27",

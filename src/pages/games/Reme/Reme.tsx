@@ -147,9 +147,9 @@ export default function Reme() {
   // };
 
   return (
-    <div className="gap-3 p-3 max-w-page">
+    <>
       <div className="flex flex-col w-full">
-        <div className=" min-h-[50px] bg-dark-800 flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700">
+        <div className=" min-h-[50px] bg-dark-800 flex overflow-hidden_ flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700">
           <div className="w-full h-full flex gap-1.5 p-2  justify-start overflow-hidden relative shadow-dark-800 items-center">
             <div
               className="w-[6px] bg-dark-800 h-full absolute right-0 top-0 z-[5] "
@@ -285,7 +285,6 @@ export default function Reme() {
           </div>
         </div>
       </div>
-      <Bets />
-    </div>
+    </>
   );
 }

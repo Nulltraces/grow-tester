@@ -107,7 +107,7 @@ export default function Dice() {
   };
 
   return (
-    <div className="gap-3 p-3 max-w-page">
+    <>
       <div className="flex flex-col w-full">
         <div className="min-h-[50px] bg-dark-800 flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700">
           <div className="w-full h-full flex gap-1.5 p-2 justify-start overflow-hidden relative shadow-dark-800 items-center">
@@ -212,7 +212,7 @@ export default function Dice() {
           </div>
           <div className="bg-dark-750 rounded-md p-2.5 text-sm font-medium w-full text-justify leading-5">
             <span>
-              Dice is a GrowDice game and is a simple game of chance with
+              Dice is a Grow Game game and is a simple game of chance with
               easy-to-understand betting mechanics for players to bet with.
               <br />
               <br />
@@ -224,8 +224,7 @@ export default function Dice() {
           </div>
         </div>
       </div>
-      <Bets />
-    </div>
+    </>
   );
 }
 

@@ -1,10 +1,10 @@
 export enum CellStatus {
-  Hidden,
-  Revealed,
-  Flagged,
+  Hidden = "Hidden",
+  Revealed = "Revealed",
+  Flagged = "Flagged",
 }
 
-interface Cell {
+export interface Cell {
   hasMine: boolean;
   status: CellStatus;
   adjacentMines: number;
@@ -14,8 +14,8 @@ class Minesweeper {
   // COMEBACK: Make Private
   public board: Cell[][];
   private size: number;
-  private mines: number;
-  private remainingCells: number;
+  readonly mines: number;
+  remainingCells: number;
 
   constructor(size: number, mines: number) {
     this.size = size;
@@ -91,6 +91,7 @@ class Minesweeper {
     const cell = this.board[row][col];
     cell.status = CellStatus.Revealed;
     this.remainingCells--;
+    console.log({ remainingCells: this.remainingCells });
 
     if (cell.hasMine) {
       return true;
@@ -123,6 +124,7 @@ class Minesweeper {
   }
 
   public isGameOver(): boolean {
+    console.log({ remainingCells: this.remainingCells, mines: this.mines });
     return this.remainingCells === this.mines || this.remainingCells === 0;
   }
 

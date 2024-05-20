@@ -94,10 +94,10 @@ export default function Header() {
   // }, []);
 
   return (
-    <header className="shrink-0 relative md:static h-16 flex py-2.5 w-full fixed_ !z-40 top-0 left-0 min-h-[var(--header-height)] max-h-[var(--header-height)] bg-dark-850 shadow-md whitespace-nowrap">
+    <header className="shrink-0 relative md:static h-16 flex py-2.5 w-full fixed_ !z-40 top-0 left-0 max-h-[var(--header-height)] bg-dark-850 shadow-md whitespace-nowrap">
       <div className="mx-auto w-[97%] flex items-center h-full">
         <div className="flex items-center w-full gap-4">
-          <Link to="/verify">
+          <Link to="/">
             <h1 className="logo-text !text-4xl">
               <div className="flex items-center -space-x-1 text-white sm:hidden">
                 <span className="">G</span>{" "}
@@ -488,7 +488,7 @@ function Balance() {
         <span className="">
           {loading
             ? "..."
-            : (currency === "world-lock" ? balance / 100 : balance).toFixed(2)}
+            : (currency === "world-lock" ? balance : balance / 100).toFixed(2)}
         </span>
       </button>
       <Button

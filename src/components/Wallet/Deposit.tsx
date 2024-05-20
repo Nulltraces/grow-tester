@@ -52,13 +52,15 @@ export default function Deposit() {
             </li>
             <li className="flex gap-1 numbered-list-item">
               Drop the amount of{" "}
-              <img
-                src={YellowLockIcon}
-                width="18"
-                height="18"
-                className="sc-x7t9ms-0 dnLnNz"
-              />{" "}
-              /{" "}
+              <span>
+                <img
+                  src={YellowLockIcon}
+                  width="18"
+                  height="18"
+                  className="sc-x7t9ms-0 dnLnNz"
+                />
+              </span>
+              /
               <span>
                 <img
                   src={SilverLockIcon}
@@ -66,14 +68,16 @@ export default function Deposit() {
                   height="18"
                   className="sc-x7t9ms-0 dnLnNz"
                 />
+              </span>
+              /
+              <span>
+                <img
+                  src={DiamondLockIcon}
+                  width="18"
+                  height="18"
+                  className="sc-x7t9ms-0 dnLnNz"
+                />
               </span>{" "}
-              /{" "}
-              <img
-                src={DiamondLockIcon}
-                width="18"
-                height="18"
-                className="sc-x7t9ms-0 dnLnNz"
-              />{" "}
               you wish to deposit next to the white door.
             </li>
             <li className="numbered-list-item">
@@ -155,7 +159,7 @@ export default function Deposit() {
           <div className="w-[5px] h-full absolute left-0 top-0 bg-red-600"></div>
           <span className="uppercase">Warning!</span>
           <span className="text-gray-400">
-            Using GrowDice for saving (storing in order to avoid bans) or
+            Using Grow Game for saving (storing in order to avoid bans) or
             reselling DLs is strictly prohibited. Doing so will result in your
             balance getting removed without any warnings.
           </span>

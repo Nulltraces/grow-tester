@@ -201,8 +201,8 @@ export default function CoinFlip() {
   };
 
   return (
-    <div className="gap-3 p-3 font-medium text-white max-w-page">
-      <div className="flex flex-col w-full">
+    <>
+      <div className="flex_ flex-col_ w-full">
         <div className=" min-h-[50px] bg-dark-800 flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700">
           <div className="w-full h-full flex gap-1.5 p-2  justify-start overflow-hidden relative shadow-dark-800 items-center">
             <div
@@ -335,16 +335,12 @@ export default function CoinFlip() {
             <div className="relative w-full h-[550px] max-sm:max-h-[375px] flex flex-col">
               <div className="flex flex-col justify-between flex-grow w-full h-full">
                 <div className="relative flex justify-center flex-grow ">
-                  {/* <div className="absolute flex justify-center w-full text-xl font-semibold text-gray-500 top-5">
-                    <span></span>
-                  </div> */}
-
                   <div className="flex items-center justify-center w-full max-md:justify-start">
                     <div
                       className="flex border-2 border-gray-700
-                  max-md:rounded-r max-md:rounded-none max-md:border-l-0 max-md:max-w-[100px]
-                  w-[200px] max-sm:max-w-[100px]
-                   rounded-sm p-4 flex-col items-center gap-1.5 uppercase text-gray-500 font-semibold text-2xl"
+                      max-md:rounded-r max-md:rounded-none max-md:border-l-0 max-md:max-w-[100px]
+                      w-[200px] max-sm:max-w-[100px]
+                       rounded-sm p-4 flex-col items-center gap-1.5 uppercase text-gray-500 font-semibold text-2xl"
                     >
                       <span className="text-3xl max-sm:text-[1rem] max-md:text-2xl">
                         {round}
@@ -356,37 +352,11 @@ export default function CoinFlip() {
                   </div>
                   <div className="relative flex items-center justify-center w-full p-1">
                     <div className="w-full h-full absolute_ coinFlipCoin">
-                      {/* <div className="relative flex items-center justify-center w-full h-full">
-                        <div className="absolute w-2/3 side-tails">
-                          <img
-                            alt=""
-                            src={T}
-                            draggable="false"
-                            className="object-cover w-full absolute_"
-                            style={{
-                              imageRendering: "pixelated",
-                            }}
-                          />
-                        </div>
-                        <div className="absolute w-2/3 side-heads">
-                          <img
-                            alt=""
-                            src={H}
-                            draggable="false"
-                            className="object-cover w-full absolute_"
-                            style={{
-                              imageRendering: "pixelated",
-                            }}
-                          />
-                        </div>
-                      </div> */}
-                      {/* <Coin coinRef={coinRef} /> */}
                       <div
                         className={clsx(
                           "coin !w-2/3 aspect-square",
                           loading ? "flip" : "nope",
                         )}
-                        // ref={coinRef}
                       >
                         <img
                           src={result === "T" ? Tails : Heads}
@@ -402,9 +372,9 @@ export default function CoinFlip() {
                   <div className="flex items-center justify-center w-full max-md:justify-end">
                     <div
                       className="flex border-2 border-gray-700
-                  max-md:rounded-l max-md:rounded-none max-md:border-r-0 max-md:max-w-[150px]
-    max-sm:max-w-[100px]
-                  w-[200px] rounded-sm p-4 flex-col items-center gap-1.5 uppercase text-gray-500 font-semibold text-2xl"
+                      max-md:rounded-l max-md:rounded-none max-md:border-r-0 max-md:max-w-[150px]
+         ax-sm:max-w-[100px]
+                      w-[200px] rounded-sm p-4 flex-col items-center gap-1.5 uppercase text-gray-500 font-semibold text-2xl"
                     >
                       <span className="text-4xl max-md:text-2xl max-sm:text-[1rem]">
                         {currentMultiplier}×
@@ -513,8 +483,7 @@ export default function CoinFlip() {
           </div>
         </div>
       </div>
-      <Bets />
-    </div>
+    </>
   );
 }
 

@@ -5,7 +5,7 @@ import { clsx } from "clsx";
 import { useSearchParams } from "react-router-dom";
 import { type ChangeEvent, useState, type FormEvent, useEffect } from "react";
 import api from "@/api/axios";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "@/hooks/store";
 import { setUser } from "@/store/slices/auth";
@@ -19,7 +19,7 @@ interface formData {
 }
 
 type Props = {
-  route: "register" | "sign-in";
+  route: "register" | "sign-in" | "reset-password";
 };
 
 export default function AuthForm({ route = "sign-in" }: Props) {
@@ -28,6 +28,8 @@ export default function AuthForm({ route = "sign-in" }: Props) {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState<formData>({
     email: "",
@@ -37,6 +39,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
   });
 
   const formDataHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setError(false);
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -123,6 +126,12 @@ export default function AuthForm({ route = "sign-in" }: Props) {
 
         const data = response.data;
 
+        if (response.status !== 201) {
+          setError(true);
+          setErrorMessage(data.message);
+          return;
+        }
+
         console.log({ response, data });
 
         const user = data.user;
@@ -147,7 +156,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
         });
         toast.success("signed in successfully");
         dispatch(closeModal());
-      } else {
+      } else if (route === "register") {
         // Handle register logic
         // const response = await fetch("/auth/register", {
         //   method: "POST",
@@ -167,6 +176,12 @@ export default function AuthForm({ route = "sign-in" }: Props) {
         const data = await response.data;
         console.log({ data });
 
+        if (response.status !== 201) {
+          setError(true);
+          setErrorMessage(data.message);
+          return;
+        }
+
         const user = data.user;
         console.log({ user });
 
@@ -179,15 +194,30 @@ export default function AuthForm({ route = "sign-in" }: Props) {
         });
         toast.success("signed up successfully");
         dispatch(closeModal());
+      } else {
+        const response = await api.post("/auth/reset-request", {
+          username: formData.username,
+          email: formData.email,
+        });
+
+        const data = await response.data;
+        console.log({ data });
+
+        if (response.status !== 200)
+          return toast.error("Password reset request failed");
+
+        toast.success(data.message);
       }
     } catch (error: any) {
-      const errorM = error as Error;
-      console.error({ error, errorM });
+      const err = error as AxiosError<{ message: string }>;
+      console.error({ error, errorM: err });
       // Handle sign-in error
 
       // Display error message
       // alert(errorMessage);
       console.error("Error signing in:", error);
+      setError(true);
+      setErrorMessage(err.response?.data.message || "an error occured");
     } finally {
       setLoading(false);
     }
@@ -201,32 +231,37 @@ export default function AuthForm({ route = "sign-in" }: Props) {
     >
       <div className="w-full flex flex-col items-center justify-center">
         <div className="flex w-[96%] mx-auto flex-col items-start">
-          <h2 className="font-matter leading-normal font-semibold text-center md:-tracking-[0.96px] -tracking-[0.64px] text-xl text-gray-400 flex gap-1.5 items-center">
-            {route === "register" ? "register" : "sign in"}
+          <h2 className="font-matter leading-normal font-semibold text-center md:-tracking-[0.96px] -tracking-[0.64px] text-xl text-gray-400 flex gap-1.5 items-center capitalize">
+            {route === "register"
+              ? "register"
+              : route === "sign-in"
+                ? "sign in"
+                : "password reset"}
           </h2>
 
           <form
             className="flex flex-col w-full items-start md:items-center"
             onSubmit={handleSubmit}
           >
+            {(route === "register" || route === "reset-password") && (
+              <fieldset className="gap-1 mt-3 flex flex-col w-full">
+                <div className="flex flex-row justify-between w-full">
+                  <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
+                    Username
+                  </label>
+                </div>
+                <Input
+                  type="text"
+                  name="username"
+                  value={formData?.username}
+                  onChange={formDataHandler}
+                  // placeholder="Enter your First Name"
+                />
+              </fieldset>
+            )}
             {/* SIGN UP */}
-            {route === "register" && (
-              <>
-                <fieldset className="gap-1 mt-3 flex flex-col w-full">
-                  <div className="flex flex-row justify-between w-full">
-                    <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
-                      Username
-                    </label>
-                  </div>
-                  <Input
-                    type="text"
-                    name="username"
-                    value={formData?.username}
-                    onChange={formDataHandler}
-                    // placeholder="Enter your First Name"
-                  />
-                </fieldset>
-
+            <>
+              {route === "register" && (
                 <fieldset className="gap-1 mt-3 flex flex-col w-full">
                   <div className="flex flex-row justify-between w-full">
                     <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
@@ -241,7 +276,9 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                     placeholder="Enter your Password"
                   />
                 </fieldset>
+              )}
 
+              {(route === "register" || route === "reset-password") && (
                 <fieldset className="gap-1 mt-3 flex flex-col w-full">
                   <div className="flex flex-row justify-between w-full">
                     <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
@@ -256,33 +293,40 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                     // placeholder="Enter your Email Address"
                   />
                 </fieldset>
+              )}
 
-                <fieldset className="gap-1 mt-3 flex flex-col w-full">
-                  <div className="flex flex-row justify-between w-full">
-                    <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
-                      Affiliate Code
-                    </label>
-                  </div>
-                  <Input
-                    type="text"
-                    name="affiliateCode"
-                    value={formData?.affiliateCode}
-                    onChange={formDataHandler}
-                    // placeholder="Enter your First Name"
-                  />
-                </fieldset>
-                <fieldset className="gap-1 mt-3 w-full">
-                  <Button
-                    type="submit"
-                    disabled={isDisabled}
-                    loading={loading}
-                    className="capitalize mt-3 w-full"
-                  >
-                    {"Register"}
-                  </Button>
-                </fieldset>
-              </>
-            )}
+              {route === "register" && (
+                <>
+                  <fieldset className="gap-1 mt-3 flex flex-col w-full">
+                    <div className="flex flex-row justify-between w-full">
+                      <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
+                        Affiliate Code
+                      </label>
+                    </div>
+                    <Input
+                      type="text"
+                      name="affiliateCode"
+                      value={formData?.affiliateCode}
+                      onChange={formDataHandler}
+                      // placeholder="Enter your First Name"
+                    />
+                  </fieldset>
+                </>
+              )}
+              {route === "register" ||
+                (route === "reset-password" && (
+                  <fieldset className="gap-1 mt-3 w-full">
+                    <Button
+                      type="submit"
+                      disabled={isDisabled}
+                      loading={loading}
+                      className="capitalize mt-3 w-full"
+                    >
+                      {route.replace("-", " ")}
+                    </Button>
+                  </fieldset>
+                ))}
+            </>
 
             {/* sign in */}
             {route === "sign-in" && (
@@ -327,23 +371,30 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                 </fieldset>
               </>
             )}
+            {error && (
+              <small className="text-red-600 font-semibold mt-2">
+                {errorMessage}
+              </small>
+            )}
           </form>
 
-          <p className="text-gray-500 w-fit mx-auto mt-3 mb-16 sm:mb-0">
-            {route === "sign-in"
-              ? "Don't have an account?"
-              : "Already have an account?"}{" "}
-            <button
-              onClick={() =>
-                setSearchParams({
-                  modal: route === "sign-in" ? "register" : "sign-in",
-                })
-              }
-              className="text-white font-semibold"
-            >
-              {route === "sign-in" ? "Register" : "Sign In"}
-            </button>
-          </p>
+          {route !== "reset-password" && (
+            <p className="text-gray-500 w-fit mx-auto mt-3 mb-16 sm:mb-0">
+              {route === "sign-in"
+                ? "Don't have an account?"
+                : "Already have an account?"}{" "}
+              <button
+                onClick={() =>
+                  setSearchParams({
+                    modal: route === "sign-in" ? "register" : "sign-in",
+                  })
+                }
+                className="text-white font-semibold"
+              >
+                {route === "sign-in" ? "Register" : "Sign In"}
+              </button>
+            </p>
+          )}
         </div>
       </div>
     </div>

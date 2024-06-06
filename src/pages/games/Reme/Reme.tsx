@@ -1,7 +1,6 @@
 import { SilverLockIcon } from "@/assets/icons";
-import { Bets } from "@/pages/landing/components";
 import RemeGame from "./RemeCanvas";
-import { BetInput, Button, Input } from "@/components";
+import { BetInput, Button } from "@/components";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { updateBalance } from "@/store/slices/wallet";
@@ -45,7 +44,7 @@ export default function Reme() {
       dispatch(updateBalance(walletBalance + data.profit));
       setMessage(data.message);
     });
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!balance) return;
@@ -92,59 +91,6 @@ export default function Reme() {
     setHouseSpin(0);
     setPlayerSpin(0);
   };
-
-  // const spinWheel = () => {
-  //   const startingAmt = balance;
-  //   let currentProfit = profit;
-  //   let roundsCounter = roundsPlayed;
-  //   let totalBets = totalBet;
-  //   const messages: string[] = [];
-
-  //   const player = Math.floor(Math.random() * 100);
-  //   const house = Math.floor(Math.random() * 100);
-  //   const player1 = convert(player);
-  //   const house1 = convert(house);
-
-  //   let outcomeMessage = `Player spun the wheel and got ${player}. `;
-  //   outcomeMessage += `Host spun the wheel and got ${house}. `;
-
-  //   setPlayerSpin(player);
-  //   setHouseSpin(house);
-
-  //   if (player1 > house1) {
-  //     currentProfit += bet.stake * 2;
-  //     dispatch(updateBalance(balance + bet.stake * 2));
-  //     messages.push(
-  //       `${outcomeMessage}You won double your bet! +${bet.stake * 2}`,
-  //     );
-  //   } else if (player1 === house1) {
-  //     messages.push(`${outcomeMessage}It's a tie!`);
-  //   } else {
-  //     dispatch(updateBalance(balance - bet.stake));
-  //     messages.push(`${outcomeMessage}You lost! -${bet.stake}`);
-  //   }
-
-  //   if (player1 === 0 && player1 !== house1) {
-  //     currentProfit += bet.stake * 3;
-  //     dispatch(updateBalance(balance + bet.stake * 3));
-  //     messages.push(`You won triple your bet! +${bet.stake * 3}`);
-  //   }
-
-  //   totalBets += bet.stake;
-  //   roundsCounter++;
-
-  //   setProfit(currentProfit);
-  //   setRoundsPlayed(roundsCounter);
-  //   setTotalBet(totalBets);
-  //   setMessage(messages);
-
-  //   return startingAmt !== balance;
-  // };
-
-  // const convert = (num: number) => {
-  //   const sum = (num % 10) + Math.floor(num / 10);
-  //   return sum >= 10 ? sum % 10 : sum;
-  // };
 
   return (
     <>

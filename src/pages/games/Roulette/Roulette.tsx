@@ -1,9 +1,20 @@
 import { FIst, LuckPLant, SilverLockIcon, Wrench } from "@/assets/icons";
-import { Bets } from "@/pages/landing/components";
-import RouletteGame from "./test";
-import Another from "./another";
+import RouletteWheel from "./Wheel";
+import { useEffect, useState } from "react";
 
 export default function Roulette() {
+  const [outcome, setOutCome] = useState(5);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const random = Math.floor(Math.random() * 10) + 1;
+      console.log({ random });
+      setOutCome(random);
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       <div className="flex flex-col w-full">
@@ -370,7 +381,7 @@ export default function Roulette() {
                        */}
                 {/* </div>
                   </div> */}
-                <RouletteGame />
+                <RouletteWheel outcome={outcome} />
                 {/* <Another /> */}
                 <div className="absolute h-full w-[1px] right-[-1px] z-[2] shadow-dark-850 shadow-[1px_0_30px_60px_var(--tw-shadow)]">
                   FR AN

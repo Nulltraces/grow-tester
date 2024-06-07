@@ -27,7 +27,7 @@ import {
 import { SilverLockIcon } from "@/assets/icons";
 import { ProvablyFair } from "@/components";
 
-const onGameComplete: (() => void) | null = null;
+let onGameComplete: ((result: number) => void) | undefined = undefined;
 export function Game() {
   // #region States
   const incrementCurrentBalance = useAuthStore(
@@ -35,13 +35,20 @@ export function Game() {
   );
   const engine = Engine.create();
   const [lines, setLines] = useState<LinesType>(16);
+  const [balls, setBalls] = useState<number>(1);
   const inGameBallsCount = useGameStore((state) => state.gamesRunning);
-  const incrementInGameBallsCount = useGameStore(
-    (state) => state.incrementGamesRunning,
-  );
+  const incrementInGameBallsCount = useGameStore((state) => {
+    console.log("INCREMENT");
+    return state.incrementGamesRunning;
+  });
   const decrementInGameBallsCount = useGameStore(
     (state) => state.decrementGamesRunning,
   );
+
+  useEffect(() => {
+    console.log({ inGameBallsCount });
+  }, [inGameBallsCount]);
+
   const [lastMultipliers, setLastMultipliers] = useState<number[]>([]);
   const {
     pins: pinsConfig,
@@ -90,7 +97,7 @@ export function Game() {
       render.canvas.remove();
       render.textures = {};
     };
-  }, [lines]);
+  }, [lines, balls]);
 
   const pins: Body[] = [];
 
@@ -259,6 +266,8 @@ export function Game() {
     if (+ballValue <= 0) return;
 
     const newBalance = +ballValue * multiplierValue;
+    onGameComplete?.(+ballValue * multiplierValue);
+    // COMEBACK: Remove the below code
     await incrementCurrentBalance(newBalance);
   }
   async function onBodyCollision(event: IEventCollision<Engine>) {
@@ -285,10 +294,15 @@ export function Game() {
         </div>
         <div className="flex flex-row w-full h-full max-md:flex-col-reverse">
           <BetActions
+            balls={balls}
             lines={lines}
             inGameBallsCount={inGameBallsCount}
             onChangeLines={setLines}
-            onRunBet={bet}
+            onChangeBalls={setBalls}
+            onRunBet={(betValue, callback) => {
+              onGameComplete = callback;
+              bet(betValue);
+            }}
           />
           <MultiplierHistory multiplierHistory={lastMultipliers} />
           <div className="flex items-center justify-center flex-1">

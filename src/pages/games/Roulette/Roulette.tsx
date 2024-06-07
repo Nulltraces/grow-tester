@@ -1,18 +1,27 @@
 import { FIst, LuckPLant, SilverLockIcon, Wrench } from "@/assets/icons";
 import RouletteWheel from "./Wheel";
 import { useEffect, useState } from "react";
+import socket from "@/utils/constants";
 
 export default function Roulette() {
   const [outcome, setOutCome] = useState(5);
+  const [elements, setElements] = useState([]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const random = Math.floor(Math.random() * 10) + 1;
-      console.log({ random });
-      setOutCome(random);
-    }, 8000);
+    // const interval = setInterval(() => {
+    //   const random = Math.floor(Math.random() * 10) + 1;
+    //   console.log({ random });
+    //   setOutCome(random);
+    // }, 8000);
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
+
+    socket.on("ROULETTE:result", (data) => {
+      const outCome = data;
+      console.log("ROULETTE-result: ", outCome);
+      // setElements(data.elements);
+      setOutCome(outCome);
+    });
   }, []);
 
   return (

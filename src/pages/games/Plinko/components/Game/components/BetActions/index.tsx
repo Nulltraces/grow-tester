@@ -11,7 +11,10 @@ import socket from "@/utils/constants";
 
 interface PlinkoBetActions {
   lines: LinesType;
-  onRunBet: (betValue: number, callback: (result: number) => void) => void;
+  onRunBet: (
+    betValue: number,
+    callback: (result: { profit: number; multiplier: number }) => void,
+  ) => void;
   onChangeLines: (lines: LinesType) => void;
   inGameBallsCount: number;
 }
@@ -114,12 +117,19 @@ export function BetActions({
     }
   };
 
-  const endGame = async (profit: number) => {
+  const endGame = async ({
+    multiplier,
+    profit,
+  }: {
+    profit: number;
+    multiplier: number;
+  }) => {
     console.log("END_GAME: ", { betId, profit: bet.profit });
     try {
       const response = await api.post("/bet/result", {
         ...bet,
         profit,
+        multiplier,
         id: betID,
       });
       const data = response.data;

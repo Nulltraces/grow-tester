@@ -27,7 +27,9 @@ import {
 import { SilverLockIcon } from "@/assets/icons";
 import { ProvablyFair } from "@/components";
 
-let onGameComplete: ((result: number) => void) | undefined = undefined;
+let onGameComplete:
+  | ((result: { profit: number; multiplier: number }) => void)
+  | undefined = undefined;
 export function Game() {
   // #region States
   const incrementCurrentBalance = useAuthStore(
@@ -265,7 +267,10 @@ export function Game() {
     if (+ballValue <= 0) return;
 
     const newBalance = +ballValue * multiplierValue;
-    onGameComplete?.(+ballValue * multiplierValue);
+    onGameComplete?.({
+      multiplier: multiplierValue,
+      profit: +ballValue * multiplierValue,
+    });
     // COMEBACK: Remove the below code
     await incrementCurrentBalance(newBalance);
   }

@@ -56,11 +56,7 @@ export const games: Game[] = [
     title: "mines",
     element: <Mines />,
   },
-  {
-    image: "unboxing.webp",
-    title: "unboxing",
-    element: <Unboxing />,
-  },
+
   {
     image: "dice.webp",
     title: "dice",
@@ -75,5 +71,10 @@ export const games: Game[] = [
     image: "plinko.webp",
     title: "plinko",
     element: <Plinko />,
+  },
+  {
+    image: "unboxing.webp",
+    title: "unboxing",
+    element: <Unboxing />,
   },
 ];

@@ -11,10 +11,8 @@ import socket from "@/utils/constants";
 
 interface PlinkoBetActions {
   lines: LinesType;
-  balls: number;
   onRunBet: (betValue: number, callback: (result: number) => void) => void;
   onChangeLines: (lines: LinesType) => void;
-  onChangeBalls: (balls: number) => void;
   inGameBallsCount: number;
 }
 
@@ -22,10 +20,8 @@ let walletBalance = 0;
 let betID = "";
 
 export function BetActions({
-  balls,
   lines,
   onRunBet,
-  onChangeBalls,
   onChangeLines,
   inGameBallsCount,
 }: PlinkoBetActions) {
@@ -62,32 +58,21 @@ export function BetActions({
     onChangeLines(Number(val) as LinesType);
   }
 
-  function handleChangeBalls(val: any) {
-    // if (!auth.isAuthenticated || loading) return;
-
-    onChangeBalls(Number(val) as number);
-  }
-
   async function handleRunBet() {
-    // if (!auth.isAuthenticated || loading) return;
+    if (!auth.isAuthenticated || loading) return;
     // setLoading(true);
     // setGameRunning(true)
     if (inGameBallsCount >= 15) return;
-    // if (bet.stake! > walletBalance) {
-    //   setBet((prev) => ({ ...prev, stake: walletBalance }));
-    //   return;
-    // }
+    if (bet.stake! > walletBalance) {
+      setBet((prev) => ({ ...prev, stake: walletBalance }));
+      return;
+    }
     console.log("ON_RUN_BET");
     onRunBet(bet.stake!, endGame);
     if (bet.stake! <= 0) return;
     // await decrementCurrentBalance(bet.stake!);
     // await endGame();
     dispatch(updateBalance(walletBalance - bet.stake!));
-    setDelay(true);
-
-    setTimeout(() => {
-      setDelay(false);
-    }, 3000);
   }
 
   const placeBet = async () => {
@@ -98,6 +83,12 @@ export function BetActions({
 
       return toast.error("Insufficient balance");
     }
+
+    setDelay(true);
+    setTimeout(() => {
+      setDelay(false);
+    }, 3000);
+
     try {
       const response = await api.post("/bet/quick", {
         ...bet,
@@ -145,14 +136,14 @@ export function BetActions({
     <div className="bg-dark-800 flex justify-start flex-col max-md:w-full w-[400px]">
       <div className="text-sm font-medium">
         <div className="relative flex flex-col gap-2 p-3 text-sm font-medium text-white">
-          {/* {(!auth.isAuthenticated || loading || gameRunning) && (
+          {(!auth.isAuthenticated || loading || gameRunning) && (
             <div
               onClick={() => {
                 // !loading && resetGame();
               }}
               className="absolute top-0 left-0 z-10 w-full h-full cursor-pointer bg-dark-800 opacity-70"
             />
-          )} */}
+          )}
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium text-white">Bet Amount</span>
             <BetInput
@@ -176,14 +167,6 @@ export function BetActions({
             }))}
             getValue={(e) => handleChangeLines(e)}
             value={lines}
-          />
-          <Select
-            label="Balls"
-            options={Array(16)
-              .fill(0)
-              .map((_, i) => ({ label: i + 1, value: i + 1 }))}
-            getValue={(e) => handleChangeBalls(e)}
-            value={balls}
           />
           <Button
             disabled={loading || delay || gameRunning}

@@ -35,7 +35,6 @@ export function Game() {
   );
   const engine = Engine.create();
   const [lines, setLines] = useState<LinesType>(16);
-  const [balls, setBalls] = useState<number>(1);
   const inGameBallsCount = useGameStore((state) => state.gamesRunning);
   const incrementInGameBallsCount = useGameStore((state) => {
     console.log("INCREMENT");
@@ -97,7 +96,7 @@ export function Game() {
       render.canvas.remove();
       render.textures = {};
     };
-  }, [lines, balls]);
+  }, [lines]);
 
   const pins: Body[] = [];
 
@@ -294,11 +293,9 @@ export function Game() {
         </div>
         <div className="flex flex-row w-full h-full max-md:flex-col-reverse">
           <BetActions
-            balls={balls}
             lines={lines}
             inGameBallsCount={inGameBallsCount}
             onChangeLines={setLines}
-            onChangeBalls={setBalls}
             onRunBet={(betValue, callback) => {
               onGameComplete = callback;
               bet(betValue);

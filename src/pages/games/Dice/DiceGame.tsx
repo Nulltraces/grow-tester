@@ -87,12 +87,12 @@ export default function DiceGame({
             min={MIN}
             max={MAX}
             step={STEP}
-            value={+rangeValue.toFixed()}
+            value={+rangeValue?.toFixed()}
             onChange={(e) => {
               setRange(+e);
               console.log("canging");
               const result = calculateMultiplier(+e, "greater");
-              setMultiplier(+result.toFixed(2));
+              setMultiplier(+result?.toFixed(2));
             }}
           />
         </div>
@@ -104,7 +104,7 @@ export default function DiceGame({
             <input
               className="bg-transparent outline-none border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
               type="text"
-              value={multiplier.toFixed(2)}
+              value={multiplier?.toFixed(2)}
             />
           </div>
         </div>

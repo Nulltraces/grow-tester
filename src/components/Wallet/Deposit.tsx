@@ -192,7 +192,7 @@ function DepositForm() {
       </label>
       <Input
         type="number"
-        value={amount.toFixed(2)}
+        value={amount?.toFixed(2)}
         onChange={(e) => {
           const value = e.target.value;
           if (value && value !== "NAN")

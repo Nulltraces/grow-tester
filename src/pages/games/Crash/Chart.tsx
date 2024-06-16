@@ -55,7 +55,7 @@ const initialOptions: ChartOptions<"line"> = {
           const val = parseFloat(value.toString());
           if (val > 2) {
             return Math.ceil(val) + "×";
-          } else return parseFloat(value.toString()).toFixed(1) + "×";
+          } else return parseFloat(value.toString())?.toFixed(1) + "×";
         },
       },
       grid: {
@@ -242,7 +242,7 @@ export default function CrashChart({ gamePhase, setGamePhase }: Props) {
               const val = parseFloat(value.toString());
               if (val > 2) {
                 return Math.ceil(val) + "×";
-              } else return parseFloat(value.toString()).toFixed(1) + "×";
+              } else return parseFloat(value.toString())?.toFixed(1) + "×";
             },
           },
           grid: {
@@ -307,7 +307,7 @@ export default function CrashChart({ gamePhase, setGamePhase }: Props) {
         const timeElapsed = (Date.now() - globalTimeNow) / 1000.0;
         setGamePhaseTimeElapsed(timeElapsed);
         setLiveMultiplier(
-          parseFloat((1.0024 * Math.pow(1.0718, timeElapsed)).toFixed(2)),
+          parseFloat((1.0024 * Math.pow(1.0718, timeElapsed))?.toFixed(2)),
         );
 
         if (multiplierCount.current.length < 1) {
@@ -317,7 +317,7 @@ export default function CrashChart({ gamePhase, setGamePhase }: Props) {
         if (realCounterYaxis.current % 5 === 0) {
           multiplierCount.current = [
             ...multiplierCount.current,
-            parseFloat((1.0024 * Math.pow(1.0718, timeElapsed)).toFixed(2)),
+            parseFloat((1.0024 * Math.pow(1.0718, timeElapsed))?.toFixed(2)),
           ];
           timeCountXaxis.current = [...timeCountXaxis.current, timeElapsed];
         }
@@ -337,8 +337,8 @@ export default function CrashChart({ gamePhase, setGamePhase }: Props) {
       console.log("BET_RUNNING!");
       interval = setInterval(() => {
         const timeElapsed = (Date.now() - globalTimeNow) / 1000.0;
-        const timeRemaining = parseFloat((5 - timeElapsed).toFixed(2));
-        setBetPhaseTime(timeRemaining.toFixed(2));
+        const timeRemaining = parseFloat((5 - timeElapsed)?.toFixed(2));
+        setBetPhaseTime(timeRemaining?.toFixed(2));
         if (timeRemaining <= 0) {
           console.log("GAME_PHASE_NOW!");
           setGamePhase(GamePhase.game);
@@ -362,7 +362,7 @@ export default function CrashChart({ gamePhase, setGamePhase }: Props) {
           <p>Starting in... {betPhaseTime}</p>
         ) : (
           <div className={clsx("flex", gameStopped && "text-red-800")}>
-            <p>{liveMultiplier.toFixed(2)}</p>
+            <p>{liveMultiplier?.toFixed(2)}</p>
             <span className="text-6xl">×</span>
           </div>
         )}

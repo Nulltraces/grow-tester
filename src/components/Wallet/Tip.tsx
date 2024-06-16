@@ -72,7 +72,7 @@ export default function Tip() {
             <input
               className="indent-6 bg-transparent outline-none border-none p-1 text-[0.9rem] flex-grow text-white"
               type="text"
-              value={amount.toFixed(2)}
+              value={amount?.toFixed(2)}
               onChange={(e) => {
                 const value = e.target.value;
                 if (value && value !== "NAN")

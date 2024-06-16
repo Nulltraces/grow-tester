@@ -28,11 +28,11 @@ const LimboGame: React.FC = () => {
       const winnings = bet * targetMultiplier;
       setBalance(balance + winnings - bet);
       setMessage(
-        `You win! Multiplier: ${randomMultiplier.toFixed(2)}. Winnings: ${winnings.toFixed(2)}`,
+        `You win! Multiplier: ${randomMultiplier?.toFixed(2)}. Winnings: ${winnings?.toFixed(2)}`,
       );
     } else {
       setBalance(balance - bet);
-      setMessage(`You lose. Multiplier: ${randomMultiplier.toFixed(2)}`);
+      setMessage(`You lose. Multiplier: ${randomMultiplier?.toFixed(2)}`);
     }
   };
 
@@ -61,8 +61,8 @@ const LimboGame: React.FC = () => {
         Play
       </button>
       <div className="mt-4">
-        <p>Balance: ${balance.toFixed(2)}</p>
-        {result !== null && <p>Resulting Multiplier: {result.toFixed(2)}</p>}
+        <p>Balance: ${balance?.toFixed(2)}</p>
+        {result !== null && <p>Resulting Multiplier: {result?.toFixed(2)}</p>}
         <p>{message}</p>
       </div>
     </div>

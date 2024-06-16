@@ -273,7 +273,7 @@ export default function Crash() {
                         placeholder="Bet"
                         className="outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
                         type="number"
-                        value={(player?.stake || 0.0).toFixed(2)}
+                        value={(player?.stake || 0.0)?.toFixed(2)}
                         onChange={(e) => {
                           setPlayer((prev) => ({
                             ...prev,
@@ -320,7 +320,7 @@ export default function Crash() {
                     className:
                       "outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium",
                     type: "number",
-                    value: (player?.stake || 0.0).toFixed(2),
+                    value: (player?.stake || 0.0)?.toFixed(2),
                   }}
                 />
               </div>
@@ -335,7 +335,7 @@ export default function Crash() {
                   <Input
                     className="outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
                     type="text"
-                    value={(player?.multiplier || 0.0).toFixed(2)}
+                    value={(player?.multiplier || 0.0)?.toFixed(2)}
                     onChange={(e) => {
                       setPlayer((prev) => ({
                         ...prev,

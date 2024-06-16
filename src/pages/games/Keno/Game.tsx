@@ -182,12 +182,12 @@ const Game: React.FC = () => {
         Draw Numbers
       </button>
       <div className="mb-4">
-        <p>Balance: ${balance.toFixed(2)}</p>
+        <p>Balance: ${balance?.toFixed(2)}</p>
       </div>
       {result && (
         <div className="mb-4">
           <p>Hits: {result.hits}</p>
-          <p>Payout: ${result.payout.toFixed(2)}</p>
+          <p>Payout: ${result.payout?.toFixed(2)}</p>
         </div>
       )}
       <div className="mt-4 grid grid-cols-11 gap-2">

@@ -271,7 +271,7 @@ export default function Towers() {
     col: number;
   }) => {
     const gridCopy = [...grid];
-    let cell = gridCopy[row][col];
+    const cell = gridCopy[row][col];
 
     const handleClick = () => {
       if (gameOver || gameWin || row !== currentRow || !gameRunning) return;
@@ -329,7 +329,7 @@ export default function Towers() {
           Hit {index + 1}
         </span>
         <span className="text-sm font-semibold text-gray-400">
-          {(multiplier * (index / 60)).toFixed(2)}×
+          {(multiplier * (index / 60))?.toFixed(2)}×
         </span>
       </div>
     );

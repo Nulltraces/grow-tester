@@ -54,13 +54,13 @@ export default function Limbo() {
       setBet((prev) => ({ ...prev, profit: winnings }));
       dispatch(updateBalance(balance + winnings - bet?.stake));
       setMessage(
-        `You win! Multiplier: ${randomMultiplier.toFixed(2)}. Winnings: ${winnings.toFixed(2)}`,
+        `You win! Multiplier: ${randomMultiplier?.toFixed(2)}. Winnings: ${winnings?.toFixed(2)}`,
       );
       setGameWin(true);
     } else {
       setBet((prev) => ({ ...prev, profit: 0 }));
       dispatch(updateBalance(balance - bet?.stake));
-      setMessage(`You lose. Multiplier: ${randomMultiplier.toFixed(2)}`);
+      setMessage(`You lose. Multiplier: ${randomMultiplier?.toFixed(2)}`);
       setGameWin(false);
     }
     endGame();

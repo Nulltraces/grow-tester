@@ -488,7 +488,7 @@ function Balance() {
         <span className="">
           {loading
             ? "..."
-            : (currency === "world-lock" ? balance : balance / 100).toFixed(2)}
+            : (currency === "world-lock" ? balance : balance / 100)?.toFixed(2)}
         </span>
       </button>
       <Button

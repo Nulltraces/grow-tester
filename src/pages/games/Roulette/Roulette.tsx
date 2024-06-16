@@ -166,7 +166,7 @@ export default function Roulette() {
                           className:
                             "outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium",
                           type: "number",
-                          value: (bet?.stake || 0.0).toFixed(2),
+                          value: (bet?.stake || 0.0)?.toFixed(2),
                         }}
                       />
                     </div>
@@ -325,7 +325,7 @@ export default function Roulette() {
                 <div className="relative">
                   {!rolling && (
                     <p className="absolute -top-16 text-center w-full mx-auto text-2xl font-semibold mb-12">
-                      Rolling in {Math.abs(rollTime).toFixed(1)}s
+                      Rolling in {Math.abs(rollTime)?.toFixed(1)}s
                     </p>
                   )}
                   <RouletteWheel outcome={outcome} setRolling={setRolling} />

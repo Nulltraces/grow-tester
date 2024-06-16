@@ -87,10 +87,10 @@ export function BetActions({
       return toast.error("Insufficient balance");
     }
 
-    setDelay(true);
-    setTimeout(() => {
-      setDelay(false);
-    }, 3000);
+    // setDelay(true);
+    // setTimeout(() => {
+    //   setDelay(false);
+    // }, 3000);
 
     try {
       const response = await api.post("/bet/quick", {

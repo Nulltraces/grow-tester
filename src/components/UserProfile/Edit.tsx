@@ -125,7 +125,7 @@ export default function Edit() {
                 className="sc-134abzr-1 edit-modal-avatar"
               />
             ) : (
-              <UserIcon className="w-full aspect-square p-2_s !stroke-white" />
+              <UserIcon className="w-28 h-28 aspect-square m-auto mt-10 !stroke-white" />
             )}
           </BackgroundImage>
           <Button

@@ -1,10 +1,9 @@
-import { Bets } from "@/pages/landing/components";
 import Chart from "./Chart";
 import { useEffect, useState } from "react";
 import socket from "@/utils/constants";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { SilverLockIcon } from "@/assets/icons";
-import { GearIcon, ShieldIcon, XClose } from "@/assets/svgs";
+import { UserIcon, XClose } from "@/assets/svgs";
 import clsx from "clsx";
 import { BetInput, Button, Input, UserProfile } from "@/components";
 import { toast } from "react-toastify";
@@ -13,11 +12,14 @@ import api from "@/api/axios";
 import { updateBalance } from "@/store/slices/wallet";
 import { GameType } from "@/game-types";
 import { ProvablyFair } from "@/components";
+import { triggerNotification } from "@/store/slices/notification";
+import { AxiosError } from "axios";
+import { GamePhase } from ".";
 
 type Player = {
   user?: { username: string; photo: string };
   multiplier: number;
-  bet: number;
+  stake: number;
   profit: number;
 };
 
@@ -33,44 +35,54 @@ export default function Crash() {
   });
 
   const [player, setPlayer] = useState<Player>({
-    bet: 0,
+    stake: 0,
     multiplier: 1.2,
     profit: 0,
-    user: undefined,
+    user: auth.user
+      ? { username: auth.user?.username, photo: auth.user?.photo }
+      : undefined,
   });
 
   const [history, setHistory] = useState<number[]>([]);
+  const [gamePhase, setGamePhase] = useState(GamePhase.bet);
 
   const totalBets = players
-    .map((player) => player.bet)
+    .map((player) => player.stake)
     .reduce((acc, curr) => acc + curr, 0);
 
-  console.log({ totalBets, bets: players.map((player) => player.bet) });
+  console.log({ totalBets, bets: players.map((player) => player.stake) });
 
   const joinGame = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    if (!auth.user && player.user)
+      return dispatch(
+        triggerNotification({
+          message: "Unauthorized! Please sign in",
+          type: "warning",
+          show: true,
+        }),
+      );
 
     console.log("PLACE_BET: ", bet);
+    try {
+      if (!(player.stake && bet.stake))
+        return toast.error("please enter a valid bet amount");
 
-    if (!(player.bet && bet.stake))
-      return toast.error("please enter a valid bet amount");
+      console.log({ BET: bet });
+      const response = await api.post("/bet", bet);
 
-    const response = await api.post("/bet", bet);
+      console.log("BET_RESPONSE", response.data);
 
-    console.log("BET_RESPONSE", response.data);
+      if (response.status !== 201) return toast.error(response.data.message);
 
-    if (response.status !== 201) return;
+      dispatch(updateBalance(balance - bet.stake));
 
-    socket.emit("CRASH:join_room", {
-      player: {
-        user: { username: auth.user?.username, photo: auth.user?.photo },
-      } as Player,
-      socketId: socket.id,
-    });
-
-    dispatch(updateBalance(balance - bet.stake));
-
-    toast.success("bet placed!");
+      toast.success("bet placed!");
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      console.error({ error });
+      toast.error(err.response?.data.message);
+    }
   };
 
   useEffect(() => {
@@ -117,21 +129,33 @@ export default function Crash() {
     >
       <td className="pl-1.5 rounded-l-sm text-left w-[20%]">
         <div className="flex gap-1.5 items-center">
-          <div className="w-6 h-6 sc-1nayyv1-1 kAmJof">
+          {/* <div className="w-6 h-6 sc-1nayyv1-1 kAmJof">
             <img
               draggable="false"
-              src="https://avatar.growdice.lol/0-4182-0-7922-4684-362-00-04-3370516479.png"
-              alt="Picture"
+              src={player.user?.photo}
+              alt={player.user?.username}
               className="w-full h-full sc-1nayyv1-0 kedPun"
             />
-          </div>
+          </div> */}
+          <figure className="w-8 rounded-full cursor-pointer sc-1nayyv1-1 avatar overflow-clip">
+            {player.user?.photo ? (
+              <img
+                draggable="false"
+                src={player.user?.photo}
+                alt="Picture"
+                className="sc-1nayyv1-0 kedPqA"
+              />
+            ) : (
+              <UserIcon className="w-full aspect-square p-2_s !stroke-white fill-white" />
+            )}
+          </figure>
           {player.user?.username}
         </div>
       </td>
       <td className="text-center">{player.multiplier || "-"}</td>
       <td className="text-center">
         <span className="flex items-center justify-center gap-1">
-          {player.bet || 0.65}
+          {player.stake || 0.65}
           <img
             src={SilverLockIcon}
             width="18"
@@ -158,10 +182,11 @@ export default function Crash() {
     // <div className="w-full  overflow-hidden h-full-app max-sm:max-h-[calc(var(--app-height)-var(--header-height)-var(--bottom-height))]">
     //   <div className="flex flex-col items-center flex-grow w-full h-full overflow-y-auto">
     <>
-      <div className="flex flex-col w-full gap-3 p-5 rounded-md bg-dark-800 ">
+      <div className="flex flex-col w-full gap-3 p-5 max-w-[80rem] mx-auto rounded-md bg-dark-800 ">
         <div className="grid grid-cols-6 gap-2">
-          {history.map((item) => (
+          {history.map((item, i) => (
             <button
+              key={i}
               className={clsx(
                 "flex items-center justify-center p-2 text-sm font-semibold rounded-sm bg-dark-700",
                 item > 1 ? "bg-green-400" : "",
@@ -219,7 +244,7 @@ export default function Crash() {
               id="crashRenderer"
             >
               <div className="relative top-0 left-0 flex items-center justify-center w-full overflow-hidden rounded-md pointer-events-none z-1 bg-dark-750">
-                <Chart />
+                <Chart gamePhase={gamePhase} setGamePhase={setGamePhase} />
               </div>
               <ProvablyFair />
             </div>
@@ -248,11 +273,11 @@ export default function Crash() {
                         placeholder="Bet"
                         className="outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
                         type="number"
-                        value={(player?.bet || 0.0).toFixed(2)}
+                        value={(player?.stake || 0.0).toFixed(2)}
                         onChange={(e) => {
                           setPlayer((prev) => ({
                             ...prev,
-                            bet: parseFloat(e.target.value),
+                            stake: parseFloat(e.target.value),
                           }));
 
                           setBet((prev) => ({
@@ -283,7 +308,7 @@ export default function Crash() {
                     onChange(e) {
                       setPlayer((prev) => ({
                         ...prev,
-                        bet: parseFloat(e.target.value),
+                        stake: parseFloat(e.target.value),
                       }));
 
                       setBet((prev) => ({
@@ -295,7 +320,7 @@ export default function Crash() {
                     className:
                       "outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium",
                     type: "number",
-                    value: (player?.bet || 0.0).toFixed(2),
+                    value: (player?.stake || 0.0).toFixed(2),
                   }}
                 />
               </div>

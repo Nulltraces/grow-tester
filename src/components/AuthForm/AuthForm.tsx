@@ -313,19 +313,18 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                   </fieldset>
                 </>
               )}
-              {route === "register" ||
-                (route === "reset-password" && (
-                  <fieldset className="gap-1 mt-3 w-full">
-                    <Button
-                      type="submit"
-                      disabled={isDisabled}
-                      loading={loading}
-                      className="capitalize mt-3 w-full"
-                    >
-                      {route.replace("-", " ")}
-                    </Button>
-                  </fieldset>
-                ))}
+              {(route === "register" || route === "reset-password") && (
+                <fieldset className="gap-1 mt-3 w-full">
+                  <Button
+                    type="submit"
+                    disabled={isDisabled}
+                    loading={loading}
+                    className="capitalize mt-3 w-full"
+                  >
+                    {route.replace("-", " ")}
+                  </Button>
+                </fieldset>
+              )}
             </>
 
             {/* sign in */}

@@ -60,11 +60,7 @@ export default function Root() {
 
   return (
     <>
-      <ToastContainer
-        position="bottom-right"
-        className="z-[100000000000000]"
-        stacked
-      />
+      <ToastContainer position="bottom-right" className="z-[100000000000000]" />
       {loading ? (
         <div className="flex flex-col h-screen gap-3_ bg-body">
           <div className="flex items-center justify-center w-full h-full">

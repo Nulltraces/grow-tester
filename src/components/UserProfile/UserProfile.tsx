@@ -5,6 +5,7 @@ import {
   HanCoinsIcon,
   StatsIcon,
   UserEditIcon,
+  UserIcon,
 } from "@/assets/svgs";
 import { AuthForm, Button, Spinner, Wallet } from "..";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
@@ -86,7 +87,6 @@ export default function UserProfile({
     }
   };
 
-  let message: "";
   const verifyEmail = async () => {
     console.log("USERNAME: ", username);
     setVerificationLoading(true);
@@ -139,13 +139,17 @@ export default function UserProfile({
         <>
           <BackgroundImage>
             <div className="mx-auto sm:mx-0 sm:w-24 sm:ml-4">
-              <img
-                src={user?.photo || User1}
-                className="object-cover w-full __user-photo__ h-[220px] sm:!h-auto"
-                style={{
-                  imageRendering: "pixelated",
-                }}
-              />
+              {user?.photo ? (
+                <img
+                  src={user?.photo}
+                  className="object-cover w-full __user-photo__ h-[220px] sm:!h-auto"
+                  style={{
+                    imageRendering: "pixelated",
+                  }}
+                />
+              ) : (
+                <UserIcon className="w-28 h-28 __user-photo__ aspect-square p-2_s !stroke-white fill-white" />
+              )}
             </div>
             <div className="h-full w-[96%] mx-auto sm:mx-0 sm:p-6 sm:pl-4 space-y-2">
               <div className="flex items-center justify-center gap-1 sm:justify-start">

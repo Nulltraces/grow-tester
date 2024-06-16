@@ -1,5 +1,4 @@
 import {
-  BlackJack,
   CoinFlip,
   Crash,
   Dice,
@@ -9,7 +8,6 @@ import {
   Plinko,
   Reme,
   Roulette,
-  Slots,
   Towers,
   Unboxing,
 } from "@/pages/games";

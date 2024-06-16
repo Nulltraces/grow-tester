@@ -143,7 +143,7 @@
 
 // export default Roulette;
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import "./RouletteWheel.css";
 import clsx from "clsx";
 import { FIst, LuckPLant, Wrench } from "@/assets/icons";
@@ -168,7 +168,12 @@ const cards = [
 
 const rows = Array(29).fill(cards).flat();
 
-function App({ outcome }: { outcome: number }) {
+type Props = {
+  outcome: number;
+  setRolling: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function App({ outcome, setRolling }: Props) {
   // const [outcome, setOutcome] = useState("");
   const wheelRef = useRef<HTMLDivElement>(null);
 
@@ -177,6 +182,9 @@ function App({ outcome }: { outcome: number }) {
   }, [outcome]);
 
   const spinWheel = (roll) => {
+    const startTime = Date.now();
+    setRolling(true);
+
     const wheel = wheelRef.current;
     const order = [0, 11, 5, 10, 6, 9, 7, 8, 1, 14, 2, 13, 3, 12, 4];
     const position = order.indexOf(parseInt(roll));
@@ -194,17 +202,43 @@ function App({ outcome }: { outcome: number }) {
       y: Math.floor(Math.random() * 20) / 100,
     };
 
+    // if (wheel) {
+    //   wheel.style.transitionTimingFunction = `cubic-bezier(0, ${object.x}, ${object.y}, 1)`;
+    //   wheel.style.transitionDuration = "6s";
+    //   wheel.style.transform = `translate3d(-${landingPosition}px, 0px, 0px)`;
+
+    //   setTimeout(() => {
+    //     wheel.style.transitionTimingFunction = "";
+    //     wheel.style.transitionDuration = "";
+    //     const resetTo = -(position * card + randomize);
+    //     wheel.style.transform = `translate3d(${resetTo}px, 0px, 0px)`;
+    //   }, 6 * 1000);
+    // }
+
+    const handleTransitionEnd = () => {
+      console.log("Wheel has stopped spinning");
+      if (wheel) {
+        wheel.removeEventListener("transitionend", handleTransitionEnd);
+
+        // Reset to the final position
+        const resetTo = -(position * card + randomize);
+        wheel.style.transitionTimingFunction = "";
+        wheel.style.transitionDuration = "";
+        wheel.style.transform = `translate3d(${resetTo}px, 0px, 0px)`;
+        setRolling(false);
+        const endTime = Date.now();
+
+        const diff = endTime - startTime;
+        console.log({ diff });
+      }
+    };
+
     if (wheel) {
+      wheel.addEventListener("transitionend", handleTransitionEnd);
+
       wheel.style.transitionTimingFunction = `cubic-bezier(0, ${object.x}, ${object.y}, 1)`;
       wheel.style.transitionDuration = "6s";
       wheel.style.transform = `translate3d(-${landingPosition}px, 0px, 0px)`;
-
-      setTimeout(() => {
-        wheel.style.transitionTimingFunction = "";
-        wheel.style.transitionDuration = "";
-        const resetTo = -(position * card + randomize);
-        wheel.style.transform = `translate3d(${resetTo}px, 0px, 0px)`;
-      }, 6 * 1000);
     }
   };
 

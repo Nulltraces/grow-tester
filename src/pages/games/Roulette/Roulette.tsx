@@ -137,8 +137,8 @@ export default function Roulette() {
 
   return (
     <>
-      <div className="flex flex-col w-full">
-        <div className="min-h-[50px] bg-dark-800  flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700"></div>
+      <div className="flex flex-col w-full max-w-[80rem] mx-auto">
+        <div className="min-h-[50px] bg-dark-800 flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700"></div>
         <div className="flex flex-col-reverse w-full h-full">
           <div className="flex flex-col justify-start w-full bg-dark-800 max-md:w-full">
             <div
@@ -154,32 +154,6 @@ export default function Roulette() {
                       <span className="text-sm font-medium text-white">
                         Bet Amount
                       </span>
-                      {/* <div className="bg-dark-700 h-[38px] text-gray-400 rounded-sm py-0.5 border transition-colors px-2 flex items-center gap-1.5 w-full border-dark-650">
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={SilverLockIcon}
-                            width="18"
-                            height="18"
-                            className="sc-x7t9ms-0 grLtgJ"
-                          />
-                        </div>
-                        <input
-                          placeholder="Bet"
-                          className="bg-transparent outline-none border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
-                          type="text"
-                          value="0.1"
-                        />
-                        <div className="flex items-center gap-2">
-                          <div className="flex gap-2.5 font-semibold">
-                            <button className="transition-colors hover:text-white">
-                              1/2
-                            </button>
-                            <button className="transition-colors hover:text-white">
-                              2×
-                            </button>
-                          </div>
-                        </div>
-                      </div> */}
                       <BetInput
                         inputProps={{
                           onChange(e) {
@@ -203,18 +177,6 @@ export default function Roulette() {
                         <RouletteMarble color={ColorChoice.red} />
                         <span>Win 2×</span>
                       </div>
-                      {/* <div className="flex justify-center items-center font-medium gap-1.5">
-                        <span>Total bet:</span>
-                        <span className="flex items-center gap-1">
-                          0.00
-                          <img
-                            src={SilverLockIcon}
-                            width="18"
-                            height="18"
-                            className="sc-x7t9ms-0 dnLnNz"
-                          />
-                        </span>
-                      </div> */}
                       <TotalBets players={redPlayers} />
                       <Button
                         aria-disabled="true"
@@ -244,18 +206,6 @@ export default function Roulette() {
                         <RouletteMarble color={ColorChoice.green} />
                         <span>Win 14×</span>
                       </div>
-                      {/* <div className="flex justify-center items-center font-medium gap-1.5">
-                        <span>Total bet:</span>
-                        <span className="flex items-center gap-1">
-                          0.00
-                          <img
-                            src={SilverLockIcon}
-                            width="18"
-                            height="18"
-                            className="sc-x7t9ms-0 dnLnNz"
-                          />
-                        </span>
-                      </div> */}
                       <TotalBets players={greenPlayers} />
                       <Button
                         aria-disabled="true"
@@ -285,18 +235,6 @@ export default function Roulette() {
                         <RouletteMarble color={ColorChoice.black} />
                         <span>Win 2×</span>
                       </div>
-                      {/* <div className="flex justify-center items-center font-medium gap-1.5">
-                        <span>Total bet:</span>
-                        <span className="flex items-center gap-1">
-                          0.00
-                          <img
-                            src={SilverLockIcon}
-                            width="18"
-                            height="18"
-                            className="sc-x7t9ms-0 dnLnNz"
-                          />
-                        </span>
-                      </div> */}
                       <TotalBets players={blackPlayers} />
                       <Button
                         aria-disabled="true"
@@ -332,7 +270,8 @@ export default function Roulette() {
           <div className="overflow-hidden bg-dark-850 w-full h-full min-h-[400px] max-sm:min-h-[300px] flex justify-center relative">
             <div className="overflow-hidden">
               <div className="m-[1rem] overflow-hidden_ relative min-h-[460px] flex flex-col justify-center">
-                <div className="absolute bottom-0 left-0 ">
+                <div className="absolute h-full w-[1px] left-[-1px] z-[2] shadow-dark-850 shadow-[1px_0_30px_60px_var(--tw-shadow)]" />
+                <div className="absolute z-10 bottom-0 left-0 ">
                   <button className="transition-colors hover:text-white font-semibold text-sm flex items-center gap-0.5">
                     <svg
                       stroke="currentColor"
@@ -348,22 +287,11 @@ export default function Roulette() {
                     <span>Provably Fair</span>
                   </button>
                 </div>
-                <div className="absolute top-0 left-0 flex justify-between w-full gap-2 font-semibold max-sm:flex-col">
+                <div className="absolute z-10 top-0 left-0 flex justify-between w-full gap-2 font-semibold max-sm:flex-col">
                   <div className="flex gap-1.5">
                     {lastHundredRolls.slice(0, 10).map((roll, i) => (
                       <RouletteMarble color={roll} key={i} />
                     ))}
-
-                    {/* <RouletteMarble color={ColorChoice.red} />
-                    <RouletteMarble color={ColorChoice.black} />
-                    <RouletteMarble color={ColorChoice.black} />
-                    <RouletteMarble color={ColorChoice.red} />
-                    <RouletteMarble color={ColorChoice.red} />
-                    <RouletteMarble color={ColorChoice.red} />
-                    <RouletteMarble color={ColorChoice.red} />
-                    <RouletteMarble color={ColorChoice.red} />
-                    <RouletteMarble color={ColorChoice.black} />
-                    <RouletteMarble color={ColorChoice.red} /> */}
                   </div>
                   <div className="flex items-center gap-2 text-gray-400">
                     <span className="text-sm">Last 100:</span>
@@ -403,9 +331,7 @@ export default function Roulette() {
                   <RouletteWheel outcome={outcome} setRolling={setRolling} />
                 </div>
                 {/* <Another /> */}
-                {/* <div className="absolute h-full w-[1px] right-[-1px] z-[2] shadow-dark-850 shadow-[1px_0_30px_60px_var(--tw-shadow)]">
-                  FR AN
-                </div> */}
+                <div className="absolute h-full w-[1px] right-[-1px] z-[2] shadow-dark-850 shadow-[1px_0_30px_60px_var(--tw-shadow)]" />
               </div>
             </div>
           </div>

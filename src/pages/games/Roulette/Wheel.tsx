@@ -245,7 +245,7 @@ function App({ outcome, setRolling }: Props) {
   return (
     <div className="App">
       <div className="roulette-wrapper">
-        <div className="selector"></div>
+        <div className="w-[4px] bg-white h-full -translate-x-1/2 absolute z-10 " />
         <div className="wheel" ref={wheelRef}>
           {rows.map((_, index) => {
             return (
@@ -271,7 +271,8 @@ function App({ outcome, setRolling }: Props) {
                               ? LuckPLant
                               : FIst
                         }
-                        className="w-full h-full opacity-60"
+                        style={{ imageRendering: "pixelated" }}
+                        className="w-[80%] aspect-square opacity-60"
                       />
                     </div>
                   );

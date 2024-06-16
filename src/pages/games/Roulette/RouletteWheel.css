@@ -45,15 +45,15 @@ body {
 }
 
 .card.red {
-  background: #f95146;
+  background: #dc2626;
 }
 
 .card.black {
-  background: #2d3035;
+  background: #18181b;
 }
 
 .card.green {
-  background: #00c74d;
+  background: #16a34a;
 }
 
 * {

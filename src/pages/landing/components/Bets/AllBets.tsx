@@ -85,7 +85,7 @@ export default function AllBets() {
                     data.profit > 0 && "text-green-500",
                   )}
                 >
-                  {data.profit.toFixed(2)}
+                  {data?.profit?.toFixed(2)}
                   <img
                     src={SilverLockIcon}
                     width="18"

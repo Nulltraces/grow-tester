@@ -116,7 +116,7 @@ export default function Modal() {
                         {children ? (
                           children
                         ) : (
-                          <div className="w-full justify-center overflow-y-auto !py-8 sm:pb-0 overscroll-contain items-center sm:w-[60vw] lg:w-[30rem] mx-auto px-5">
+                          <div className="w-full justify-center overflow-y-auto !py-8 sm:pb-0 overscroll-none items-center sm:w-[60vw] lg:w-[30rem] mx-auto px-5">
                             <div>
                               {/* <figure
                                 className={clsx(

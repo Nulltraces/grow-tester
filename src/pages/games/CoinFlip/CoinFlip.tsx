@@ -1,9 +1,7 @@
 import { Heads, SilverLockIcon, Tails } from "@/assets/icons";
 import { AnimateInOut, BetInput, Button } from "@/components";
 import "./coinflip.css";
-import { Bets } from "@/pages/landing/components";
-import { useCallback, useEffect, useRef, useState } from "react";
-import Coin from "./Coin";
+import { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { updateBalance } from "@/store/slices/wallet";
@@ -37,7 +35,7 @@ export default function CoinFlip() {
     gameType: GameType.COINFLIP as Bet["gameType"],
   });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [, setMessage] = useState("");
   const [result, setResult] = useState<typeof bet.choice | null>(null);
   const [round, setRound] = useState(0);
   const [gameState, setGameState] = useState<GameState>(GameState.over);

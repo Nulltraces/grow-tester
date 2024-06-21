@@ -1,5 +1,6 @@
 import { SilverLockIcon } from "@/assets/icons";
 import { UserIcon } from "@/assets/svgs";
+import { viewUserProfile } from "@/utils/actions";
 import socket from "@/utils/constants";
 import { useEffect, useState } from "react";
 
@@ -89,7 +90,10 @@ export default function Leaderboard() {
               {leaderboardData.map((data, i) => (
                 <tr key={data.username} className="bg-dark-800">
                   <td className=" rounded-l-sm text-end p-2.5">{i + 1}</td>
-                  <td className="text-end">
+                  <td
+                    onClick={() => viewUserProfile(data.username)}
+                    className="text-end"
+                  >
                     <div className="flex gap-1.5 px-2 items-center text-white cursor-pointer">
                       <figure className="w-8 rounded-full cursor-pointer sc-1nayyv1-1 avatar overflow-clip">
                         {data.photo ? (

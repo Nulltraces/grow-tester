@@ -362,7 +362,9 @@ export default function CrashChart({ gamePhase, setGamePhase }: Props) {
           <p>Starting in... {betPhaseTime}</p>
         ) : (
           <div className={clsx("flex", gameStopped && "text-red-800")}>
-            <p>{liveMultiplier?.toFixed(2)}</p>
+            <p>
+              {gameStopped && "Crashed @"} {liveMultiplier?.toFixed(2)}
+            </p>
             <span className="text-6xl">×</span>
           </div>
         )}

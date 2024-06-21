@@ -1,10 +1,9 @@
 import axiosInstance from "@/api/axios";
 import { CurrencyNote, MenuHorizontalDotsIcon, UserIcon } from "@/assets/svgs";
 import User1 from "@/assets/users/user-1.png";
-import { AnimateInOut, UserProfile } from "@/components";
+import { AnimateInOut } from "@/components";
 import { useAppSelector } from "@/hooks/store";
-import store from "@/store";
-import { triggerModal } from "@/store/slices/modal";
+import { viewUserProfile } from "@/utils/actions";
 import socket from "@/utils/constants";
 import { Menu } from "@headlessui/react";
 import { AxiosResponse } from "axios";
@@ -20,15 +19,6 @@ type MessageType = {
   };
   content: string;
   date: Date;
-};
-
-const viewUserProfile = (username: string) => {
-  store.dispatch(
-    triggerModal({
-      children: <UserProfile username={username} />,
-      className: "h-[80%]",
-    }),
-  );
 };
 
 const messages_: MessageType[] = Array(15)

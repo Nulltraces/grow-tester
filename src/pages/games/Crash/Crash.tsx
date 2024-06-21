@@ -188,8 +188,8 @@ export default function Crash() {
             <button
               key={i}
               className={clsx(
-                "flex items-center justify-center p-2 text-sm font-semibold rounded-sm bg-dark-700",
-                item > 1 ? "bg-green-400" : "",
+                "flex items-center justify-center p-2 text-md font-semibold rounded-sm bg-dark-700",
+                item > 1 ? "bg-[#21d833]" : "",
               )}
             >
               {item}×

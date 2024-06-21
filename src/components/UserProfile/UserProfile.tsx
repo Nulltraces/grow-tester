@@ -8,8 +8,7 @@ import {
   UserIcon,
 } from "@/assets/svgs";
 import { AuthForm, Button, Spinner, Wallet } from "..";
-import { PropsWithChildren, useEffect, useRef, useState } from "react";
-import User1 from "@/assets/users/user-1.png";
+import { PropsWithChildren, useEffect, useState } from "react";
 import "./userprofile.css";
 import { SilverLockIcon } from "@/assets/icons";
 import api from "@/api/axios";

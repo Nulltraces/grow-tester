@@ -67,17 +67,17 @@ export default function Header() {
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
 
-  const [_, setSearchParams] = useSearchParams();
+  const setSearchParams = useSearchParams()[1];
   // const [user, setUser] = useState<User | null>(null);
 
   // useEffect(() => {
   //   let isMounted = true;
-  //   const controler = new AbortController();
+  //   const controller = new AbortController();
 
   //   (async () => {
   //     try {
   //       const response = await api.get("/user", {
-  //         signal: controler.signal,
+  //         signal: controller.signal,
   //       });
 
   //       console.log(response.data);
@@ -89,7 +89,7 @@ export default function Header() {
 
   //   return () => {
   //     isMounted = false;
-  //     controler.abort();
+  //     controller.abort();
   //   };
   // }, []);
 
@@ -453,7 +453,7 @@ function Balance() {
       toast(data.message);
       dispatch(updateBalance(walletBalance + data.amount));
     });
-  }, []);
+  }, [dispatch]);
 
   const [loading, setLoading] = useState(false);
 
@@ -471,7 +471,7 @@ function Balance() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="flex items-center h-full gap-4 pl-2 font-semibold rounded-l bg-dark-750 max-md:absolute max-md:left-1/2 max-md:-translate-x-1/2 max-h-10">
@@ -488,7 +488,9 @@ function Balance() {
         <span className="">
           {loading
             ? "..."
-            : (currency === "world-lock" ? balance : balance / 100)?.toFixed(2)}
+            : (currency === "diamond-lock" ? balance : balance / 100)?.toFixed(
+                2,
+              )}
         </span>
       </button>
       <Button

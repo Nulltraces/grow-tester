@@ -1,83 +1,107 @@
 import api from "@/api/axios";
 import { SilverLockIcon } from "@/assets/icons";
 import { XClose } from "@/assets/svgs";
-import { BetInput, Button, ProvablyFair } from "@/components";
+import { AnimatedList, BetInput, Button, ProvablyFair } from "@/components";
 import { GameType } from "@/game-types";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
-import { Bets } from "@/pages/landing/components";
 import { updateBalance } from "@/store/slices/wallet";
 import socket from "@/utils/constants";
+import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 
-let betID = "";
+enum GameStatus {
+  win = "win",
+  lose = "lose",
+}
+let savedStatus: GameStatus | null = null;
 export default function Limbo() {
+  const auth = useAppSelector((state) => state.auth);
+  const { balance } = useAppSelector((state) => state.wallet);
   const [bet, setBet] = useState<Partial<Bet>>({
     stake: 0,
     gameType: GameType.LIMBO as Bet["gameType"],
     multiplier: 1,
     profit: 0,
   });
-  const [betId, setBetId] = useState("");
   const [result, setResult] = useState<number | null>(null);
-  const [message, setMessage] = useState<string>("");
   const [gameRunning, setGameRunning] = useState(false);
-  const [gameWin, setGameWin] = useState<boolean>(false); // Track game win
-  const auth = useAppSelector((state) => state.auth);
-  const { balance } = useAppSelector((state) => state.wallet);
+  const [gameStatus, setGameStatus] = useState<GameStatus | null>(null); // Track game win
+  const [value, setValue] = useState(0);
+  const duration = useState(1000)[0];
+
+  const [historyItems, setHistoryItems] = useState<
+    { id: string; text: string }[]
+  >([]);
+
+  const addHistoryItem = (item: string) => {
+    if (item.trim()) {
+      setHistoryItems([{ id: uuidv4(), text: item }, ...historyItems]);
+    }
+  };
 
   const dispatch = useAppDispatch();
 
   // const [balance, dispatch(updateBalance] = useState<number>(0);
   const [loading, setLoading] = useState(false);
 
-  const handleBetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBet((prev) => ({ ...prev, stake: Number(e.target.value) }));
-  };
-
-  const handleMultiplierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBet((prev) => ({ ...prev, multiplier: Number(e.target.value) }));
-  };
+  //   const handleBetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     setBet((prev) => ({ ...prev, stake: Number(e.target.value) }));
+  //   };
 
   useEffect(() => {
-    console.log({ betId, betID });
-  }, [betId, betID]);
-
-  const initializeGame = () => {
-    if (!bet.stake) return toast.error("Invalid bet input");
-
-    const randomMultiplier = Math.random() * 10;
-    setResult(randomMultiplier);
-
-    if (randomMultiplier > bet.multiplier!) {
-      const winnings = bet?.stake * bet.multiplier!;
-      setBet((prev) => ({ ...prev, profit: winnings }));
-      dispatch(updateBalance(balance + winnings - bet?.stake));
-      setMessage(
-        `You win! Multiplier: ${randomMultiplier?.toFixed(2)}. Winnings: ${winnings?.toFixed(2)}`,
-      );
-      setGameWin(true);
-    } else {
-      setBet((prev) => ({ ...prev, profit: 0 }));
-      dispatch(updateBalance(balance - bet?.stake));
-      setMessage(`You lose. Multiplier: ${randomMultiplier?.toFixed(2)}`);
-      setGameWin(false);
+    if (!historyItems.length) {
+      socket.emit("LIMBO:get_multipliers", auth.user?.username);
     }
-    endGame();
-    setGameRunning(false);
-  };
 
-  const playGame = async () => {
+    socket.on("LIMBO:multipliers", (data) => {
+      if (!data) return;
+      setHistoryItems(data);
+    });
+
+    socket.on(
+      "LIMBO:result",
+      ({
+        profit,
+        result,
+        status,
+      }: {
+        result: number;
+        status: GameStatus;
+        profit: number;
+      }) => {
+        console.log("RESULT: ", {
+          profit,
+          result,
+          status,
+        });
+
+        setResult(result);
+
+        savedStatus = status; //   setGameStatus(GameStatus.win);
+        setBet((prev) => ({ ...prev, profit: profit }));
+        // if (status === GameStatus.win) {
+        // } else {
+        //   setBet((prev) => ({ ...prev, profit: 0 }));
+        //   setGameStatus(GameStatus.lose);
+        // }
+      },
+    );
+  }, [auth.user?.username, historyItems.length]);
+
+  const placeBet = async () => {
     if (!bet.stake) return toast.error("Invalid bet input");
+
+    console.log("BET: ", { bet });
 
     if (bet?.stake > balance) {
-      setMessage("Insufficient balance");
-
       return toast.error("Insufficient balance");
     }
 
     try {
-      const response = await api.post("/bet/quick", {
+      setLoading(true);
+      const response = await api.post("/bet", {
         ...bet,
         socketId: socket.id,
       });
@@ -85,51 +109,64 @@ export default function Limbo() {
       const data = response.data;
 
       if (!data.bet) return toast.error("Could not place bet");
-      console.log("BET_ID: ", data.bet?._id);
-      setBetId(data?.bet?._id);
-
-      betID = data?.bet?._id;
 
       dispatch(updateBalance(balance - bet.stake!));
 
-      initializeGame();
-      setGameRunning(true);
       toast.success("Bet placed");
     } catch (error) {
       console.error("PLACE_BET:LIMBO", error);
       return toast.error("An error occurred");
-    }
-  };
-
-  const endGame = async () => {
-    console.log({ betId, profit: bet.profit });
-    try {
-      const response = await api.post("/bet/result", {
-        ...bet,
-        id: betID,
-      });
-      const data = response.data;
-      // dispatch(updateBalance(balance + (gameWin ? bet.profit! : 0)));
-    } catch (error) {
-      console.error("END_GAME: ", { error });
+    } finally {
+      setLoading(false);
     }
   };
 
   const resetGame = () => {
-    setMessage("");
     setGameRunning(false);
   };
+
+  useEffect(() => {
+    if (!result) return;
+    setGameStatus(null);
+    const start = 0;
+    const increment = result / (duration / 10); // Determines how much to increment each interval
+    let currentValue = start;
+    const stepTime = Math.abs(Math.floor(10)); // Update every 10ms
+
+    const timer = setInterval(() => {
+      currentValue += increment;
+      if (currentValue >= result) {
+        currentValue = result;
+        clearInterval(timer);
+        if (bet.profit !== undefined && bet.multiplier) {
+          setGameStatus(savedStatus);
+          dispatch(updateBalance(balance + bet.profit));
+          addHistoryItem(
+            (savedStatus === GameStatus.win ? bet.multiplier : 0).toFixed(2),
+          );
+        }
+      }
+      setValue(currentValue);
+    }, stepTime);
+
+    return () => clearInterval(timer); // Cleanup interval on component unmount
+  }, [result]);
+
+  useEffect(() => {
+    console.log({ gameStatus });
+  }, [gameStatus]);
 
   return (
     <>
       <div className="flex flex-col w-full">
-        <div className=" min-h-[50px] bg-dark-800 flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700">
-          <div className="w-full h-full flex gap-1.5 p-2  justify-start overflow-hidden relative shadow-dark-800 items-center">
+        <div className="h-[50px] bg-dark-800 rounded-t-md border-b border-gray-700">
+          <AnimatedList items={historyItems} />
+          {/* <div className="w-full h-full flex gap-1.5 p-2  justify-start overflow-hidden relative shadow-dark-800 items-center">
             <div
               className="w-[6px] bg-dark-800 h-full absolute right-0 top-0 z-[5] "
               style={{ boxShadow: "0 0 30px 40px var(--tw-shadow-color)" }}
             ></div>
-          </div>
+          </div> */}
         </div>
         <div className="flex flex-row w-full h-full max-md:flex-col-reverse">
           <div className="bg-dark-800 flex justify-start flex-col max-md:w-full w-[400px]">
@@ -163,18 +200,35 @@ export default function Limbo() {
                   <span className="text-sm font-medium text-white">
                     Auto Cashout
                   </span>
-                  <div className="bg-dark-700 h-[38px] text-gray-400 rounded-sm py-0.5 border transition-colors px-2 flex items-center gap-1.5 w-full border-dark-650">
-                    <div className="flex items-center gap-2">
-                      <XClose className="!fill-current" />
-                    </div>
-                    <input
+                  {/* <div className="bg-dark-700 h-[38px] text-gray-400 rounded-sm py-0.5 border transition-colors px-2 flex items-center gap-1.5 w-full border-dark-650"> */}
+                  {/* <input
                       className="bg-transparent outline-none border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
                       type="text"
-                      value={bet.multiplier}
+                      value={
+                        !isNaN(bet.multiplier as number) ? bet.multiplier : 2
+                      }
                       onChange={handleMultiplierChange}
-                    />
-                    <div className="flex items-center gap-2">
-                      {/* <div className="flex gap-2.5 font-semibold">
+                    /> */}
+                  <BetInput
+                    leading={
+                      <div className="flex items-center gap-2">
+                        <XClose className="!fill-current" />
+                      </div>
+                    }
+                    trailing={<></>}
+                    inputProps={{
+                      value: bet?.multiplier,
+                      onChange(e) {
+                        console.log("MULTIPLIER: ", parseFloat(e.target.value));
+                        setBet((prev) => ({
+                          ...prev,
+                          multiplier: parseFloat(e.target.value),
+                        }));
+                      },
+                    }}
+                  />
+                  <div className="flex items-center gap-2">
+                    {/* <div className="flex gap-2.5 font-semibold">
                         <button className="transition-colors hover:text-white">
                           1/2
                         </button>
@@ -182,11 +236,11 @@ export default function Limbo() {
                           2×
                         </button>
                       </div> */}
-                    </div>
                   </div>
+                  {/* </div> */}
                 </div>
                 <Button
-                  onClick={async () => await playGame()}
+                  onClick={async () => await placeBet()}
                   loading={loading}
                   aria-disabled="true"
                   className="text-sm py-2 w-full rounded-sm sc-1xm9mse-0 fzZXbl text-nowrap"
@@ -199,8 +253,17 @@ export default function Limbo() {
           </div>
           <div className="overflow-hidden bg-dark-850 w-full h-full min-h-[400px] max-sm:min-h-[300px] flex justify-center relative">
             <div className="flex items-center justify-center md:min-h-[500px]">
-              <span className="font-semibold text-white select-none text-8xl">
-                {result ? result?.toFixed(2) : "1.00"}×
+              <span
+                className={clsx(
+                  "font-semibold select-none text-8xl",
+                  gameStatus === GameStatus.win
+                    ? "text-green-600"
+                    : gameStatus === GameStatus.lose
+                      ? "text-rose-700"
+                      : "text-white",
+                )}
+              >
+                {value ? value?.toFixed(2) : "1.00"}×
               </span>
             </div>
           </div>

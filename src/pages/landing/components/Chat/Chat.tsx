@@ -65,7 +65,7 @@ export default function DashboardSideNavigation() {
     // return () => {
     //   socket.off("join_chat");
     // };
-  }, []);
+  }, [auth.user?.username]);
 
   const NavOverlay = () => {
     return (
@@ -94,7 +94,7 @@ export default function DashboardSideNavigation() {
           return (
             <div
               className={clsx(
-                "w-full sm:w-[320px] fixed_ md:static_ z-[30] bg-[#15171e] h-full lg:block_ md:translate-x-0_ transition-all duration-150 flex flex-col overflow-y-auto_ border-r-2 border-gray-700/50",
+                "w-full sm:w-[320px] fixed_ md:static_ z-[30] bg-[#15171e] h-full lg:block_ md:translate-x-0_ transition-all duration-300 flex flex-col overflow-y-auto_ border-r-2 border-gray-700/50",
                 hideNav && "-translate-x-full fixed",
               )}
             >

@@ -12,6 +12,13 @@ import { toast } from "react-toastify";
 import socket from "@/utils/constants";
 import api from "@/api/axios";
 
+enum GameState {
+  over = "over",
+  continue = "continue",
+  flipping = "flipping",
+  bet = "bet",
+}
+
 let walletBalance = 0;
 export default function CoinFlip() {
   const auth = useAppSelector((state) => state.auth);
@@ -30,140 +37,135 @@ export default function CoinFlip() {
     gameType: GameType.COINFLIP as Bet["gameType"],
   });
   const [loading, setLoading] = useState(false);
-  const [profit, setProfit] = useState(0);
   const [message, setMessage] = useState("");
-
-  const [gameRunning, setGameRunning] = useState(false);
   const [result, setResult] = useState<typeof bet.choice | null>(null);
-  const [roundComplete, setRoundComplete] = useState(false);
   const [round, setRound] = useState(0);
-  const [multipliers, setMultipliers] = useState<number[]>([]);
+  const [gameState, setGameState] = useState<GameState>(GameState.over);
+  const [multipliers, setMultipliers] = useState<
+    { value: number; revealed: boolean; choice: typeof bet.choice }[]
+  >([]);
   const [currentMultiplier, setCurrentMultiplier] = useState<number | null>(
     null,
   );
 
-  const [continueGame, setContinueGame] = useState(false);
+  const [showProfit, setShowProfit] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    console.log("COMPARE_RESULT: ", result, bet.choice);
-  }, [result]);
-
-  useEffect(() => {
-    // setBet(prev=>{})
-    console.log("SOCKET_ID: ", socket.id);
-  }, [socket.id]);
-
-  useEffect(() => {
+  const resetMultipliers = useCallback(() => {
     socket.emit("COINFLIP:get_multipliers");
+  }, []);
+
+  const handleCashOut = () => {
+    continueFlip(false);
+    if (bet.profit) dispatch(updateBalance(walletBalance + bet.profit));
+    resetGame();
+  };
+
+  const updateMultipliers = (round) => {
+    console.log({ round });
+    setMultipliers((prevMultipliers) =>
+      prevMultipliers.map((multiplier, index) =>
+        round - 1 === index
+          ? { ...multiplier, revealed: true, choice: bet.choice }
+          : multiplier,
+      ),
+    );
+  };
+
+  const resetGame = useCallback(() => {
+    // setBet((prev) => ({ ...prev, stake: 0, choice: undefined }));
+    // setGameState(GameState.over);
+    setShowProfit(null);
+    resetMultipliers();
+    setCurrentMultiplier(multipliers[0]?.value);
+    setLoading(false);
+    setMessage("");
+    setRound(0);
+  }, []);
+
+  useEffect(() => {
+    // if (gameState === GameState.over) {
+    //   resetMultipliers();
+    // }
 
     socket.on("COINFLIP:multipliers", (data) => {
-      setMultipliers(data);
+      if (gameState !== GameState.over) return;
+      const mtpliers: typeof multipliers = data.map((multiplier) => ({
+        choice: "H",
+        revealed: false,
+        value: multiplier,
+      }));
+      console.log({ mtpliers });
+      setMultipliers(mtpliers);
       setCurrentMultiplier(data[0]);
     });
 
     socket.on("COINFLIP:result", (data) => {
-      console.log({ RESULT: data });
-      setResult(data.result);
+      if (!bet.choice) return;
+      console.log("RESULT: ", { data, bet });
       setLoading(false);
-      // toast(data);
+      setResult(data.result);
+      setRound(data.round);
+      setBet((prev) => ({ ...prev, profit: data.profit }));
+      setMessage(data.message);
+      setCurrentMultiplier(data.currentMultiplier);
+      updateMultipliers(data.round);
+
+      if (data.result === bet.choice) {
+        setGameState(GameState.continue);
+      } else {
+        setShowProfit(false);
+        setGameState(GameState.bet);
+      }
     });
 
     socket.on("COINFLIP:error", (data) => {
       setResult(data);
       setLoading(false);
       toast(data);
+      setGameState(GameState.over);
     });
+  }, [bet]);
 
-    socket.on(
-      "COINFLIP:game_over",
-      (data: {
-        profit: number;
-        message: string;
-        result: typeof bet.choice;
-      }) => {
-        console.log("GAME_OVER", data);
-        setRoundComplete(true);
-        setMessage(data.message);
-        setLoading(false);
-        setResult(data.result);
-        setContinueGame(false);
-        // setTimeout(() => {
-        //   dispatch(updateBalance(walletBalance + data.profit));
-        //   setRoundComplete(false);
-        // }, 3000);
-      },
-    );
-
-    socket.on(
-      "COINFLIP:continue_prompt",
-      (data: {
-        currentMultiplier: number;
-        result: typeof bet.choice;
-        profit: number;
-        message: string;
-        round: number;
-      }) => {
-        console.log("CONTINUE_PROMPT", data);
-        setLoading(false);
-        setRoundComplete(true);
-        setRound(data.round);
-        setResult(data.result);
-        setProfit(data.profit);
-        setMessage(data.message);
-        setCurrentMultiplier(data.currentMultiplier);
-        setContinueGame(false);
-        console.log({ currentMultiplier: data.currentMultiplier });
-      },
-    );
-  }, []);
-
-  useEffect(() => {
-    console.log({ roundComplete });
-  }, [roundComplete]);
-
-  const handleResult = () => {
-    setRoundComplete(false);
-
-    const continueGame = () => {
-      setContinueGame(true);
-    };
-
-    const endGame = () => {
-      socket.emit("COINFLIP:continue_response", false);
-      resetGame();
-    };
-
-    return { continueGame, endGame };
+  const continueFlip = (confirm: boolean) => {
+    socket.emit("COINFLIP:continue_response", confirm, socket.id, bet.choice);
   };
 
-  const makeChoice = (side: "H" | "T") => {
-    setBet((prev) => ({ ...prev, choice: side }));
-  };
-
-  const placeBet = async () => {
-    if (!bet.stake || bet.stake < 1 || isNaN(bet.stake) || bet.stake <= 0)
+  const initializeBet = () => {
+    if (!bet.stake || bet.stake <= 0 || isNaN(bet.stake) || bet.stake <= 0)
       return toast.error("Invalid input. Please enter a valid bet amount.");
     if (bet.stake > balance) return toast.error("Insufficient Balance.");
+    resetGame();
+    setGameState(GameState.bet);
+  };
 
-    if (!bet.choice) return toast.error("please select either head or tail");
+  const placeBet = async (side: "H" | "T") => {
+    if (!bet.stake || bet.stake <= 0 || isNaN(bet.stake) || bet.stake <= 0)
+      return toast.error("Invalid input. Please enter a valid bet amount.");
+    if (bet.stake > balance) return toast.error("Insufficient Balance.");
+    if (!side) return toast.error("please select either head or tail");
+
+    if (![GameState.bet, GameState.continue].includes(gameState))
+      return toast.error("Place bet and amount first");
+
     setLoading(true);
 
+    setBet((prev) => ({ ...prev, choice: side }));
+
     try {
-      if (continueGame) {
+      if (gameState === GameState.continue) {
         console.log("CONTINUE!");
-        return socket.emit(
-          "COINFLIP:continue_response",
-          true,
-          socket.id,
-          bet.choice,
-        );
+        return continueFlip(true);
       }
 
       console.log("PLACE_BET: ", bet, socket.id);
       setLoading(true);
-      setGameRunning(true);
+      setGameState(GameState.flipping);
 
-      const response = await api.post("/bet", { ...bet, socketId: socket.id });
+      const response = await api.post("/bet", {
+        ...bet,
+        socketId: socket.id,
+        choice: side,
+      });
 
       console.log("BET_RESPONSE", response.data);
 
@@ -182,27 +184,17 @@ export default function CoinFlip() {
     } catch (error) {
       toast.error("Could not place bet!");
       setLoading(false);
-      setGameRunning(false);
+      setGameState(GameState.over);
     }
   };
 
-  const handleCashOut = () => {
-    updateBalance(0);
-  };
-
-  const resetGame = () => {
-    setBet((prev) => ({ ...prev, stake: 0, choice: undefined }));
-    setGameRunning(false);
-    setCurrentMultiplier(multipliers[0]);
-    setLoading(false);
-    setMessage("");
-    setRoundComplete(false);
-    setRound(0);
-  };
+  useEffect(() => {
+    console.log({ round });
+  }, [round]);
 
   return (
     <>
-      <div className="flex_ flex-col_ w-full">
+      <div className="flex_ flex-col_ w-full max-w-[80rem] mx-auto">
         <div className=" min-h-[50px] bg-dark-800 flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700">
           <div className="w-full h-full flex gap-1.5 p-2  justify-start overflow-hidden relative shadow-dark-800 items-center">
             <div
@@ -217,13 +209,13 @@ export default function CoinFlip() {
               <div
                 className={clsx(
                   "relative flex flex-col gap-2 text-sm",
-                  (!auth.isAuthenticated || (gameRunning && !continueGame)) &&
+                  (!auth.isAuthenticated || gameState === GameState.flipping) &&
                     "opacity-40",
                 )}
               >
                 {!auth.isAuthenticated ||
-                  ((loading || gameRunning) && !continueGame && (
-                    <div className="absolute top-0 left-0 w-full h-full cursor-not-allowed z-5" />
+                  ((loading || gameState === GameState.flipping) && (
+                    <div className="absolute top-0 left-0 w-full h-full cursor-not-allowed z-50" />
                   ))}
 
                 <div className="flex flex-col gap-1">
@@ -239,7 +231,7 @@ export default function CoinFlip() {
                           stake: parseFloat(e.target.value),
                         }));
                       },
-                      value: bet.stake || 0,
+                      value: bet.stake,
                     }}
                   />
                 </div>
@@ -247,9 +239,16 @@ export default function CoinFlip() {
                   <span>Coin Side</span>
                   <div className="flex gap-2">
                     <Button
-                      disabled={loading}
+                      disabled={
+                        showProfit === false
+                          ? true
+                          : loading ||
+                            ![GameState.bet, GameState.continue].includes(
+                              gameState,
+                            )
+                      }
                       type="button"
-                      onClick={() => makeChoice("H")}
+                      onClick={() => placeBet("H")}
                       aria-disabled="true"
                       className={clsx(
                         "sc-1xm9mse-0 fzZXbl text-sm rounded-sm text-nowrap w-full max-h-[40px]",
@@ -264,9 +263,16 @@ export default function CoinFlip() {
                       />
                     </Button>
                     <Button
-                      disabled={loading}
+                      disabled={
+                        showProfit === false
+                          ? true
+                          : loading ||
+                            ![GameState.bet, GameState.continue].includes(
+                              gameState,
+                            )
+                      }
                       type="button"
-                      onClick={() => makeChoice("T")}
+                      onClick={() => placeBet("T")}
                       aria-disabled="true"
                       className={clsx(
                         "sc-1xm9mse-0 fzZXbl text-sm rounded-sm text-nowrap w-full max-h-[40px]",
@@ -281,54 +287,48 @@ export default function CoinFlip() {
                       />
                     </Button>
                   </div>
+                  <AnimateInOut
+                    show={
+                      showProfit === false
+                        ? false
+                        : [
+                            GameState.bet,
+                            GameState.continue,
+                            GameState.flipping,
+                          ].includes(gameState)
+                    }
+                    initial={{ height: 0 }}
+                    animate={{ height: "auto" }}
+                    exit={{ height: 0 }}
+                    transition={{ type: "keyframes" }}
+                    className="flex_ flex-col_ w-full pt-[5px] space-y-1 max-h-[15rem] overflow-auto rounded-b-lg px-1 bg-dark-700 py-1"
+                  >
+                    <p>Total Profit: {bet.profit?.toFixed(2)}</p>
+                    <BetInput
+                      inputProps={{
+                        value: "",
+                      }}
+                      trailing={<></>}
+                    />
+                  </AnimateInOut>
                 </div>
                 <Button
                   loading={loading}
+                  disabled={loading || gameState === GameState.flipping}
                   type="submit"
-                  onClick={() => placeBet()}
+                  onClick={() => {
+                    [GameState.bet, GameState.over].includes(gameState)
+                      ? initializeBet()
+                      : handleCashOut();
+                  }}
                   aria-disabled="true"
                   className="w-full text-sm rounded-sm sc-1xm9mse-0 fzZXbl text-nowrap"
                 >
-                  Place Bet
+                  {[GameState.bet, GameState.over].includes(gameState)
+                    ? "Place Bet"
+                    : "Cash Out"}
                 </Button>
               </div>
-              <AnimateInOut
-                show={roundComplete}
-                initial={{ translateY: 100, opacity: 0 }}
-                animate={{ translateY: 0, opacity: 1 }}
-                exit={{ translateY: 100, opacity: 0 }}
-                className="z-50 flex flex-col items-center w-full h-full mt-4 cursor-pointer absolute_ backdrop-blur-sm_"
-              >
-                <div className="relative flex flex-col items-center justify-center w-full flex_">
-                  <p className="relative z-20 text-2xl font-extrabold text-center">
-                    {message}
-                  </p>
-                  <small className="mx-auto text-base font-bold text-center">
-                    Winnings: {profit?.toFixed(2)}
-                  </small>
-
-                  <div className="flex items-center justify-between gap-3 mt-6 text-xl font-bold">
-                    {result === bet.choice ? (
-                      <>
-                        <Button
-                          className="w-full"
-                          onClick={() => handleResult().continueGame()}
-                        >
-                          Continue
-                        </Button>
-                        <button
-                          onClick={() => handleResult().endGame()}
-                          className="w-full px-2 py-1 rounded-md outline outline-1 outline-dark-700 bg-dark-800/50 whitespace-nowrap"
-                        >
-                          Take profit
-                        </button>
-                      </>
-                    ) : (
-                      <Button onClick={resetGame}>End Round</Button>
-                    )}
-                  </div>
-                </div>
-              </AnimateInOut>
             </div>
           </div>
           <div className="overflow-hidden bg-dark-850 w-full h-full min-h-[400px] max-sm:min-h-[300px] flex justify-center relative">
@@ -388,11 +388,7 @@ export default function CoinFlip() {
                 <div>
                   <div className="flex w-full gap-3 px-3 pb-2 overflow-x-auto">
                     {multipliers.map((multiplier, i) => (
-                      <Multiplier
-                        key={i}
-                        value={multiplier}
-                        currentMultiplier={currentMultiplier!}
-                      />
+                      <Multiplier key={i} multiplier={multiplier} />
                     ))}
                   </div>
                 </div>
@@ -488,30 +484,33 @@ export default function CoinFlip() {
 }
 
 function Multiplier({
-  value,
-  currentMultiplier,
+  multiplier,
 }: {
-  value: number;
-  currentMultiplier: number;
+  multiplier: {
+    revealed: boolean;
+    value: number;
+    choice: "H" | "T" | undefined;
+  };
 }) {
   return (
     <div
       className={clsx(
         "min-w-[100px] max-w-[100px] relative select-none  rounded-full",
-        value === currentMultiplier
-          ? "outline outline-1 -outline-offset-1"
-          : "",
       )}
     >
       <img
         draggable="false"
         width="100"
         alt="Coin"
-        className="w-full h-auto rendering-pixelated brightness-0 opacity-20"
-        src={Heads}
+        style={{ imageRendering: "pixelated" }}
+        className={clsx(
+          "w-full h-auto rendering-pixelated",
+          !multiplier.revealed ? "brightness-0 opacity-20" : "",
+        )}
+        src={multiplier.choice === "H" ? Heads : Tails}
       />
       <span className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-gray-500 font-semibold text-[1.15rem]">
-        {value}×
+        {!multiplier.revealed && `${multiplier.value}×`}
       </span>
     </div>
   );

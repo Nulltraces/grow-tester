@@ -21,6 +21,21 @@ module.exports = {
         gamesGrid: "repeat(auto-fit, minmax(220px, 1fr))",
         gamesGridSm: "repeat(auto-fit, minmax(150px, 1fr))",
       },
+      keyframes: {
+        "slide-in": {
+          "0%": {
+            opacity: 0,
+            transform: "translateX(-80px)",
+          },
+          "100%": {
+            opacity: 1,
+            transform: "translateX(0)",
+          },
+        },
+      },
+      animation: {
+        "slide-in": "slide-in 0.3s ease-out forwards",
+      },
     },
   },
   plugins: [],

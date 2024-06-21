@@ -1,4 +1,5 @@
 export { default as AnimateInOut } from "./AnimateInOut";
+export { default as AnimatedList } from "./AnimatedList";
 export { default as AuthForm } from "./AuthForm";
 export { default as BetInput } from "./BetInput";
 export { default as Button } from "./Button";

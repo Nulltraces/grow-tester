@@ -1,4 +1,4 @@
-import { SilverLockIcon, YellowLockIcon } from '@/assets/icons';
+import { SilverLockIcon, YellowLockIcon } from "@/assets/icons";
 
 export default function Affiliates() {
   return (
@@ -21,20 +21,6 @@ export default function Affiliates() {
           </svg>
           Affiliates
         </div>
-        <button className="absolute right-0">
-          <svg
-            stroke="currentColor"
-            fill="currentColor"
-            strokeWidth="0"
-            viewBox="0 0 24 24"
-            height="21"
-            width="21"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path fill="none" d="M0 0h24v24H0z"></path>
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
-          </svg>
-        </button>
       </div>
       <div className="flex flex-col">
         <div className="flex flex-col gap-2.5 text-gray-400">
@@ -55,8 +41,8 @@ export default function Affiliates() {
                 height="18"
                 className="sc-x7t9ms-0 dnLnNz"
               />
-            </span>{' '}
-            on a game that has a 4% House Edge, you will earn 4{' '}
+            </span>{" "}
+            on a game that has a 4% House Edge, you will earn 4{" "}
             <span className="inline-block">
               <img
                 src={YellowLockIcon}

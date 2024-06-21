@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 type Player = {
   bets?: number;
   wins?: number;
-  wagered?: number;
+  totalWagered?: number;
   netProfit?: number;
   allTimeHigh?: number;
   allTimeLow?: number;
@@ -14,6 +14,8 @@ type Player = {
   photo: string;
   username: string;
   level: number;
+  gamesWon: number;
+  totalBets: number;
 };
 
 export default function Leaderboard() {
@@ -57,9 +59,9 @@ export default function Leaderboard() {
           <table className="w-full border-separate border-spacing-0 border-spacing-y-1">
             <thead className="text-sm bg-dark-800">
               <tr className="uppercase text-[0.75rem]">
-                <th className="p-2.5 text-center rounded-l-sm px-3">#</th>
+                <th className="p-2.5 text-end rounded-l-sm px-3">#</th>
                 <th className="text-left">Username</th>
-                <th className="text-center transition-colors cursor-pointer hover:text-gray-300">
+                <th className="text-end transition-colors cursor-pointer hover:text-gray-300">
                   Level
                 </th>
                 <th className="transition-colors cursor-pointer hover:text-gray-300">
@@ -82,12 +84,12 @@ export default function Leaderboard() {
                 </th>
               </tr>
             </thead>
-            {/*NOTE: added text-center*/}
-            <tbody className="text-center">
+            {/*NOTE: added text-end*/}
+            <tbody className="text-end">
               {leaderboardData.map((data, i) => (
                 <tr key={data.username} className="bg-dark-800">
-                  <td className=" rounded-l-sm text-center p-2.5">{i + 1}</td>
-                  <td className="text-center">
+                  <td className=" rounded-l-sm text-end p-2.5">{i + 1}</td>
+                  <td className="text-end">
                     <div className="flex gap-1.5 px-2 items-center text-white cursor-pointer">
                       <figure className="w-8 rounded-full cursor-pointer sc-1nayyv1-1 avatar overflow-clip">
                         {data.photo ? (
@@ -105,15 +107,17 @@ export default function Leaderboard() {
                     </div>
                   </td>
                   <td>
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-center justify-end">
                       <div className="sc-ji84sw-0 brWwEp w-[50px]">
-                        {data.level}
+                        <p className="flex-1 text-center"> {data.level}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 text-center">
-                    <div className="flex items-center justify-center gap-1">
-                      {data.wagered?.toLocaleString()}
+                  <td className="px-4 text-end">
+                    <div className="flex items-center justify-end gap-1">
+                      <p className="flex-1 text-center">
+                        {data.totalWagered?.toLocaleString()}
+                      </p>
                       <img
                         src={SilverLockIcon}
                         width="18"
@@ -123,8 +127,10 @@ export default function Leaderboard() {
                     </div>
                   </td>
                   <td className="px-4">
-                    <div className="flex items-center justify-center gap-1 text-green-500">
-                      {data.netProfit?.toLocaleString()}
+                    <div className="flex items-center justify-end gap-1 text-green-500">
+                      <p className="flex-1 text-center">
+                        {data.netProfit?.toLocaleString()}
+                      </p>
                       <img
                         src={SilverLockIcon}
                         width="18"
@@ -134,8 +140,10 @@ export default function Leaderboard() {
                     </div>
                   </td>
                   <td className="px-4 ">
-                    <div className="flex items-center justify-center gap-1">
-                      {data.allTimeHigh?.toLocaleString()}
+                    <div className="flex items-center justify-end gap-1">
+                      <p className="flex-1 text-center">
+                        {data.allTimeHigh?.toLocaleString()}
+                      </p>
                       <img
                         src={SilverLockIcon}
                         width="18"
@@ -145,8 +153,10 @@ export default function Leaderboard() {
                     </div>
                   </td>
                   <td className="px-4 ">
-                    <div className="flex items-center justify-center gap-1">
-                      -{data.allTimeLow?.toLocaleString()}
+                    <div className="flex items-center justify-end gap-1">
+                      <p className="flex-1 text-center">
+                        -{data.allTimeLow?.toLocaleString()}
+                      </p>
                       <img
                         src={SilverLockIcon}
                         width="18"
@@ -155,11 +165,15 @@ export default function Leaderboard() {
                       />
                     </div>
                   </td>
-                  <td className="px-4 text-center">
-                    {data.bets?.toLocaleString()}
+                  <td className="px-4 text-end">
+                    <p className="flex-1 text-center">
+                      {data.totalBets?.toLocaleString()}
+                    </p>
                   </td>
-                  <td className="px-4 text-center rounded-r-sm">
-                    {data.wins?.toLocaleString()}
+                  <td className="px-4 text-end rounded-r-sm">
+                    <p className="flex-1 text-center">
+                      {data.gamesWon?.toLocaleString()}
+                    </p>
                   </td>
                 </tr>
               ))}

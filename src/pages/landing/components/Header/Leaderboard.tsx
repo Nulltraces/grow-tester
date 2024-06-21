@@ -1,6 +1,36 @@
 import { SilverLockIcon } from "@/assets/icons";
+import { UserIcon } from "@/assets/svgs";
+import socket from "@/utils/constants";
+import { useEffect, useState } from "react";
+
+type Player = {
+  bets?: number;
+  wins?: number;
+  wagered?: number;
+  netProfit?: number;
+  allTimeHigh?: number;
+  allTimeLow?: number;
+  joinDate: Date;
+  photo: string;
+  username: string;
+  level: number;
+};
 
 export default function Leaderboard() {
+  const [leaderboardData, setLeaderboardData] = useState<Player[]>([]);
+
+  useEffect(() => {
+    socket.emit("LEADERBOARD:get_aggregate");
+
+    socket.on("LEADERBOARD:aggregate", (data: Player[]) => {
+      setLeaderboardData(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log({ leaderboardData });
+  }, [leaderboardData]);
+
   return (
     <div
       className="max-w-[1000px] flex flex-col overflow-y-auto max-h-[var(--app-height)] font-medium bg-dark-850 p-3 gap-2 rounded-md w-full max-sm:max-w-full max-sm:w-full text-sm text-gray-400"
@@ -54,83 +84,85 @@ export default function Leaderboard() {
             </thead>
             {/*NOTE: added text-center*/}
             <tbody className="text-center">
-              {Array(20)
-                .fill(0)
-                .map((_, i) => ({ key: i + 1 }))
-                .map(({ key }) => (
-                  <tr key={key} className="bg-dark-800">
-                    <td className=" rounded-l-sm text-center p-2.5">{key}</td>
-                    <td className="text-center">
-                      <div className="flex gap-1.5 px-2 items-center text-white cursor-pointer">
-                        <div
-                          // size="24"
-                          className="sc-1nayyv1-1 jXwOeI"
-                          // style="cursor: default;"
-                        >
+              {leaderboardData.map((data, i) => (
+                <tr key={data.username} className="bg-dark-800">
+                  <td className=" rounded-l-sm text-center p-2.5">{i + 1}</td>
+                  <td className="text-center">
+                    <div className="flex gap-1.5 px-2 items-center text-white cursor-pointer">
+                      <figure className="w-8 rounded-full cursor-pointer sc-1nayyv1-1 avatar overflow-clip">
+                        {data.photo ? (
                           <img
                             draggable="false"
-                            // size="24"
-                            src="https://avatar.growdice.lol/506-0-0-0-0-0-00-04-3370516479.png"
+                            src={data.photo}
                             alt="Picture"
-                            className="sc-1nayyv1-0 kedPun"
+                            className="sc-1nayyv1-0 kedPqA"
                           />
-                        </div>
-                        Thk
+                        ) : (
+                          <UserIcon className="w-full aspect-square p-2_s !stroke-white" />
+                        )}
+                      </figure>
+                      {data.username}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="flex items-center justify-center">
+                      <div className="sc-ji84sw-0 brWwEp w-[50px]">
+                        {data.level}
                       </div>
-                    </td>
-                    <td>
-                      <div className="flex items-center justify-center">
-                        <div className="sc-ji84sw-0 brWwEp w-[50px]"> 62</div>
-                      </div>
-                    </td>
-                    <td className="px-4 text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        26,705.63
-                        <img
-                          src={SilverLockIcon}
-                          width="18"
-                          height="18"
-                          className="sc-x7t9ms-0 dnLnNz"
-                        />
-                      </div>
-                    </td>
-                    <td className="px-4">
-                      <div className="flex items-center justify-center gap-1 text-green-500">
-                        9,525.49
-                        <img
-                          src={SilverLockIcon}
-                          width="18"
-                          height="18"
-                          className="sc-x7t9ms-0 dnLnNz"
-                        />
-                      </div>
-                    </td>
-                    <td className="px-4 ">
-                      <div className="flex items-center justify-center gap-1">
-                        16,044.87
-                        <img
-                          src={SilverLockIcon}
-                          width="18"
-                          height="18"
-                          className="sc-x7t9ms-0 dnLnNz"
-                        />
-                      </div>
-                    </td>
-                    <td className="px-4 ">
-                      <div className="flex items-center justify-center gap-1">
-                        -204.98
-                        <img
-                          src={SilverLockIcon}
-                          width="18"
-                          height="18"
-                          className="sc-x7t9ms-0 dnLnNz"
-                        />
-                      </div>
-                    </td>
-                    <td className="px-4 text-center">2,377</td>
-                    <td className="px-4 text-center rounded-r-sm">375</td>
-                  </tr>
-                ))}
+                    </div>
+                  </td>
+                  <td className="px-4 text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      {data.wagered?.toLocaleString()}
+                      <img
+                        src={SilverLockIcon}
+                        width="18"
+                        height="18"
+                        className="sc-x7t9ms-0 dnLnNz"
+                      />
+                    </div>
+                  </td>
+                  <td className="px-4">
+                    <div className="flex items-center justify-center gap-1 text-green-500">
+                      {data.netProfit?.toLocaleString()}
+                      <img
+                        src={SilverLockIcon}
+                        width="18"
+                        height="18"
+                        className="sc-x7t9ms-0 dnLnNz"
+                      />
+                    </div>
+                  </td>
+                  <td className="px-4 ">
+                    <div className="flex items-center justify-center gap-1">
+                      {data.allTimeHigh?.toLocaleString()}
+                      <img
+                        src={SilverLockIcon}
+                        width="18"
+                        height="18"
+                        className="sc-x7t9ms-0 dnLnNz"
+                      />
+                    </div>
+                  </td>
+                  <td className="px-4 ">
+                    <div className="flex items-center justify-center gap-1">
+                      -{data.allTimeLow?.toLocaleString()}
+                      <img
+                        src={SilverLockIcon}
+                        width="18"
+                        height="18"
+                        className="sc-x7t9ms-0 dnLnNz"
+                      />
+                    </div>
+                  </td>
+                  <td className="px-4 text-center">
+                    {data.bets?.toLocaleString()}
+                  </td>
+                  <td className="px-4 text-center rounded-r-sm">
+                    {data.wins?.toLocaleString()}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

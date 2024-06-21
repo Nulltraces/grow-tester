@@ -73,11 +73,12 @@ export default function AuthForm({ route = "sign-in" }: Props) {
           )),
     );
   }, [
-    formData?.email,
-    formData?.password,
+    formData.email,
+    formData.password,
     formData?.username,
     formData?.affiliateCode,
     isDisabled,
+    route,
   ]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -332,8 +333,8 @@ export default function AuthForm({ route = "sign-in" }: Props) {
               <>
                 <fieldset className="gap-1 mt-3 flex flex-col w-full">
                   <div className="flex flex-row justify-between">
-                    <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
-                      Email Address
+                    <label className="text-gray-200 font-semibold -tracking-[0.28px]  text-[14px]">
+                      Email Address or Username
                     </label>
                   </div>
                   <Input
@@ -346,7 +347,7 @@ export default function AuthForm({ route = "sign-in" }: Props) {
                 </fieldset>
                 <fieldset className="gap-1 mt-3 flex flex-col w-full">
                   <div className="flex flex-row justify-between w-full">
-                    <label className="text-white -tracking-[0.28px] font-normal text-[14px]">
+                    <label className="text-gray-200 font-semibold -tracking-[0.28px] text-[14px]">
                       Password
                     </label>
                   </div>

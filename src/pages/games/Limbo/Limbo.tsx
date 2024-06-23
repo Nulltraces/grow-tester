@@ -142,7 +142,7 @@ export default function Limbo() {
           setGameStatus(savedStatus);
           dispatch(updateBalance(balance + bet.profit));
           addHistoryItem(
-            (savedStatus === GameStatus.win ? bet.multiplier : 0).toFixed(2),
+            (savedStatus === GameStatus.win ? bet.multiplier : 0)?.toFixed(2),
           );
         }
       }

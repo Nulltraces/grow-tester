@@ -38,3 +38,31 @@ export function formatLeaderboardTime(dateString: string) {
   const formattedTime = `${hours}:${minutes}:${seconds}`;
   return formattedTime;
 }
+
+type FormatOption =
+  | "default"
+  | "capitalizeFirst"
+  | "capitalizeEach"
+  | "uppercase";
+
+export const camelCaseToText = (
+  input: string,
+  format: FormatOption = "default",
+): string => {
+  // Split the camelCase string by finding where uppercase letters are and adding a space before them
+  const result = input
+    .replace(/([A-Z])/g, " $1")
+    .toLowerCase()
+    .trim();
+
+  switch (format) {
+    case "capitalizeFirst":
+      return result.charAt(0).toUpperCase() + result.slice(1);
+    case "capitalizeEach":
+      return result.replace(/\b\w/g, (char) => char.toUpperCase());
+    case "uppercase":
+      return result.toUpperCase();
+    default:
+      return result;
+  }
+};

@@ -9,7 +9,7 @@
 // }: Props) {
 //   const { value: val, ...inputProps } = props;
 
-//   const [value, setValue] = useState(parseFloat((val ? +val : 0).toFixed(3)));
+//   const [value, setValue] = useState(parseFloat((val ? +val : 0)?.toFixed(3)));
 
 //   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 //     const inputValue = e.target.value;
@@ -17,7 +17,7 @@
 //     const regex = /^-?\d*\.?\d*$/;
 
 //     if (regex.test(inputValue)) {
-//       // setValue(parseFloat((!isNaN(value) ? value : 0).toFixed(3)));
+//       // setValue(parseFloat((!isNaN(value) ? value : 0)?.toFixed(3)));
 //       setValue(parseFloat(inputValue));
 //     }
 
@@ -37,7 +37,7 @@
 //     // setValue((prev) => (val ? +val : prev));
 //     setValue(
 //       val !== undefined && !isNaN(+val)
-//         ? parseFloat((+val as number).toFixed(3))
+//         ? parseFloat((+val as number)?.toFixed(3))
 //         : 0,
 //     );
 //   }, [val]);
@@ -58,7 +58,7 @@
 //         className="outline-none indent-5 border-none p-1 text-[0.9rem] flex-grow text-white font-medium"
 //         type="number"
 //         onChange={handleChange}
-//         value={(!isNaN(value) ? value : 0).toFixed(3)}
+//         value={(!isNaN(value) ? value : 0)?.toFixed(3)}
 //         {...inputProps}
 //       />
 //       <div className="absolute flex items-center gap-2 right-2">
@@ -113,7 +113,7 @@ export default function BetInput({
 
     const event: React.ChangeEvent<HTMLInputElement> = {
       ...e,
-      target: { ...e.target, value: parseFloat(inputValue).toFixed(3) },
+      target: { ...e.target, value: parseFloat(inputValue)?.toFixed(3) },
     };
     onChange?.(event);
   };
@@ -129,7 +129,7 @@ export default function BetInput({
     console.log("VALUE: ", value);
     // setValue(
     //   val !== undefined && !isNaN(+val)
-    //     ? parseFloat((+val as number).toFixed(3)).toString()
+    //     ? parseFloat((+val as number)?.toFixed(3)).toString()
     //     : "0",
     // );
   }, [value]);
@@ -156,8 +156,8 @@ export default function BetInput({
         onChange={handleChange}
         value={
           value && parseFloat(value as string) && !isNaN(+value)
-            ? (+value).toFixed(3)
-            : (0).toFixed(3)
+            ? (+value)?.toFixed(3)
+            : (0)?.toFixed(3)
         }
         {...inputProps}
       />

@@ -82,7 +82,7 @@ export default function AllBets() {
                 <span
                   className={clsx(
                     "flex items-center justify-center gap-1",
-                    parseInt(data.profit.toFixed(2)) > 0 && "text-green-500",
+                    parseInt(data.profit?.toFixed(2)) > 0 && "text-green-500",
                   )}
                 >
                   {data?.profit?.toFixed(2)}

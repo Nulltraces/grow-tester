@@ -23,7 +23,7 @@ import MenuButton from "../MenuButton";
 import { games } from "@/data/games";
 import { triggerModal } from "@/store/slices/modal";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
-import { lettersAndNumbersOnly } from "@/utils/strings";
+import { camelCaseToText, lettersAndNumbersOnly } from "@/utils/strings";
 import store from "@/store";
 import Leaderboard from "./Leaderboard";
 import Affiliates from "./Affiliates";
@@ -35,6 +35,8 @@ import { getBalance } from "@/services/wallet";
 import { changeCurrency, updateBalance } from "@/store/slices/wallet";
 import socket from "@/utils/constants";
 import { toast } from "react-toastify";
+import Rakeback from "./Rakeback";
+import PromoCodes from "./PromoCodes";
 
 const toggleHeaderModal = {
   leaderboard() {
@@ -57,6 +59,22 @@ const toggleHeaderModal = {
     store.dispatch(
       triggerModal({
         children: <Race />,
+        show: true,
+      }),
+    );
+  },
+  rakeback() {
+    store.dispatch(
+      triggerModal({
+        children: <Rakeback />,
+        show: true,
+      }),
+    );
+  },
+  promoCodes() {
+    store.dispatch(
+      triggerModal({
+        children: <PromoCodes />,
         show: true,
       }),
     );
@@ -265,13 +283,14 @@ function HeaderItems() {
                     transition={{ type: "keyframes" }}
                     className="cursor-pointer flex flex-col w-full pt-[5px] overflow-clip space-y-2"
                   >
-                    {[{ title: "rakeback" }, { title: "promo codes" }].map(
+                    {[{ title: "rakeback" }, { title: "promoCodes" }].map(
                       (reward, i) => (
                         <p
+                          onClick={() => toggleHeaderModal[reward.title]()}
                           className="text-sm text-white font-bold uppercase hover:-translate-y-[2px] transition-transform duration-100"
                           key={i}
                         >
-                          {reward.title}
+                          {camelCaseToText(reward.title)}
                         </p>
                       ),
                     )}
@@ -394,11 +413,17 @@ function HeaderItemsSM() {
             >
               <div className="h-[96%] w-[99%] overflow-auto pr-2">
                 <div className="flex items-center justify-center gap-4">
-                  <div className="rounded-md w-60 overflow-clip">
+                  <div
+                    onClick={() => toggleHeaderModal.rakeback()}
+                    className="rounded-md w-60 overflow-clip"
+                  >
                     {/* <p>{game.i}</p> */}
                     <img src={`/images/landing/rewards/rakeback.webp`} />
                   </div>
-                  <div className="rounded-md w-60 overflow-clip">
+                  <div
+                    onClick={() => toggleHeaderModal.promoCodes()}
+                    className="rounded-md w-60 overflow-clip"
+                  >
                     {/* <p>{game.i}</p> */}
                     <img src={`/images/landing/rewards/promo.webp`} />
                   </div>

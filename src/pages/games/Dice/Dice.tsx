@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { GameType } from "@/game-types";
 import api from "@/api/axios";
 import clsx from "clsx";
-import { GamePhase } from ".";
+import { GamePhase, calculateMultiplier } from ".";
 
 let walletBalance = 0;
 export default function Dice() {
@@ -20,7 +20,6 @@ export default function Dice() {
   // const [balance, dispatch(updateBalance] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [gamePhase, setGamePhase] = useState(GamePhase.bet);
-  const [message, setMessage] = useState("");
   // const [bet.stake, setStake] = useState(0);
   const [bet, setBet] = useState<
     Partial<Bet> & {
@@ -53,15 +52,13 @@ export default function Dice() {
       console.log("DICE:result", data);
       setResult(data?.result);
       console.log("PROFIT: ", data.profit);
-      setMessage(data.message);
       setGamePhase(GamePhase.result);
       dispatch(updateBalance(walletBalance + data.profit));
     });
 
-    socket.on("DICE:error", (data) => {
+    socket.on("DICE:error", () => {
       setGamePhase(GamePhase.result);
       setLoading(false);
-      setMessage(data.message);
     });
   }, [dispatch]);
 
@@ -113,7 +110,6 @@ export default function Dice() {
   const resetGame = () => {
     // setBet((prev) => ({ ...prev, stake: 0 }));
     setGamePhase(GamePhase.bet);
-    setMessage("");
   };
 
   return (
@@ -176,12 +172,10 @@ export default function Dice() {
           </div>
           <div className="overflow-hidden bg-dark-850 w-full h-full min-h-[400px] max-sm:min-h-[300px] flex justify-center relative">
             <DiceGame
-              message={message}
               setMultiplier={setMultiplier}
               multiplier={bet.multiplier!}
               rangeValue={bet.rangeValue}
               setRange={setRange}
-              reset={resetGame}
               roll={bet.direction}
               switchDirection={switchDirection}
               result={result}
@@ -242,33 +236,4 @@ export default function Dice() {
       </div>
     </>
   );
-}
-
-export function calculateMultiplier(
-  value: number,
-  predictedRange: "greater" | "less",
-): number {
-  const maxValue = 99.9;
-  const minValue = 0;
-  const totalPossibleOutcomes = maxValue - minValue + 1;
-  let probability: number;
-
-  if (predictedRange === "greater") {
-    probability = (maxValue - value) / totalPossibleOutcomes;
-  } else {
-    probability = (value - minValue) / totalPossibleOutcomes;
-  }
-
-  // Multiplier calculation
-  const baseMultiplier = 1.01; // Base multiplier
-  let multiplier = baseMultiplier / probability;
-
-  // Ensure multiplier is within the range [1.01, 960]
-  if (multiplier < 1.01) {
-    multiplier = 1.01;
-  } else if (multiplier > 960) {
-    multiplier = 960;
-  }
-
-  return multiplier;
 }

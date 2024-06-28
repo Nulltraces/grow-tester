@@ -3,10 +3,7 @@ import "./RangeSlider.css";
 import RCSlider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { SliderProps } from "./types";
-import { calculateMultiplier } from "./Dice";
-import { AnimateInOut } from "@/components";
-import { useEffect, useState } from "react";
-import { GamePhase } from ".";
+import { GamePhase, calculateMultiplier } from ".";
 import clsx from "clsx";
 
 const Slider = (sliderProps: SliderProps) => <RCSlider {...sliderProps} />;
@@ -16,12 +13,10 @@ const MAX = 99.9;
 const STEP = 0.1;
 
 type Props = {
-  message: string;
   multiplier: number;
   rangeValue: number;
   setMultiplier(value: number): void;
   setRange(value: number): void;
-  reset(): void;
   roll: "over" | "under";
   switchDirection(): void;
   result: number;
@@ -29,9 +24,7 @@ type Props = {
 };
 
 export default function DiceGame({
-  message,
   multiplier,
-  reset,
   rangeValue,
   setMultiplier,
   setRange,
@@ -40,34 +33,6 @@ export default function DiceGame({
   result,
   gamePhase,
 }: Props) {
-  const [random, setRandom] = useState(50);
-  const [showMessage, setShowMessage] = useState(false);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRandom(Math.round(Math.random() * 10000) / 100);
-    }, 400);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    if (message && gamePhase !== GamePhase.running) {
-      console.log({ message, gamePhase });
-      timeout = setTimeout(() => {
-        console.log("SHOWWWWWWWWWWWWWWWWWWWWW");
-        setShowMessage(true);
-      }, 1000);
-    }
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [gamePhase, message]);
-
   return (
     <>
       <style>

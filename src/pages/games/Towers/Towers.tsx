@@ -6,7 +6,6 @@ import {
   ProvablyFair,
   Select,
 } from "@/components";
-import { Bets } from "@/pages/landing/components";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import SkullImage from "./assets/skull.png";
@@ -240,7 +239,9 @@ export default function Towers() {
       initializeGame();
       setGameRunning(true);
       toast.success("Bet placed");
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const endGame = async () => {

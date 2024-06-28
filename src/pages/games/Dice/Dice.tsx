@@ -5,11 +5,11 @@ import socket from "@/utils/constants";
 import { toast } from "react-toastify";
 import { updateBalance } from "@/store/slices/wallet";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { GameType } from "@/game-types";
-import { Bets } from "@/pages/landing/components";
 import api from "@/api/axios";
 import clsx from "clsx";
+import { GamePhase } from ".";
 
 let walletBalance = 0;
 export default function Dice() {
@@ -19,7 +19,7 @@ export default function Dice() {
 
   // const [balance, dispatch(updateBalance] = useState<number>(0);
   const [loading, setLoading] = useState(false);
-  const [gameRunning, setGameRunning] = useState(false);
+  const [gamePhase, setGamePhase] = useState(GamePhase.bet);
   const [message, setMessage] = useState("");
   // const [bet.stake, setStake] = useState(0);
   const [bet, setBet] = useState<
@@ -33,6 +33,7 @@ export default function Dice() {
     rangeValue: 50,
     direction: "over",
   });
+  const [result, setResult] = useState(50);
 
   const setMultiplier = (value: number) => {
     setBet((prev) => ({ ...prev, multiplier: value }));
@@ -50,23 +51,32 @@ export default function Dice() {
     socket.on("DICE:result", (data) => {
       setLoading(false);
       console.log("DICE:result", data);
+      setResult(data?.result);
       console.log("PROFIT: ", data.profit);
-      dispatch(updateBalance(walletBalance + data.profit));
       setMessage(data.message);
+      setGamePhase(GamePhase.result);
+      dispatch(updateBalance(walletBalance + data.profit));
     });
 
     socket.on("DICE:error", (data) => {
-      setGameRunning(false);
+      setGamePhase(GamePhase.result);
       setLoading(false);
       setMessage(data.message);
     });
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!balance) return;
 
     walletBalance = balance;
   }, [balance]);
+
+  const switchDirection = useCallback(() => {
+    setBet((prev) => ({
+      ...prev,
+      direction: prev.direction === "over" ? "under" : "over",
+    }));
+  }, []);
 
   const playGame = async () => {
     if (!bet.stake || isNaN(bet.stake) || bet.stake <= 0)
@@ -75,7 +85,7 @@ export default function Dice() {
     try {
       console.log("PLACE_BET: ", bet);
       setLoading(true);
-      setGameRunning(true);
+      setGamePhase(GamePhase.running);
 
       const response = await api.post("/bet", { ...bet, socketId: socket.id });
 
@@ -96,13 +106,13 @@ export default function Dice() {
     } catch (error) {
       toast.error("Could not place bet!");
       setLoading(false);
-      setGameRunning(true);
+      setGamePhase(GamePhase.result);
     }
   };
 
   const resetGame = () => {
-    setBet((prev) => ({ ...prev, stake: 0 }));
-    setGameRunning(false);
+    // setBet((prev) => ({ ...prev, stake: 0 }));
+    setGamePhase(GamePhase.bet);
     setMessage("");
   };
 
@@ -126,7 +136,9 @@ export default function Dice() {
                   !auth.isAuthenticated && "opacity-40",
                 )}
               >
-                {(!auth.isAuthenticated || loading || gameRunning) && (
+                {(!auth.isAuthenticated ||
+                  loading ||
+                  gamePhase === GamePhase.running) && (
                   <div
                     onClick={() => {
                       !loading && resetGame();
@@ -146,12 +158,12 @@ export default function Dice() {
                           stake: parseFloat(e.target.value),
                         }));
                       },
-                      value: bet.stake || 0,
+                      value: bet.stake,
                     }}
                   />
                 </div>
                 <Button
-                  disabled={loading || gameRunning}
+                  disabled={loading || gamePhase === GamePhase.running}
                   aria-disabled="true"
                   className="text-sm w-full sc-1xm9mse-0 fzZXbl text-nowrap"
                   onClick={playGame}
@@ -170,6 +182,10 @@ export default function Dice() {
               rangeValue={bet.rangeValue}
               setRange={setRange}
               reset={resetGame}
+              roll={bet.direction}
+              switchDirection={switchDirection}
+              result={result}
+              gamePhase={gamePhase}
             />
           </div>
         </div>

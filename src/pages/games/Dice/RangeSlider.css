@@ -35,3 +35,7 @@
   border-radius: 50%;
   background-color: purple;
 }
+
+.slider-disabled .rc-slider-handle {
+  cursor: not-allowed !important;
+}

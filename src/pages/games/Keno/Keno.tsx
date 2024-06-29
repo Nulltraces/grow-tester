@@ -1,15 +1,24 @@
 import clsx from "clsx";
 import "./keno.css";
 import { SilverLockIcon } from "@/assets/icons";
-import { PropsWithChildren, useState } from "react";
-import { BetInput, Button, ProvablyFair, Select } from "@/components";
+import { Fragment, PropsWithChildren, useState } from "react";
+import {
+  AnimateInOut,
+  AnimatedList,
+  BetInput,
+  Button,
+  ProvablyFair,
+  Select,
+} from "@/components";
 import { GameType } from "@/game-types";
 import { toast } from "react-toastify";
 import KenoBoard from "./KenoBoard";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { updateBalance } from "@/store/slices/wallet";
+import { v4 as uuidv4 } from "uuid";
 import socket from "@/utils/constants";
 import api from "@/api/axios";
+
 const payoutTables = {
   classic: {
     1: { 1: 2.5 },
@@ -119,7 +128,7 @@ export default function Keno() {
   const [bet, setBet] = useState<Partial<Bet>>({
     stake: 0,
     gameType: GameType.KENO as Bet["gameType"],
-    multiplier: 1,
+    multiplier: 10,
   });
 
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
@@ -136,7 +145,10 @@ export default function Keno() {
   const maxSelection = 10;
   const [message, setMessage] = useState<string>("");
   const [betId, setBetId] = useState("");
-
+  const [showResult, setShowResult] = useState(false);
+  const [historyItems, setHistoryItems] = useState<
+    { id: string; text: string }[]
+  >([]);
   // const calculatePayout = (matches: number, bet: number) => {
   //   const selectedCount = selectedNumbers.length;
   //   // const payoutMultiplier = payoutTable[selectedCount]?.[matches] || 0;
@@ -173,8 +185,8 @@ export default function Keno() {
       return;
 
     const newDrawnNumbers = Array.from(
-      { length: 20 },
-      () => Math.floor(Math.random() * 80) + 1,
+      { length: 11 },
+      () => Math.floor(Math.random() * 40) + 1,
     );
     setDrawnNumbers(newDrawnNumbers);
 
@@ -184,17 +196,27 @@ export default function Keno() {
     const payoutTable = payoutTables[riskLevel][selectedNumbers.length];
     const payoutMultiplier = payoutTable[hits] || 0;
     const payout = bet.stake * payoutMultiplier;
-    console.log({ payout });
+    console.log({ hits, riskLevel, payoutTable, payoutMultiplier, payout });
     setBet((prev) => ({
       ...prev,
       profit: payout,
       multiplier: payoutMultiplier,
     }));
 
+    console.log({ newDrawnNumbers, selectedNumbers });
     setResult({ hits, payout });
+    setTimeout(() => {
+      setShowResult(true);
+    }, 2000);
     await endGame();
     dispatch(updateBalance(balance + payout - bet.stake));
-    alert(payout);
+    // alert(payout);
+  };
+
+  const addHistoryItem = (item: string) => {
+    if (item.trim()) {
+      setHistoryItems([{ id: uuidv4(), text: item }, ...historyItems]);
+    }
   };
 
   const placeBet = async () => {
@@ -238,8 +260,10 @@ export default function Keno() {
         id: betID,
       });
       const data = response.data;
+      console.log({ data });
+      addHistoryItem(bet.multiplier?.toString());
       // dispatch(updateBalance(balance + (gameWin ? bet.profit! : 0)));
-      resetGame();
+      // resetGame();
     } catch (error) {
       console.error("END_GAME: ", { error });
     }
@@ -254,17 +278,19 @@ export default function Keno() {
   return (
     <>
       <div className="flex flex-col w-full">
-        <div className=" min-h-[50px] bg-dark-800 flex overflow-hidden flex-col-reverse w-full items-center rounded-t-md border-b border-gray-700">
-          <div className="w-full h-full flex gap-1.5 p-2  justify-start overflow-hidden relative shadow-dark-800 items-center">
+        <div className="h-[50px] bg-dark-800 rounded-t-md border-b border-gray-700">
+          <AnimatedList items={historyItems} />
+
+          {/* <div className="w-full h-full flex gap-1.5 p-2  justify-start overflow-hidden relative shadow-dark-800 items-center">
             <div
               className="w-[6px] bg-dark-800 h-full absolute right-0 top-0 z-[5] "
               style={{ boxShadow: "0 0 30px 40px var(--tw-shadow-color)" }}
             ></div>
-          </div>
+          </div> */}
         </div>
         <div className="flex flex-row w-full h-full max-md:flex-col-reverse">
-          <div className="bg-dark-800 flex justify-start flex-col max-md:w-full w-[400px]">
-            <div className="flex flex-col gap-2 p-3 text-sm font-medium font-semibold">
+          <div className="bg-dark-800flex justify-start flex-col max-md:w-full w-[400px]">
+            <div className="flex flex-col gap-2 p-3 text-sm font-semibold">
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-medium text-white">
                   Bet Amount
@@ -321,6 +347,7 @@ export default function Keno() {
               <div className="grid grid-cols-[repeat(8,auto)] max-w-[600px] max-sm:gap-1 gap-2 p-0 w-full">
                 <KenoBoard
                   selectedNumbers={selectedNumbers}
+                  drawnNumbers={drawnNumbers}
                   onSelectNumber={handleNumberSelect}
                 />
               </div>
@@ -344,12 +371,12 @@ export default function Keno() {
                       {selectedCount > 0 &&
                         Object.entries(
                           payoutTables[riskLevel][selectedCount],
-                        ).map(([_, multiplier]) => (
-                          <>
+                        ).map(([val, multiplier]) => (
+                          <Fragment key={val}>
                             <div className="flex drop-shadow-md max-sm:text-[0.5rem] transition-all flex-col gap-2 font-semibold text-sm bg-dark-750 justify-center items-center rounded-sm">
                               {multiplier as any}×
                             </div>
-                          </>
+                          </Fragment>
                         ))}
                     </>
                   </div>
@@ -372,11 +399,11 @@ export default function Keno() {
                         Object.entries(
                           payoutTables[riskLevel][selectedCount],
                         ).map(([hits, _]) => (
-                          <>
+                          <Fragment key={hits}>
                             <div className="flex drop-shadow-md max-sm:text-[0.5rem] transition-all flex-col gap-2 font-semibold text-sm bg-dark-750 justify-center items-center">
                               HIT {hits}
                             </div>
-                          </>
+                          </Fragment>
                         ))}
                     </>
                   </div>
@@ -388,6 +415,30 @@ export default function Keno() {
                   </p>
                 </div>
               )}
+            </div>
+            <div className="flex absolute top-0 left-0 w-full h-full items-center justify-center">
+              <div className="relative w-full h-full">
+                <AnimateInOut
+                  show={showResult}
+                  onClick={() => setShowResult(false)}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="cursor-pointer absolute z-10 top-0 left-0 w-full h-full items-center justify-center bg-dark-850/90"
+                />
+                <AnimateInOut
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.5, opacity: 0 }}
+                  show={showResult}
+                  className="bg-dark-800 z-50 relative cursor-default w-40 h-40 flex items-center justify-center border-8 border-game-green self-center"
+                >
+                  <div className="">
+                    <div>{bet.multiplier}</div>
+                    <div>{bet.profit}</div>
+                  </div>
+                </AnimateInOut>
+              </div>
             </div>
           </div>
         </div>

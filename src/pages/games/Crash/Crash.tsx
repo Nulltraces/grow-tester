@@ -189,7 +189,7 @@ export default function Crash() {
               key={i}
               className={clsx(
                 "flex items-center justify-center p-2 text-md font-semibold rounded-sm bg-dark-700",
-                item > 1 ? "bg-[#21d833]" : "",
+                item > 1 ? "bg-game-green" : "",
               )}
             >
               {item}×

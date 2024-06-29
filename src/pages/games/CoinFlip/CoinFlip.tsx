@@ -1,5 +1,5 @@
 import { Heads, SilverLockIcon, Tails } from "@/assets/icons";
-import { AnimateInOut, BetInput, Button } from "@/components";
+import { AnimateInOut, AnimatedList, BetInput, Button } from "@/components";
 import "./coinflip.css";
 import { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";

@@ -261,7 +261,7 @@ export default function Keno() {
       });
       const data = response.data;
       console.log({ data });
-      addHistoryItem(bet.multiplier?.toString());
+      if (bet.multiplier) addHistoryItem(bet.multiplier.toString());
       // dispatch(updateBalance(balance + (gameWin ? bet.profit! : 0)));
       // resetGame();
     } catch (error) {

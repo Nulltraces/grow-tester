@@ -164,6 +164,7 @@ const Game: React.FC = () => {
         <KenoBoard
           selectedNumbers={selectedNumbers}
           onSelectNumber={handleNumberSelect}
+          drawnNumbers={drawnNumbers}
         />
       </div>
       <div className="mb-4">

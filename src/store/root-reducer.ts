@@ -3,7 +3,6 @@ import authSlice from "./slices/auth";
 import chatBarSlice from "./slices/chatbar";
 import modalSlice from "./slices/modal";
 import notificationSlice from "./slices/notification";
-import { apiSlice } from "./slices/api";
 import menuBarSlice from "./slices/menubar";
 import walletSlice from "./slices/wallet";
 
@@ -14,7 +13,6 @@ const rootReducer = combineReducers({
   modal: modalSlice.reducer,
   notification: notificationSlice.reducer,
   wallet: walletSlice.reducer,
-  [apiSlice.reducerPath]: apiSlice.reducer,
   // Add other slices here
 });
 

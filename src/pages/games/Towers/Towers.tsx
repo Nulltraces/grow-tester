@@ -7,7 +7,7 @@ import {
   Select,
 } from "@/components";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SkullImage from "./assets/skull.png";
 import Checkmark from "./assets/checkmark.png";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
@@ -23,10 +23,8 @@ enum Difficulty {
   HARD = "hard",
 }
 
-type RowContent = 1 | 2 | "skip";
 type CellContent = { hasSkull: boolean; selected: boolean };
 
-const possibleRowContent: [RowContent, RowContent, RowContent] = ["skip", 1, 2];
 function getRandomIndices<T>(array: T[], count: number): number[] {
   const indices: number[] = [];
 
@@ -40,10 +38,11 @@ function getRandomIndices<T>(array: T[], count: number): number[] {
   return indices;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let walletBalance = 0;
 export default function Towers() {
   const [grid, setGrid] = useState<CellContent[][]>([]);
-  const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.HARD);
+  const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.NORMAL);
   const [currentRow, setCurrentRow] = useState<number>(9); // Start from the bottom row
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [gameWin, setGameWin] = useState<boolean>(false); // Track game win
@@ -59,12 +58,26 @@ export default function Towers() {
 
   const dispatch = useAppDispatch();
 
-  // const [balance, dispatch(updateBalance] = useState<number>(0);
-  const [loading, setLoading] = useState(false);
+  const loading = useState(false)[0];
   const [gameRunning, setGameRunning] = useState(false);
   const [message, setMessage] = useState("");
   // NOTE: remove
   const [betId, setBetId] = useState("");
+
+  const endGame = useCallback(async () => {
+    console.log("END_GAME: ");
+    try {
+      const response = await api.post("/bet/result", {
+        ...bet,
+        id: betId,
+      });
+      const data = response.data;
+      console.log({ data });
+      dispatch(updateBalance(balance + (gameWin ? bet.profit! : 0)));
+    } catch (error) {
+      console.error("END_GAME: ", { error });
+    }
+  }, [balance, bet, betId, dispatch, gameWin]);
 
   useEffect(() => {
     if (!balance) return;
@@ -77,121 +90,33 @@ export default function Towers() {
     if (!(gameOver || gameWin)) return;
     console.log("ENNND");
     endGame();
-  }, [gameOver, gameWin]);
+  }, [endGame, gameOver, gameWin]);
 
-  // const initializeGame = () => {
-  //   const rows: CellContent[][] = Array(10)
-  //     .fill(0)
-  //     .map(() => {
-  //       const columns: CellContent[] = Array(3)
-  //         .fill(3)
-  //         .map((_, i) => ({ hasSkull: false, selected: false, key: i }));
+  const initializeGame = useCallback(() => {
+    let numberOfColumns = 4;
+    switch (difficulty) {
+      case Difficulty.EASY:
+        numberOfColumns = 4;
+        break;
+      case Difficulty.NORMAL:
+        numberOfColumns = 3;
+        break;
+      case Difficulty.HARD:
+        numberOfColumns = 2;
+        break;
+      default:
+        numberOfColumns = 3;
+        break;
+    }
 
-  //       const colsCopy = JSON.parse(JSON.stringify(columns));
-
-  //       console.log("COLUMNS_BEFORE: ", columns);
-
-  //       let possibleRowContentByDifficulty: RowContent[];
-
-  //       switch (difficulty) {
-  //         case Difficulty.EASY:
-  //           possibleRowContentByDifficulty = possibleRowContent.filter(
-  //             (value) => value !== 2,
-  //           );
-  //           break;
-
-  //         case Difficulty.NORMAL:
-  //           possibleRowContentByDifficulty = possibleRowContent.filter(
-  //             (value) => value !== "skip" && value !== 2,
-  //           );
-  //           break;
-
-  //         case Difficulty.HARD:
-  //           possibleRowContentByDifficulty = possibleRowContent.filter(
-  //             (value) => value !== "skip",
-  //           );
-  //           break;
-
-  //         default:
-  //           possibleRowContentByDifficulty = possibleRowContent.filter(
-  //             (value) => value !== "skip" && value !== 2,
-  //           );
-  //           break;
-  //       }
-
-  //       for (
-  //         let possibleRowIndex = 0;
-  //         possibleRowIndex < possibleRowContentByDifficulty.length;
-  //         possibleRowIndex++
-  //       ) {
-  //         if (possibleRowContentByDifficulty[possibleRowIndex] === "skip")
-  //           continue;
-
-  //         const numberOfSkulls = possibleRowContentByDifficulty[
-  //           getRandomIndices(possibleRowContentByDifficulty, 1)[0]
-  //         ] as number;
-
-  //         //   const skulls: number[] = Array(numberOfSkulls).fill(1);
-
-  //         const skullPositions = getRandomIndices(columns, numberOfSkulls);
-
-  //         skullPositions.forEach((position) => {
-  //           colsCopy[position].skullPosition = skullPositions;
-  //           colsCopy[position].hasSkull = true;
-  //           colsCopy[position].position = position;
-  //         });
-
-  //         console.log({
-  //           numberOfSkulls,
-  //           skullPositions,
-  //           possibleRowContentByDifficulty,
-  //         });
-  //       }
-
-  //       console.log("COLUMNS_AFTER: ", colsCopy);
-  //       return colsCopy;
-  //     });
-
-  //   setGrid(rows);
-  // };
-
-  const initializeGame = () => {
     const rows: CellContent[][] = Array(10)
       .fill(0)
       .map(() => {
-        const columns: CellContent[] = Array(3)
-          .fill(3)
+        const columns: CellContent[] = Array(numberOfColumns)
+          .fill(0)
           .map((_, i) => ({ hasSkull: false, selected: false, key: i }));
 
-        // Determine possible row content based on difficulty
-        let possibleRowContentByDifficulty: RowContent[];
-        switch (difficulty) {
-          case Difficulty.EASY:
-            possibleRowContentByDifficulty = possibleRowContent.filter(
-              (value) => value !== 2,
-            );
-            break;
-          case Difficulty.NORMAL:
-            possibleRowContentByDifficulty = possibleRowContent.filter(
-              (value) => value !== "skip" && value !== 2,
-            );
-            break;
-          case Difficulty.HARD:
-            possibleRowContentByDifficulty = possibleRowContent.filter(
-              (value) => value !== "skip",
-            );
-            break;
-          default:
-            possibleRowContentByDifficulty = possibleRowContent.filter(
-              (value) => value !== "skip" && value !== 2,
-            );
-            break;
-        }
-
-        // Get a random number of skulls based on the filtered row content
-        const numberOfSkulls = possibleRowContentByDifficulty[
-          getRandomIndices(possibleRowContentByDifficulty, 1)[0]
-        ] as number;
+        const numberOfSkulls = 1;
 
         // Get random positions for the skulls in the columns
         const skullPositions = getRandomIndices(columns, numberOfSkulls);
@@ -204,14 +129,15 @@ export default function Towers() {
         return columns;
       });
     setGrid(rows);
-  };
+  }, [difficulty]);
 
-  const takeProfit = () => {
-    setBet((prev) => ({ ...prev, profit: 0 }));
-    setGameOver(true); // End the game
-  };
+  // NOTE
+  // const takeProfit = () => {
+  //   setBet((prev) => ({ ...prev, profit: 0 }));
+  //   setGameOver(true); // End the game
+  // };
 
-  const resetGame = () => {
+  const resetGame = useCallback(() => {
     setCurrentRow(9);
     setGameOver(false);
     setGameWin(false);
@@ -220,7 +146,7 @@ export default function Towers() {
     initializeGame();
     setMessage("");
     setGameRunning(false);
-  };
+  }, [initializeGame]);
 
   const placeBet = async () => {
     if (!bet.stake) return toast.error("Invalid bet amount");
@@ -244,23 +170,9 @@ export default function Towers() {
     }
   };
 
-  const endGame = async () => {
-    console.log("END_GAME: ");
-    try {
-      const response = await api.post("/bet/result", {
-        ...bet,
-        id: betId,
-      });
-      const data = response.data;
-      dispatch(updateBalance(balance + (gameWin ? bet.profit! : 0)));
-    } catch (error) {
-      console.error("END_GAME: ", { error });
-    }
-  };
-
   useEffect(() => {
     resetGame();
-  }, [difficulty]);
+  }, [difficulty, resetGame]);
 
   const Cell = ({
     cellContent,
@@ -414,17 +326,10 @@ export default function Towers() {
               className="absolute z-50 flex flex-col items-center justify-center w-full h-full cursor-pointer backdrop-blur-sm_"
             >
               <div className="relative flex items-center justify-center">
-                {/* <p className="absolute text-6xl font-extrabold animate-ping">
-              {message}
-            </p> */}
                 <p className="relative z-20 text-6xl font-extrabold">
                   {message}
                 </p>
               </div>
-
-              {/* <div className="mt-12 text-xl">
-            <p>tap screen to reset</p>
-          </div> */}
             </AnimateInOut>
             <div className="!max-h-[600px] w-full">
               <div className="flex items-center justify-center w-full h-full p-2">
@@ -456,24 +361,6 @@ export default function Towers() {
                       </div>
                     ))}
                   </div>
-                  {/* {gameOver && <div className="text-red-500">Game Over!</div>}
-                    {gameWin && <div className="text-green-500">You Win!</div>}
-                    <div className="text-white">Multiplier: {multiplier}</div>
-                    <div className="text-white">Profit: {profit}</div>
-                    {!gameOver && !gameWin && (
-                      <button
-                        onClick={takeProfit}
-                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-                      >
-                        Take Profit
-                      </button>
-                    )}
-                    <button
-                      onClick={resetGame}
-                      className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
-                    >
-                      Restart Game
-                    </button> */}
                 </div>
               </div>
             </div>

@@ -43,30 +43,9 @@ interface Content {
   value: File | string | CheckValue; //other image types
 }
 
-interface Note {
-  id?: string;
-  title: string;
-  subtitle: string;
-  date: number | string;
-  label?: any;
-  favourite?: boolean;
-  tag?: Tag;
-  type?: "favourite" | "archived" | "deleted";
-  folder?: Folder;
-  content?: Content[];
-}
-
 interface TypographyProps extends React.HTMLProps<HTMLHeadingElement> {
   children?: React.ReactNode;
   className?: string;
-}
-
-interface notesPreviewData {
-  title: string;
-  subtitle: string;
-  date: string;
-  tag: string;
-  favourite: boolean;
 }
 
 type MenuItem = {

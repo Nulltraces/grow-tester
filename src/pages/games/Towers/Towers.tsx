@@ -17,6 +17,29 @@ import socket from "@/utils/constants";
 import { updateBalance } from "@/store/slices/wallet";
 import { toast } from "react-toastify";
 
+function PlayIcon() {
+  return (
+    <svg
+      className="svg-icon"
+      style={{
+        width: "1em",
+        height: "1em",
+        verticalAlign: "middle",
+        fill: "currentColor",
+        overflow: "hidden",
+      }}
+      viewBox="0 0 1024 1024"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M256 832c-11.712 0-23.36-3.2-33.664-9.536A64.170667 64.170667 0 0 1 192 768V256c0-22.208 11.52-42.816 30.336-54.464a64.298667 64.298667 0 0 1 62.272-2.816l512 256a64.064 64.064 0 0 1 0 114.56l-512 256c-8.96 4.48-18.88 6.72-28.608 6.72z"
+        fill="yellow"
+      />
+    </svg>
+  );
+}
+
 enum Difficulty {
   EASY = "easy",
   NORMAL = "normal",
@@ -210,8 +233,11 @@ export default function Towers() {
       <button
         onClick={handleClick}
         className={clsx(
-          "w-full h-[45px] rounded-sm transition-transform ease-out flex pb-[5px] justify-center items-center shadow-md bg-dark-750 towers-default",
+          "w-full h-[45px] rounded-md transition-transform ease-out flex pb-[5px] justify-center items-center shadow-md towers-default",
           {
+            "bg-primary": row === currentRow && gameRunning,
+            "bg-green-700": cellContent.selected && !cellContent.hasSkull,
+            "bg-red-600": cellContent.selected && cellContent.hasSkull,
             "opacity-50 cursor-not-allowed":
               !gameRunning ||
               gameOver ||
@@ -220,11 +246,12 @@ export default function Towers() {
           },
         )}
       >
-        {cellContent.selected &&
+        {(cellContent.selected || gameOver) &&
           (cellContent.hasSkull ? (
-            <img src={SkullImage} className="w-8 object-cover animate-pulse" />
+            <img src={SkullImage} className="w-7 object-cover animate-pulse" />
           ) : (
-            <img src={Checkmark} className="w-8 object-cover" />
+            // <img src={Checkmark} className="w-8 object-cover" />
+            <PlayIcon />
           ))}
       </button>
     );
@@ -345,10 +372,7 @@ export default function Towers() {
                     {grid.map((rows, rowIndex) => (
                       <div
                         key={rowIndex}
-                        className={clsx("flex w-full gap-2 rounded", {
-                          "outline outline-1 outline-primary":
-                            rowIndex === currentRow && gameRunning,
-                        })}
+                        className={clsx("flex w-full gap-2 rounded")}
                       >
                         {rows.map((cell, colIndex) => (
                           <Cell

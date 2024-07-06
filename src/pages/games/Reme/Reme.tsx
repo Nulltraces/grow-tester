@@ -25,7 +25,7 @@ export default function Reme() {
   // const [balance, dispatch(updateBalance] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [gameRunning, setGameRunning] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<string | React.ReactNode>("");
   const [playerSpin, setPlayerSpin] = useState(0);
   const [houseSpin, setHouseSpin] = useState(0);
   // const [bet.stake, setStake] = useState(0);
@@ -35,16 +35,66 @@ export default function Reme() {
   });
 
   useEffect(() => {
-    socket.on("REME:result", (data) => {
-      setLoading(false);
-      console.log("REME:result", data);
-      console.log("PROFIT: ", data.profit);
-      setPlayerSpin(data.playerSpin);
-      setHouseSpin(data.houseSpin);
-      dispatch(updateBalance(walletBalance + data.profit));
-      setMessage(data.message);
+    socket.on("REME:result", async (data) => {
+      await new Promise((resolve) => {
+        console.log("RUNNING-1");
+        setMessage(
+          <p>
+            <span className="text-green-500">[{auth.user?.username}]</span> spun
+            the wheel and got {data.playerSpin}
+          </p>,
+        );
+        setPlayerSpin(data.playerSpin);
+        setLoading(false);
+        resolve(true);
+      })
+        .then(() => {
+          return new Promise<void>((resolve) => {
+            console.log("RUNNING-2");
+            setLoading(true);
+            setMessage(<p>Waiting for house spin...</p>);
+            const timeout = setTimeout(() => {
+              clearTimeout(timeout);
+              console.log("WAITing H SPIN");
+              setLoading(false);
+              resolve();
+            }, 1000);
+          });
+        })
+        .then(() => {
+          return new Promise<void>((resolve) => {
+            console.log("RUNNING-3");
+            setLoading(true);
+            const timeout = setTimeout(() => {
+              clearTimeout(timeout);
+              setLoading(false);
+              setMessage(
+                <p>
+                  <span className="text-red-500">[house]</span> spun the wheel
+                  and got {data.houseSpin}
+                </p>,
+              );
+              setHouseSpin(data.houseSpin);
+              resolve();
+            }, 3000);
+          });
+        })
+        .then(() => {
+          return new Promise<void>((resolve) => {
+            console.log("RUNNING-4");
+            const timeout = setTimeout(() => {
+              clearTimeout(timeout);
+              setLoading(false);
+
+              setMessage(data.message);
+              dispatch(updateBalance(walletBalance + data.profit));
+              resolve();
+            }, 2000);
+          });
+        })
+        .finally(() => setLoading(false));
     });
-  }, [dispatch]);
+  }, [auth.user?.username, dispatch]);
 
   useEffect(() => {
     if (!balance) return;
@@ -59,6 +109,7 @@ export default function Reme() {
     try {
       console.log("PLACE_BET: ", bet);
       setLoading(true);
+      setMessage(<p>{auth.user?.username} is spinning...</p>);
       setGameRunning(true);
 
       const response = await api.post("/bet", { ...bet, socketId: socket.id });
@@ -80,12 +131,12 @@ export default function Reme() {
     } catch (error) {
       toast.error("Could not place bet!");
       setLoading(false);
-      setGameRunning(true);
+      setGameRunning(false);
     }
   };
 
   const resetGame = () => {
-    setBet((prev) => ({ ...prev, stake: 0 }));
+    // setBet((prev) => ({ ...prev }));
     setGameRunning(false);
     setMessage("");
     setHouseSpin(0);
@@ -127,7 +178,7 @@ export default function Reme() {
                           stake: parseFloat(e.target.value),
                         }));
                       },
-                      value: bet.stake || 0,
+                      value: bet.stake,
                     }}
                   />
                 </div>
@@ -160,7 +211,7 @@ export default function Reme() {
               <svg
                 stroke="currentColor"
                 fill="currentColor"
-                stroke-width="0"
+                strokeWidth="0"
                 viewBox="0 0 1024 1024"
                 height="18"
                 width="18"
@@ -174,7 +225,7 @@ export default function Reme() {
               <svg
                 stroke="currentColor"
                 fill="currentColor"
-                stroke-width="0"
+                strokeWidth="0"
                 viewBox="0 0 512 512"
                 height="18"
                 width="18"

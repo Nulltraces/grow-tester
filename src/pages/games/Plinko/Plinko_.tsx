@@ -54,7 +54,7 @@ export default function Plinko() {
                     <svg
                       stroke="currentColor"
                       fill="currentColor"
-                      stroke-width="0"
+                      strokeWidth="0"
                       viewBox="0 0 448 512"
                       height="12"
                       width="12"
@@ -71,7 +71,7 @@ export default function Plinko() {
                     <svg
                       stroke="currentColor"
                       fill="currentColor"
-                      stroke-width="0"
+                      strokeWidth="0"
                       viewBox="0 0 448 512"
                       height="12"
                       width="12"
@@ -109,7 +109,7 @@ export default function Plinko() {
               <svg
                 stroke="currentColor"
                 fill="currentColor"
-                stroke-width="0"
+                strokeWidth="0"
                 viewBox="0 0 1024 1024"
                 height="18"
                 width="18"
@@ -123,7 +123,7 @@ export default function Plinko() {
               <svg
                 stroke="currentColor"
                 fill="currentColor"
-                stroke-width="0"
+                strokeWidth="0"
                 viewBox="0 0 512 512"
                 height="18"
                 width="18"

@@ -9,7 +9,6 @@ import {
 import clsx from "clsx";
 import { useCallback, useEffect, useState } from "react";
 import SkullImage from "./assets/skull.png";
-import Checkmark from "./assets/checkmark.png";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import api from "@/api/axios";
 import { GameType } from "@/game-types";
@@ -250,7 +249,6 @@ export default function Towers() {
           (cellContent.hasSkull ? (
             <img src={SkullImage} className="w-7 object-cover animate-pulse" />
           ) : (
-            // <img src={Checkmark} className="w-8 object-cover" />
             <PlayIcon />
           ))}
       </button>

@@ -357,7 +357,7 @@ export default function CrashChart({ gamePhase, setGamePhase }: Props) {
 
   return (
     <>
-      <div className="absolute z-10 flex font-bold text-white -translate-y-12 text-7xl">
+      <div className="absolute z-10 flex font-bold text-white -translate-y-12 text-5xl md:text-6xl lg:text-7xl">
         {gamePhase === GamePhase.bet ? (
           <p>Starting in... {betPhaseTime}</p>
         ) : (
@@ -365,7 +365,7 @@ export default function CrashChart({ gamePhase, setGamePhase }: Props) {
             <p>
               {gameStopped && "Crashed @"} {liveMultiplier?.toFixed(2)}
             </p>
-            <span className="text-6xl">×</span>
+            <span className="text-3xl md:text-6xl">×</span>
           </div>
         )}
       </div>
@@ -379,30 +379,6 @@ export default function CrashChart({ gamePhase, setGamePhase }: Props) {
           options={chartOptions}
         />
       </div>
-      {/* <ResponsiveContainer
-        width={"100%"}
-        height={450}
-        className="relative flex items-center justify-center"
-      >
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#4483EB" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#4483EB" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <XAxis dataKey="time" accumulate="sum" allowDataOverflow />
-          <YAxis scale={"linear"} />
-
-          <Area
-            type="monotone"
-            dataKey="pv"
-            stroke="#4483EB"
-            fillOpacity={1}
-            fill="url(#colorPv)"
-          />
-        </AreaChart>
-      </ResponsiveContainer> */}
     </>
   );
 }
